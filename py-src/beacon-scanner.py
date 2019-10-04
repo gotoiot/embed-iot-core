@@ -1,81 +1,210 @@
+# Beacon Scanner and Kiosk application for Raspberry Pi
+# Author: Agustin Bassi
+# Date: August 2019
+# Copyright: Agustin Bassi - 2019 
+# ======= [Imports] ===========================================================
+
+import time
 import subprocess
+
 from beacontools import BeaconScanner
 from beacontools import IBeaconFilter
 
-APP_PERIODIC_TIME   = 1 
-BEACONS_SCAN_TIME   = 2	
-BEACONS_UUID        = "b9407f30-f5f8-466e-aff9-25556b57fe6d"
-CMS_IP_ADDRESS      = "192.168.0.12"
-CMS_PORT            = 9090
+# ======= [APP Settings] ======================================================
 
-_beacons_list = []
+APP_TICK       = 3 
+SCAN_TICK      = 3	
+BEACONS_FILTER = "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"
+CMS_IP         = "192.168.0.172"
+CMS_PORT       = 8080
+CMS_RESOURCE   = "beacons"
+
+# ======= [APP Classes] =======================================================
 
 class Beacon:
-	def __init__(self, address, rssi, packet):
-		self.address = address
-		self.rssi = rssi
-		self.packet = packet
 
-def beacons_is_in_list(beacon):
-	global _beacons_list
-	is_item_in_list = False
-	for item_list in _beacons_list:
-		if item_list.address == beacon.address:
-			is_item_in_list = True
-	return is_item_in_list
+	def __init__(self, mac_address, uuid, major, minor, tx_power, rssi):
+		self.mac_address = mac_address
+		self.uuid = uuid
+		self.major = major
+		self.minor = minor
+		self.tx_power = tx_power
+		self.rssi = rssi		
 
-def beacons_callback(bt_addr, rssi, packet, additional_info):
-	global _beacons_list
-	beacon = Beacon(bt_addr, rssi, packet)
-	if (beacons_is_in_list(beacon) == False):
-		_beacons_list.append(beacon)
+	def __str__(self):
+		return "(MAC={}, UUID={}, MAJOR={}, MINOR={}, TXP={}, RSSI={})".format(
+			self.mac_address, 
+			self.uuid[:6], 
+			self.major, 
+			self.minor, 
+			self.tx_power, 
+			self.rssi
+			)
 
-def beacons_scan():
-	global _beacons_list
-    _beacons_list[:] = []
-	scanner = BeaconScanner(
-        beacons_callback, device_filter = IBeaconFilter(BEACONS_UUID))
-	
-	scanner.start()
-	time.sleep(BEACONS_SCAN_TIME)
-	scanner.stop()
-	
-	if len(_beacons_list) > 1:
-		_beacons_list = sorted(
-            _beacons_list, key = lambda beacon_aux: beacon_aux.rssi, reverse = True)
-	
-	for beacon in _beacons_list:
-		print ("Beacon Address = %s, Rssi = %d" % (beacon.address, beacon.rssi))
+
+class BeaconsController:
+
+	def __init__(self, uuid_filter=BEACONS_FILTER, scan_tick=SCAN_TICK):
+		print("BeaconsController ('uuid_filter': '{}', 'scan_tick': '{}')".format(
+			uuid_filter, scan_tick))
+		self._beacons_list = []
+		self._uuid_filter = uuid_filter
+		self._scan_tick = scan_tick
+		self.__nearest_beacon = Beacon("", "", 0, 0, 0, 0)
+
+	def _is_beacon_in_list(self, beacon):
+		for beacon_item in self._beacons_list:
+			if beacon_item.major == beacon.major and beacon_item.minor == beacon.minor:
+				return = True
+		return False
+
+	def _order_beacons_list(self, oderType=None):
+		self._beacons_list = sorted(
+			self._beacons_list, 
+			key = lambda beacon : beacon.rssi, 
+			reverse = True
+			)
+
+	def update(self):
+
+		def _scans_callback(bt_addr, rssi, packet, additional_info):
+			beacon = Beacon(bt_addr, packet.uuid, packet.major, packet.minor, packet.tx_power, rssi)
+			if not self._is_beacon_in_list(beacon):
+				self._beacons_list.append(beacon)
+
+		self._beacons_list = []
+		# instance the scanner
+		scanner = BeaconScanner(
+			_scans_callback, 
+			device_filter = IBeaconFilter(uuid=self._uuid_filter)
+		)
+		# perform the scan
+		scanner.start()
+		time.sleep(self._scan_tick)
+		scanner.stop()
+		# order the beacons list by RSSI (Power received)
+		if len(self._beacons_list) >= 1:
+			self._order_beacons_list()
+			self.__nearest_beacon = self._beacons_list[0]
+			print ("Nearest beacon: {}".format(self.__nearest_beacon))
+		else:
+			self.__nearest_beacon = None
+			print("No beacons found in this scan")
 		
-def web_update(beacon_id):
-    url = "http://{}:{}/beacons/{}".format(CMS_IP_ADDRESS, str(CMS_PORT), beacon_id)
-    print ("Invoking URL: " + url)
-    # p = subprocess.Popen(["chromium-browser", '--kiosk', '--incognito', web_url])
-    # p = subprocess.Popen(["iceweasel", url])
+		return self.__nearest_beacon
 
-def main():
-	while (1):	
-        beacons_scan()
-        web_update(_beacons_list[0])
-		time.sleep(APP_PERIODIC_TIME)
+	def get_nearest_beacon_fake(self):
+		import random
+
+		self._beacons_list = []
+		self._beacons_list.append(Beacon("11:11:11", BEACONS_FILTER, 0, 1, -50, random.randint(1, 100) * -1))
+		self._beacons_list.append(Beacon("22:22:22", BEACONS_FILTER, 0, 2, -50, random.randint(1, 100) * -1))
+		self._beacons_list.append(Beacon("33:33:33", BEACONS_FILTER, 0, 3, -50, random.randint(1, 100) * -1))
+
+		if len(self._beacons_list) >= 1:
+			self._order_beacons_list()
+			self.__nearest_beacon = self._beacons_list[0]
+			print ("Nearest beacon: {}".format(self.__nearest_beacon))
+		else:
+			self.__nearest_beacon = None
+			print("No beacons found in this scan")
+
+		return self.__nearest_beacon
+
+	@property
+	def nearest_beacon(self):
+		return self.__nearest_beacon
+
+
+class WebController:
+
+	def __init__(self, cms_ip=CMS_IP, cms_port=CMS_PORT, cms_resource=CMS_RESOURCE):
+		print("WebController ('cms_ip':'{}', 'cms_port': '{}', 'cms_resource': '{}')".format(cms_ip, cms_port, cms_resource))
+		self.cms_ip = cms_ip
+		self.cms_port = cms_port
+		self.cms_resource = cms_resource
+
+	def update_content(self, arguments):
+		url = "http://{}:{}/{}?{}".format(self.cms_ip, self.cms_port, 
+										  self.cms_resource, arguments)
+		print ("Invoking URL: {}".format(url))
+		process = subprocess.Popen(["iceweasel", url])
+	
+	def update_content_fake(self, arguments):
+		url = "http://{}:{}/{}?{}".format(self.cms_ip, str(self.cms_port), 
+											self.cms_resource, arguments)
+		print ("Invoking URL: " + url)
+
+
+class AppController:
+
+	def __init__(self, beacons_controller=None, web_controller=None, app_tick=APP_TICK):
+		self.app_tick = app_tick
+		self.beacons_controller = beacons_controller
+		self.web_controller = web_controller
+		self.nearest_beacon = Beacon("", "", 0, 0, 0, 0)
+
+	def _is_beacon_change(self, beacon):
+		is_beacon_change = False
+		if isinstance(beacon, Beacon) and (beacon.major != self.nearest_beacon.major or beacon.minor != self.nearest_beacon.minor):
+			print("New nearest beacon: {}".format(beacon))
+			is_beacon_change = True
+		return is_beacon_change
+
+	def _format_http_arguments(self, beacon):
+		http_arguments = "uuid={}&major={}&minor={}".format(
+			beacon.uuid, beacon.major, beacon.minor)
+		return http_arguments
+
+	def run(self):
+		while (1):
+			self.beacons_controller.update()
+			if self._is_beacon_change(self.beacons_controller.nearest_beacon):
+				self.nearest_beacon = self.beacons_controller.nearest_beacon
+				http_arguments = self._format_http_arguments(self.nearest_beacon)
+				self.web_controller.update_content_fake(http_arguments)
+			time.sleep(self.app_tick)
+
+# ======= [Main function] =====================================================
+
+def main ():
+	print ("Welcome to Beacons Scanner for Raspberry Pi - Powered by Agustin Bassi")
+
+	beacons_controller = BeaconsController(
+		uuid_filter=BEACONS_FILTER, 
+		scan_tick=SCAN_TICK
+		)	
+
+	web_controller = WebController(
+		cms_ip=CMS_IP, 
+		cms_port=CMS_PORT, 
+		cms_resource=CMS_RESOURCE
+		)
+	
+	app_controller = AppController(
+		beacons_controller=beacons_controller, 
+		web_controller=web_controller,
+		app_tick=APP_TICK
+		)
+
+	app_controller.run()
 	
 if __name__ == '__main__':
     main()
 
-#============================[ End of file ]==================================
+#============================[ TODOs section ]=================================
+""" 
+TODO: 
+replace prints for logging
 
-def TestBeacons():
-	_beacons_last_address = ""
-	_beacons_scan_count = 0
-	while (1):
-		_beacons_scan_count = _beacons_scan_count + 1
-		if _beacons_scan_count >= 1:
-			_beacons_scan_count = 0
-			beacons_scan()	
-			if len(_beacons_list) > 0:
-				print "Beacon elegido, Addr= %s" % _beacons_list[0].address
-				if(_beacons_last_address != _beacons_list[0].address):
-					_beacons_last_address = _beacons_list[0].address
-		
-		time.sleep(1)			
-	return
+TODO: 
+if beacons controller grows up, it must have features like get_nearest_beacon
+get_beacon_list, clear_beacons_list, set_order_type
+
+TODO:
+receive kwargs
+
+TODO:
+Ponerle el atributo last near beacon con property
+"""
+#============================[ End of file ]==================================
