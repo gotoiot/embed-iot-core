@@ -51,11 +51,12 @@ class BeaconsController:
 		self._uuid_filter = uuid_filter
 		self._scan_tick = scan_tick
 		self.__nearest_beacon = Beacon("", "", 0, 0, 0, 0)
+		self.__last_nearest_beacon = self.__nearest_beacon
 
 	def _is_beacon_in_list(self, beacon):
 		for beacon_item in self._beacons_list:
 			if beacon_item.major == beacon.major and beacon_item.minor == beacon.minor:
-				return = True
+				return True
 		return False
 
 	def _order_beacons_list(self, oderType=None):
@@ -85,35 +86,53 @@ class BeaconsController:
 		# order the beacons list by RSSI (Power received)
 		if len(self._beacons_list) >= 1:
 			self._order_beacons_list()
+			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = self._beacons_list[0]
 			print ("Nearest beacon: {}".format(self.__nearest_beacon))
 		else:
+			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = None
 			print("No beacons found in this scan")
 		
 		return self.__nearest_beacon
 
-	def get_nearest_beacon_fake(self):
+	def update_fake(self):
 		import random
 
 		self._beacons_list = []
-		self._beacons_list.append(Beacon("11:11:11", BEACONS_FILTER, 0, 1, -50, random.randint(1, 100) * -1))
-		self._beacons_list.append(Beacon("22:22:22", BEACONS_FILTER, 0, 2, -50, random.randint(1, 100) * -1))
-		self._beacons_list.append(Beacon("33:33:33", BEACONS_FILTER, 0, 3, -50, random.randint(1, 100) * -1))
+		self._beacons_list.append(Beacon("11:11:11", BEACONS_FILTER, 11, 1, -50, random.randint(1, 100) * -1))
+		self._beacons_list.append(Beacon("22:22:22", BEACONS_FILTER, 11, 2, -50, random.randint(1, 100) * -1))
+		self._beacons_list.append(Beacon("33:33:33", BEACONS_FILTER, 11, 3, -50, random.randint(1, 100) * -1))
 
 		if len(self._beacons_list) >= 1:
 			self._order_beacons_list()
+			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = self._beacons_list[0]
 			print ("Nearest beacon: {}".format(self.__nearest_beacon))
 		else:
+			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = None
 			print("No beacons found in this scan")
-
+		
 		return self.__nearest_beacon
+
+	def is_nearest_beacon_change(self):
+		if 	self.__nearest_beacon.major != self.__last_nearest_beacon.major or \
+			self.__nearest_beacon.minor != self.__last_nearest_beacon.minor:
+			return True
+		return False
 
 	@property
 	def nearest_beacon(self):
 		return self.__nearest_beacon
+
+	@property
+	def last_nearest_beacon(self):
+		return self.__last_nearest_beacon
+
+	@property
+	def beacons_list(self):
+		return self._beacons_list
 
 
 class WebController:
@@ -142,26 +161,21 @@ class AppController:
 		self.app_tick = app_tick
 		self.beacons_controller = beacons_controller
 		self.web_controller = web_controller
-		self.nearest_beacon = Beacon("", "", 0, 0, 0, 0)
 
-	def _is_beacon_change(self, beacon):
-		is_beacon_change = False
-		if isinstance(beacon, Beacon) and (beacon.major != self.nearest_beacon.major or beacon.minor != self.nearest_beacon.minor):
-			print("New nearest beacon: {}".format(beacon))
-			is_beacon_change = True
-		return is_beacon_change
-
-	def _format_http_arguments(self, beacon):
-		http_arguments = "uuid={}&major={}&minor={}".format(
-			beacon.uuid, beacon.major, beacon.minor)
+	def __format_http_arguments(self, beacon):
+		http_arguments = "major={}&minor={}".format(beacon.major, beacon.minor)
 		return http_arguments
 
 	def run(self):
-		while (1):
-			self.beacons_controller.update()
-			if self._is_beacon_change(self.beacons_controller.nearest_beacon):
-				self.nearest_beacon = self.beacons_controller.nearest_beacon
-				http_arguments = self._format_http_arguments(self.nearest_beacon)
+		# run loop forever
+		while (True):
+			# read near beacons
+			self.beacons_controller.update_fake()
+			# check if nearest beacon has changed against last near beacon
+			if self.beacons_controller.is_nearest_beacon_change():
+				# format argument to invoke URL with parameters
+				http_arguments = self.__format_http_arguments(self.beacons_controller.nearest_beacon)
+				# update the content in web navegator
 				self.web_controller.update_content_fake(http_arguments)
 			time.sleep(self.app_tick)
 
@@ -169,24 +183,24 @@ class AppController:
 
 def main ():
 	print ("Welcome to Beacons Scanner for Raspberry Pi - Powered by Agustin Bassi")
-
+	# beacons controller instance
 	beacons_controller = BeaconsController(
 		uuid_filter=BEACONS_FILTER, 
 		scan_tick=SCAN_TICK
 		)	
-
+	# web controller instance
 	web_controller = WebController(
 		cms_ip=CMS_IP, 
 		cms_port=CMS_PORT, 
 		cms_resource=CMS_RESOURCE
 		)
-	
+	# app controller instance
 	app_controller = AppController(
 		beacons_controller=beacons_controller, 
 		web_controller=web_controller,
 		app_tick=APP_TICK
 		)
-
+	# app controller main loop
 	app_controller.run()
 	
 if __name__ == '__main__':
