@@ -4,11 +4,12 @@
 # Copyright: Agustin Bassi - 2019 
 # ======= [Imports] ===========================================================
 
+import logging
 import time
 import subprocess
 
-from beacontools import BeaconScanner
-from beacontools import IBeaconFilter
+# from beacontools import BeaconScanner
+# from beacontools import IBeaconFilter
 
 # ======= [APP Settings] ======================================================
 
@@ -33,7 +34,8 @@ class Beacon:
 		self.rssi = rssi		
 
 	def __str__(self):
-		return "(MAC={}, UUID={}, MAJOR={}, MINOR={}, TXP={}, RSSI={})".format(
+		return "{} - (MAC={}, UUID={}, MAJOR={}, MINOR={}, TXP={}, RSSI={})".format(
+			self.__class__.__name__,
 			self.mac_address, 
 			self.uuid[:6], 
 			self.major, 
@@ -91,11 +93,11 @@ class BeaconsController:
 			self._order_beacons_list()
 			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = self._beacons_list[0]
-			print ("Nearest beacon: {}".format(self.__nearest_beacon))
+			logging.info("Nearest beacon: {}".format(self.__nearest_beacon))
 		else:
 			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = None
-			print("No beacons found in this scan")
+			logging.warn("No beacons found in this scan")
 
 	def update_fake(self):
 		""" emulates the behaviour of update() """
@@ -111,11 +113,11 @@ class BeaconsController:
 			self._order_beacons_list()
 			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = self._beacons_list[0]
-			print ("Nearest beacon: {}".format(self.__nearest_beacon))
+			logging.info("Nearest beacon: {}".format(self.__nearest_beacon))
 		else:
 			self.__last_nearest_beacon = self.__nearest_beacon
 			self.__nearest_beacon = None
-			print("No beacons found in this scan")
+			logging.warn("No beacons found in this scan")
 
 	def is_nearest_beacon_change(self):
 		""" Checks if neares beacon has change recently """
@@ -137,8 +139,8 @@ class BeaconsController:
 		return self._beacons_list
 
 	def __str__(self):
-		return "BeaconsController ('uuid_filter': '{}', 'scan_tick': '{}')".format(
-			uuid_filter, scan_tick)
+		return "{} ('uuid_filter': '{}', 'scan_tick': '{}')".format(
+			self.__class__.__name__, self._uuid_filter, self._scan_tick)
 
 
 class WebController:
@@ -153,18 +155,18 @@ class WebController:
 		""" Perform a HTTP GET request and send its content to browser """
 		url = "http://{}:{}/{}?{}".format(self.cms_ip, self.cms_port, 
 										  self.cms_resource, arguments)
-		print ("Invoking URL: {}".format(url))
+		logging.info("Invoking URL: {}".format(url))
 		process = subprocess.Popen(["iceweasel", url])
 	
 	def update_content_fake(self, arguments):
 		""" Logs the content that will be sent to browser """
 		url = "http://{}:{}/{}?{}".format(self.cms_ip, str(self.cms_port), 
 											self.cms_resource, arguments)
-		print ("Invoking URL: " + url)
+		logging.info("Invoking URL: {}".format(url))
 
 	def __str__(self):
-		return "WebController ('cms_ip':'{}', 'cms_port': '{}', 'cms_resource': '{}')".format(
-			cms_ip, cms_port, cms_resource)
+		return "{} - ('cms_ip':'{}', 'cms_port': '{}', 'cms_resource': '{}')".format(
+			self.__class__.__name__, self.cms_ip, self.cms_port, self.cms_resource)
 
 
 class AppController:
@@ -174,6 +176,8 @@ class AppController:
 		self.app_tick = app_tick
 		self.beacons_controller = beacons_controller
 		self.web_controller = web_controller
+		logging.info(str(self.beacons_controller))
+		logging.info(str(self.web_controller))
 
 	def __format_http_arguments(self, beacon):
 		""" Receives a beacon and create string to send to http arguments """
@@ -198,6 +202,12 @@ class AppController:
 def main ():
 	""" Main function. Instance needed classes and run AppController loop """
 	print ("Welcome to Rpi Beacons Kiosk - Powered by Agustin Bassi")
+	# configure logging
+	logging.basicConfig(
+		format='%(asctime)s - %(levelname)s - %(message)s',
+		level=logging.DEBUG,
+		datefmt='%H:%M:%S'
+		)
 	# beacons controller instance
 	beacons_controller = BeaconsController(
 		uuid_filter=BEACONS_FILTER, 
