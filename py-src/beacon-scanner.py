@@ -8,8 +8,8 @@ import logging
 import time
 import subprocess
 
-# from beacontools import BeaconScanner
-# from beacontools import IBeaconFilter
+from beacontools import BeaconScanner
+from beacontools import IBeaconFilter
 
 # ======= [APP Settings] ======================================================
 
@@ -188,13 +188,13 @@ class AppController:
 		""" Main loop that runs forever. Read nearest beacon and update web content """
 		while (True):
 			# read near beacons
-			self.beacons_controller.update_fake()
+			self.beacons_controller.update()
 			# check if nearest beacon has changed against last near beacon
 			if self.beacons_controller.is_nearest_beacon_change():
 				# format argument to invoke URL with parameters
 				http_arguments = self.__format_http_arguments(self.beacons_controller.nearest_beacon)
 				# update the content in web navegator
-				self.web_controller.update_content_fake(http_arguments)
+				self.web_controller.update_content(http_arguments)
 			time.sleep(self.app_tick)
 
 # ======= [Main function] =====================================================
@@ -231,19 +231,4 @@ def main ():
 if __name__ == '__main__':
     main()
 
-#============================[ TODOs section ]=================================
-""" 
-TODO: 
-replace prints for logging
-
-TODO: 
-if beacons controller grows up, it must have features like get_nearest_beacon
-get_beacon_list, clear_beacons_list, set_order_type
-
-TODO:
-receive kwargs
-
-TODO:
-Ponerle el atributo last near beacon con property
-"""
 #============================[ End of file ]==================================

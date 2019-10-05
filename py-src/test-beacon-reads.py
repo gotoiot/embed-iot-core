@@ -22,11 +22,11 @@ def main():
 	uuid = res.uuid if res.uuid is not None else DEFAULT_BEACON_UUID
 	scan_time = res.scan_time if res.scan_time is not None else DEFAULT_TIME_TO_SCAN
 	# scan for all iBeacon advertisements from beacons with the specified uuid
-	scanner = BeaconScanner(callback, device_filter=IBeaconFilter(uuid=uuid))
+	scanner = BeaconScanner(callback, device_filter=IBeaconFilter(uuid = uuid))
 	# start scanning
 	print ("Starting to scan beacons with UUID={} for {} seconds".format(uuid, scan_time))
 	scanner.start()
-	time.sleep(TIME_TO_SCAN)
+	time.sleep(scan_time)
 	scanner.stop()
 	print ("Scan beacons finished!")
 
