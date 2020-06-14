@@ -71,6 +71,7 @@ class IBeaconsScanner:
             scan_thread = Thread(target=self._scan_fake)
         else:
             scan_thread = Thread(target=self._scan)
+        # TODO: correct it, if it is started, not start again
         scan_thread.start()
 
     def stop(self):
@@ -166,7 +167,7 @@ class IBeaconsScanner:
     def beacons_list(self):
         return self._beacons_list
 
-    def _to_json(self):
+    def to_json(self):
         return json.loads(repr(self).replace("\'", "\""))
     
     def _to_dict(self):
@@ -177,21 +178,24 @@ class IBeaconsScanner:
 
     def update_settings(self, settings=None):
         if isinstance(settings, str):
-            print("Convert str to dict")
             # convert str to json dict
             settings = json.loads(settings)
         
         if isinstance(settings, dict):
             # Check if settings dict has uuid_filter property and validate it
-            if settings.get("uuid_filter") and \
+            if settings.get("uuid_filter") is not None and \
                 type(settings.get("uuid_filter")) == str:
                 logging.info("Updating uuid_filter")
                 self._uuid_filter = settings.get("uuid_filter")
             # Check if settings dict has uuid_filter property and validate it
-            if settings.get("scan_tick") and \
+            if settings.get("scan_tick") is not None and \
                 type(settings.get("scan_tick")) == int:
                 logging.info("Updating scan_tick")
                 self._scan_tick = settings.get("scan_tick")
+            # Check if settings dict has uuid_filter property and validate it
+            if settings.get("run_flag") is not None and \
+                type(settings.get("run_flag")) == bool:
+                self.run() if settings.get("run_flag") else self.stop()
         else:
             logging.warn("Invalid settings format")
         
@@ -207,6 +211,7 @@ class IBeaconsScanner:
         data_repr["nearest_beacon"]      = self.nearest_beacon
         data_repr["last_nearest_beacon"] = self.last_nearest_beacon
         data_repr["beacons_list"]        = self.beacons_list
+        data_repr["run_flag"]            = self._run_flag
 
         return str(data_repr)
 
@@ -245,5 +250,6 @@ if __name__ == '__main__':
 
 # TODO: Create a callback function into IBeaconScanner to advice it when nearest beacon changes
 # TODO: Put ASCII into welcome message
+# TODO: Put a flag run in settings
 
 #########[ Enf of file ]#######################################################
