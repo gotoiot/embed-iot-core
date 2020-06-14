@@ -14,6 +14,7 @@ import subprocess
 import time
 from threading import Thread
 import json
+import ast
 
 from beacontools import BeaconScanner
 from beacontools import IBeaconFilter
@@ -73,29 +74,13 @@ class IBeaconsScanner:
         scan_thread.start()
 
     def stop(self):
+        # TODO: the thread can be stopped as well
         logging.info("Stopping iBeacons scanner")
         self._run_flag = False
 
     def is_nearest_beacon_change(self):
         """ Checks if neares beacon has change recently """
-        if 	self._nearest_beacon.mac_address != self._last_nearest_beacon.mac_address:
-            return True
-        return False
-
-    def update_settings(self, json_settings=None):
-        # convert string JSON data into dictionary
-        settings_dict = json.loads(json_settings)
-        # Check if settings dict has uuid_filter property and validate it
-        if settings_dict.get("uuid_filter") and \
-            type(settings_dict.get("uuid_filter")) == str:
-            logging.info("Updating uuid_filter")
-            self._uuid_filter = settings_dict.get("uuid_filter")
-        # Check if settings dict has uuid_filter property and validate it
-        if settings_dict.get("s") and \
-            type(settings_dict.get("scan_tick")) == str:
-            logging.info("Updating scan_tick")
-            self._scan_tick = settings_dict.get("scan_tick")
-        pass
+        return True if self._nearest_beacon.mac_address != self._last_nearest_beacon.mac_address else False
 
     #####[ Protected methods ]#############################
     
@@ -181,6 +166,35 @@ class IBeaconsScanner:
     def beacons_list(self):
         return self._beacons_list
 
+    def _to_json(self):
+        return json.loads(repr(self).replace("\'", "\""))
+    
+    def _to_dict(self):
+        return ast.literal_eval(repr(self))
+
+    def _to_str(self):
+        return repr(self)
+
+    def update_settings(self, settings=None):
+        if isinstance(settings, str):
+            print("Convert str to dict")
+            # convert str to json dict
+            settings = json.loads(settings)
+        
+        if isinstance(settings, dict):
+            # Check if settings dict has uuid_filter property and validate it
+            if settings.get("uuid_filter") and \
+                type(settings.get("uuid_filter")) == str:
+                logging.info("Updating uuid_filter")
+                self._uuid_filter = settings.get("uuid_filter")
+            # Check if settings dict has uuid_filter property and validate it
+            if settings.get("scan_tick") and \
+                type(settings.get("scan_tick")) == int:
+                logging.info("Updating scan_tick")
+                self._scan_tick = settings.get("scan_tick")
+        else:
+            logging.warn("Invalid settings format")
+        
     #####[ Dunderscore methods ]###########################
 
     def __str__(self):
@@ -209,16 +223,27 @@ def run_ibeacons_controller():
         )
     # beacons controller instance
     beacons_scanner = IBeaconsScanner(uuid_filter=DEFAULT_BEACONS_FILTER, scan_tick=DEFAULT_SCAN_TICK)
+    # print current configuration
+    print(beacons_scanner)
     # start stanning for 10 seconds
     beacons_scanner.run()
     time.sleep(10)
     beacons_scanner.stop()
-    
+    # update settings and show them
+    settings_dict = {'uuid_filter' : 'aa-bb-cc-dd-ee-ff', 'scan_tick' : 5 }
+    beacons_scanner.update_settings(settings=settings_dict)
+    print(beacons_scanner)
+    # start stanning for 10 seconds
+    beacons_scanner.run()
+    time.sleep(10)
+    beacons_scanner.stop()
+
 if __name__ == '__main__':
     run_ibeacons_controller()
 
 #########[ TODO section ]######################################################
 
 # TODO: Create a callback function into IBeaconScanner to advice it when nearest beacon changes
+# TODO: Put ASCII into welcome message
 
 #########[ Enf of file ]#######################################################
