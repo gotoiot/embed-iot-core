@@ -23,7 +23,7 @@ APP_CONFIG = {
     "HOST"          : "0.0.0.0",
     "PORT"          : 5000,
     "PREFIX"        : "/api/v1/",
-    "DEBUG"         : True,
+    "DEBUG"         : False,
     "DB_FILE_PATH"  : "../db/db.json",
 }
 # Flask App object
@@ -50,7 +50,8 @@ def db_get_stored_data():
     # Read data from DB file
     stored_data = json.loads(open(full_db_file_path).read())
     # Log the action to console
-    logging.info("Data readed from DB file: " + str(stored_data))
+    logging.info("Data readed from DB")
+    logging.debug("The data from DB file is: " + str(stored_data))
     # returns the data read from DB file as dict
     return stored_data
 
@@ -76,6 +77,7 @@ def db_save_data_to_file(data_to_store):
 
 @app.route(APP_CONFIG["PREFIX"] + '/ibeacon_settings/', methods=['GET'])
 def get_ibeacon_settings():
+    # execute local call to filter the desired fields to show
     response = get_ibeacon_scanner_settings()
     # return the response with the status code
     return create_json_response(response, 200)
@@ -89,9 +91,9 @@ def set_ibeacon_settings():
             )
     # modify module data
     ibeacons_scanner.update_settings(request.json)
-    # obtain the current module data in a local variable
+    # execute local call to get the desired fields as settings
     ibeacons_scanner_settings = get_ibeacon_scanner_settings()
-    # update DB file with new current module data
+    # update DB file with new settings
     db_save_data_to_file(ibeacons_scanner_settings)
     # Send new current module data as response
     response = ibeacons_scanner_settings
@@ -100,7 +102,7 @@ def set_ibeacon_settings():
 @app.route(APP_CONFIG["PREFIX"] + '/ibeacon_scanner/', methods=['GET'])
 def get_ibeacon_scanner_info():
     # create response for all devices
-    response = ibeacons_scanner._to_dict()
+    response = ibeacons_scanner.to_dict()
     # return the response with the status code
     return create_json_response(response, 200)
 
@@ -108,7 +110,7 @@ def get_ibeacon_scanner_info():
 
 def get_ibeacon_scanner_settings():
     return  {
-        key: ibeacons_scanner._to_dict()[key] for key in \
+        key: ibeacons_scanner.to_dict()[key] for key in \
             ["uuid_filter", "scan_tick", "run_flag"]
     }
 

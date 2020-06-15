@@ -23,6 +23,9 @@ from beacontools import IBeaconFilter
 
 DEFAULT_SCAN_TICK      = 3	
 DEFAULT_BEACONS_FILTER = "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"
+MIN_SCAN_TICK          = 1
+MAX_SCAN_TICK          = 10
+
 
 #########[ Module Classes ]####################################################
 
@@ -63,21 +66,24 @@ class IBeaconsScanner:
         self._nearest_beacon      = IBeacon("", "", 0, 0, 0, 0)
         self._last_nearest_beacon = self._nearest_beacon
         self._run_flag            = False
+        self._scan_thread         = None
 
     def run(self, fake_scan=False):
-        logging.info("Starting to scan iBeacon")
-        self._run_flag = True
-        if fake_scan:
-            scan_thread = Thread(target=self._scan_fake)
-        else:
-            scan_thread = Thread(target=self._scan)
-        # TODO: correct it, if it is started, not start again
-        scan_thread.start()
+        if self._run_flag == False: # and self._scan_thread is None:
+            logging.info("Starting to scan iBeacon")
+            self._run_flag = True
+            if fake_scan:
+                self._scan_thread = Thread(target=self._scan_fake)
+            else:
+                self._scan_thread = Thread(target=self._scan)
+            self._scan_thread.start()
 
     def stop(self):
-        # TODO: the thread can be stopped as well
-        logging.info("Stopping iBeacons scanner")
-        self._run_flag = False
+        if self._run_flag == True: # and self._scan_thread is not None:
+            logging.info("Stopping iBeacons scanner")
+            self._run_flag = False
+            # wait for thread to finalize
+            self._scan_thread.join()
 
     def is_nearest_beacon_change(self):
         """ Checks if neares beacon has change recently """
@@ -170,10 +176,10 @@ class IBeaconsScanner:
     def to_json(self):
         return json.loads(repr(self).replace("\'", "\""))
     
-    def _to_dict(self):
+    def to_dict(self):
         return ast.literal_eval(repr(self))
 
-    def _to_str(self):
+    def to_str(self):
         return repr(self)
 
     def update_settings(self, settings=None):
@@ -186,11 +192,18 @@ class IBeaconsScanner:
             if settings.get("uuid_filter") is not None and \
                 type(settings.get("uuid_filter")) == str:
                 logging.info("Updating uuid_filter")
+                # TODO: A validator format must be applied here
                 self._uuid_filter = settings.get("uuid_filter")
             # Check if settings dict has uuid_filter property and validate it
             if settings.get("scan_tick") is not None and \
                 type(settings.get("scan_tick")) == int:
                 logging.info("Updating scan_tick")
+                # validate if value is in correct range
+                if settings.get("scan_tick") < MIN_SCAN_TICK:
+                    settings["scan_tick"] = MIN_SCAN_TICK
+                elif settings.get("scan_tick") > MAX_SCAN_TICK:
+                    settings["scan_tick"] = MAX_SCAN_TICK
+                # assing new scan tick
                 self._scan_tick = settings.get("scan_tick")
             # Check if settings dict has uuid_filter property and validate it
             if settings.get("run_flag") is not None and \
