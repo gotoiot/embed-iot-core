@@ -75,14 +75,14 @@ def db_save_data_to_file(data_to_store):
 
 #########[ Application Views (endpoints) ]#####################################
 
-@app.route(APP_CONFIG["PREFIX"] + '/ibeacon_settings/', methods=['GET'])
+@app.route(APP_CONFIG["PREFIX"] + '/scanner_settings/', methods=['GET'])
 def get_ibeacon_settings():
     # execute local call to filter the desired fields to show
     response = get_ibeacon_scanner_settings()
     # return the response with the status code
     return create_json_response(response, 200)
 
-@app.route(APP_CONFIG["PREFIX"] + '/ibeacon_settings/', methods=['PUT', 'POST'])
+@app.route(APP_CONFIG["PREFIX"] + '/scanner_settings/', methods=['PUT', 'POST'])
 def set_ibeacon_settings():
     if not request.json:
         return create_json_response(
@@ -99,7 +99,7 @@ def set_ibeacon_settings():
     response = ibeacons_scanner_settings
     return create_json_response(response, 200)
 
-@app.route(APP_CONFIG["PREFIX"] + '/ibeacon_scanner/', methods=['GET'])
+@app.route(APP_CONFIG["PREFIX"] + '/ibeacons_info/', methods=['GET'])
 def get_ibeacon_scanner_info():
     # create response for all devices
     response = ibeacons_scanner.to_dict()
@@ -148,5 +148,6 @@ if __name__ == '__main__':
 # TODO: Create a thread to manage pushing messages to CMS
 # TODO: Evaluate the possibility to publish this code in some place, or contact
 # beacons tools maintainer in order to discuss if it can be acceptable.
+# TODO: evaluate to put flask config (APP_CONFIG) as a resource HTTP
 
 #########[ Enf of file ]#######################################################
