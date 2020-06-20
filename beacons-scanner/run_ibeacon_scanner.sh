@@ -3,7 +3,7 @@
 # Author: Agustin Bassi
 # Project: Beacon scanner
 # Date: June 2020
-# Usage: Run it in the same folder where there is this file
+# Usage: Run it in the same folder where this file is
 #
 # $ ./run_ibeacon_scanner.sh "$PWD"/src app.py "$PWD"/db 5000 host
 # 

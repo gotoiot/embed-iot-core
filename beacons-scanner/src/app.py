@@ -75,14 +75,14 @@ def db_save_data_to_file(data_to_store):
 
 #########[ Application Views (endpoints) ]#####################################
 
-@app.route(APP_CONFIG["PREFIX"] + '/scanner_settings/', methods=['GET'])
+@app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['GET'])
 def get_ibeacon_settings():
     # execute local call to filter the desired fields to show
     response = get_ibeacon_scanner_settings()
     # return the response with the status code
     return create_json_response(response, 200)
 
-@app.route(APP_CONFIG["PREFIX"] + '/scanner_settings/', methods=['PUT', 'POST'])
+@app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['PUT', 'POST'])
 def set_ibeacon_settings():
     if not request.json:
         return create_json_response(
@@ -119,7 +119,7 @@ def get_ibeacon_scanner_settings():
 def init_app():
     global ibeacons_scanner
     
-    print ("Welcome to iBeacons Reader - Powered by Agustin Bassi")
+    print ("Welcome to Beacons Reader - Powered by Agustin Bassi")
 
     # configure logging
     logging.basicConfig(

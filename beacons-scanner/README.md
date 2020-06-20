@@ -12,11 +12,15 @@ Author: Agustin Bassi - 2020
 
 # Application description
 
-This part of the Beacons Platform consists in a Beacons Scanner. The function of the scanner is to look for beacons packages, which could be iBeacons, Eddystone and others.
+This application consists in a Beacons Scanner. The function of the scanner is to look for beacons packages, which could be iBeacons, Eddystone and others. 
 
 > **_NOTE:_**  The available support is only for iBeacons currently.
 
-This sub-application is composed with the next relevant parts:
+The app can works as standalone app (it means it can runs from CLI and scan for Beacons) or working together with an HTTP server made in Flask Web Framework, which can GET & PUT data into the scanner. 
+
+By this way the scanner can be consulted for nearest beacons, last nearest beacons, list of beacons read and others, or even be modified by an HTTP client through, for example configure beacon filters, scan time, or turn on/off the scanner.
+
+This application is composed with the next relevant parts:
 
 * `src/app.py`: Flask application with HTTP API handlers and database handling (reading & writing to file in JSON format).
 * `src/beacons/`: Package containing several software modules used for scan and control different beacons packages. The modules in this package can be used solely without integration with Flask API.
@@ -24,7 +28,7 @@ This sub-application is composed with the next relevant parts:
 
 # Install dependencies
 
-This application Runs in Linux systems with integrated Bluetooth, like the most modern laptops or in Raspberry Pi 3+.
+This application runs in Linux systems with integrated Bluetooth, like the most modern laptops or in Raspberry Pi 3+.
 
 The requirements to run the application are:
 
@@ -63,20 +67,20 @@ As an example, running the test_ibeacon_scanner.py show an output like this.
 ```
 Starting to scan beacons with UUID=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee for 10 seconds
 
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
+[MAC: 28:c6:3f:7c:5c:26 | RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
+[MAC: 28:c6:3f:7c:5c:26 | RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
+[MAC: 28:c6:3f:7c:5c:26 | RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
 
 Scan beacons finished!
 ```
 
 # Run the application
 
-The system can runs as standalone Python Flask application or in a Docker container. Choose the method and follow the steps in each case.
+The system can runs as system Python application or in a Docker container. Choose the method and follow the steps in each case.
 
-## Virtual Environment
+## Python application within Virtual Environment
 
-Create & activate the Python Virtual Environment with the commands below. By default this commands will create a venv in the `current_directory/.venv` (supposed to be in the project root folder, where this README is), but you can change it for any path you want.
+To run in this mode, at first create & activate the Python Virtual Environment with the commands below. By default this commands will create a venv in the `current_directory/.venv` (supposed to be in the project root folder, where this README is), but you can change it for any path you want.
 
 ```sh
 python3 -m venv "$PWD"/.venv
@@ -102,7 +106,7 @@ This option is prefereable in the majority of cases, because this application ca
 The first step is to build the Docker image which has all project dependencies bundled in it. Execute the next command.
 
 ```
-docker build --tag local/beacons-reader .
+docker build --tag local/beacons-scanner .
 ```
 
 > **_NOTE:_**: You can build your image with `prod` tag putting your code into the image once you have your code finished. Read the Dockerfile to change from `dev` to `prod`.
@@ -125,15 +129,22 @@ Finally run the application Docker container. In the project root folder (where 
 docker run \
 --rm \
 --interactive \
---name beacons-reader \
+--name beacons-scanner \
+--net host \
 --publish 5001:5000 \
 --volume "$PWD"/db:/app/db \
 --volume "$PWD"/src:/app/src \
-local/beacons-reader:latest \
+local/beacons-scanner:latest \
 python app.py
 ```
 
-In the command above you are running the Docker container with name `beacons-reader`, binding your host port 5001 into container port 5000, sharing the application db path (`"$PWD"/db`) into container db path (`/app/db`), sharing your source code folder (`"$PWD"/src`) into container source folder (`/app/db`), and running the `app.py` with python when container starts.
+In the command above you are running the Docker container with name `beacons-scanner`, running the container in `host` network (to enable access to bluetooth access), binding your host port 5001 into container port 5000, sharing the application db path (`"$PWD"/db`) into container db path (`/app/db`), sharing your source code folder (`"$PWD"/src`) into container source folder (`/app/src`), and running the `app.py` with python when container starts.
+
+Alternative, you can run the application executing `run_ibeacon_scanner.sh` in the root folder as follows, that will be the same as previous long docker command:
+
+```
+./run_ibeacon_scanner.sh "$PWD"/src app.py "$PWD"/db 5001 host
+```
 
 # Available HTTP resources
 
@@ -143,7 +154,7 @@ Get scanner settings
 
 | Description     | Value |
 | -------------   | ------------- |
-| URI             | http://localhost:5000/api/v1/ibeacon_settings/  |
+| URI             | http://localhost:5000/api/v1/ibeacons_settings/  |
 | METHOD          | GET  |
 | Details         | Obtain the current scanner settings in JSON Format. Returns all current settings  |
 | Request Header  | Accept: application/json - Content-Type: application/json  |
@@ -154,7 +165,7 @@ Set scanner settings
 
 | Description     | Value |
 | -------------   | ------------- |
-| URI             | http://localhost:5000/api/v1/ibeacon_settings/  |
+| URI             | http://localhost:5000/api/v1/ibeacons_settings/  |
 | METHOD          | POST, PUT  |
 | Details         | Set the current scanner settings in JSON Format. Returns all current settings  |
 | Request Header  | Accept: application/json - Content-Type: application/json  |
@@ -173,7 +184,7 @@ Get scanner info
 | Response body   | {"beacons_list": [], "last_nearest_beacon": {"mac_address": "", "major": 0, "minor": 0, "rssi": 0, "tx_power": 0, "uuid": ""}, "nearest_beacon": {"mac_address": "", "major": 0, "minor": 0, "rssi": 0, "tx_power": 0, "uuid": ""}, "run_flag": false, "scan_tick": 4, "uuid_filter": "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"}  |
 
 
-# Test the project
+# Test the HTTP API interface
 
 The easy and best way to test the project is using [Postman](https://www.postman.com/), a really intuitive and easy to use tool for execute HTTP methods.
 
