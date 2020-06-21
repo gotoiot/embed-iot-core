@@ -12,6 +12,7 @@ import os
 import json
 import time
 import logging
+import requests
 
 from flask import Flask, Response, abort, json, jsonify, request
 
@@ -106,6 +107,32 @@ def get_ibeacon_scanner_info():
     # return the response with the status code
     return create_json_response(response, 200)
 
+@app.route(APP_CONFIG["PREFIX"] + '/interface_settings/', methods=['GET'])
+def get_interface_settings():
+    db_data = db_get_stored_data()
+    # execute local call to filter the desired fields to show
+    response = { 
+        "callback_uri" : str(db_data["callback_uri"]) 
+        }
+    # return the response with the status code
+    return create_json_response(response, 200)
+
+@app.route(APP_CONFIG["PREFIX"] + '/interface_settings/', methods=['PUT', 'POST'])
+def set_interface_settings():
+    if not request.json:
+        return create_json_response(
+            {'error' : 'Impossible to parse request body'}, 
+            422
+            )
+    # if data is correct update callback_uri
+    if request.json["callback_uri"] is not None and isinstance(request.json["callback_uri"], str):
+        db_data = db_get_stored_data()
+        db_data["callback_uri"] = request.json["callback_uri"]
+        db_save_data_to_file(db_data)
+        # send response
+        response = { "callback_uri" : db_data["callback_uri"]}
+        return create_json_response(response, 200)
+
 #########[ Specific module code ]##############################################
 
 def get_ibeacon_scanner_settings():
@@ -115,7 +142,16 @@ def get_ibeacon_scanner_settings():
     }
 
 def advice_for_changes_callback(changes_data):
-    logging.info("Calling CMS callback: " + str(changes_data))
+    # obtain the module data saved previously in DB file
+    db_data = db_get_stored_data()
+    if isinstance(db_data["callback_uri"], str):
+        try:
+            req = requests.post(db_data["callback_uri"], data=changes_data)
+            logging.debug("Calling CMS callback: " + str(db_data["callback_uri"]))
+            logging.debug("Response code is: " + str(req.status_code))
+        except:
+            logging.warn("An error has ocurred when POST to: " + str(db_data["callback_uri"]))
+        
 
 #########[ Module main code ]##################################################
 
@@ -126,8 +162,8 @@ def init_app():
 
     # configure logging
     logging.basicConfig(
-        format='[ %(levelname)5s ] - %(funcName)26s -> %(message)s',
-        level=logging.INFO,
+        format='[ %(levelname)5s ] - %(funcName)28s -> %(message)s',
+        level=logging.DEBUG,
         datefmt='%H:%M:%S'
         )
     # obtain the module data saved previously in DB file
@@ -149,7 +185,6 @@ if __name__ == '__main__':
 
 #########[ TODO section ]######################################################
 
-# TODO: Create a thread to manage pushing messages to CMS
 # TODO: Evaluate the possibility to publish this code in some place, or contact
 # beacons tools maintainer in order to discuss if it can be acceptable.
 # TODO: evaluate to put flask config (APP_CONFIG) as a resource HTTP

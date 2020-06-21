@@ -261,10 +261,11 @@ class IBeaconsScanner:
 
 #########[ Module main code ]##################################################
 
-def changes_callback(changes_data):
-    logging.info("Nearest beacon has changed: " + str(changes_data))
-
 def run_ibeacons_controller():
+    # Callback to be called when a beacon change occurs
+    def __changes_callback(changes_data):
+        logging.info("Nearest beacon has changed: " + str(changes_data))
+    # send welcome message to console
     print ("\n\nWelcome to iBeacons Reader - Powered by Agustin Bassi\n\n")
     # configure logging
     logging.basicConfig(
@@ -274,17 +275,14 @@ def run_ibeacons_controller():
         )
     # beacons controller instance
     beacons_scanner = IBeaconsScanner(uuid_filter=DEFAULT_BEACONS_FILTER, scan_tick=DEFAULT_SCAN_TICK)
-    beacons_scanner.set_changes_callback(changes_callback)
-    # print current configuration
-    # print(beacons_scanner)
+    beacons_scanner.set_changes_callback(__changes_callback)
     # start stanning for 10 seconds
     beacons_scanner.run()
     time.sleep(10)
     beacons_scanner.stop()
-    # update settings and show them
+    # update settings
     settings_dict = {'uuid_filter' : 'aa-bb-cc-dd-ee-ff', 'scan_tick' : 5 }
     beacons_scanner.update_settings(settings=settings_dict)
-    # print(beacons_scanner)
     # start stanning for 10 seconds
     beacons_scanner.run()
     time.sleep(10)
