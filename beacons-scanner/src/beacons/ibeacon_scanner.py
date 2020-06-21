@@ -265,7 +265,7 @@ def changes_callback(changes_data):
     logging.info("Nearest beacon has changed: " + str(changes_data))
 
 def run_ibeacons_controller():
-    print ("Welcome to iBeacons Reader - Powered by Agustin Bassi")
+    print ("\n\nWelcome to iBeacons Reader - Powered by Agustin Bassi\n\n")
     # configure logging
     logging.basicConfig(
         format='[ %(levelname)5s ] - %(funcName)26s -> %(message)s',

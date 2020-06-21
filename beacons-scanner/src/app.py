@@ -114,6 +114,9 @@ def get_ibeacon_scanner_settings():
             ["uuid_filter", "scan_tick", "run_flag"]
     }
 
+def advice_for_changes_callback(changes_data):
+    logging.info("Calling CMS callback: " + str(changes_data))
+
 #########[ Module main code ]##################################################
 
 def init_app():
@@ -123,7 +126,7 @@ def init_app():
 
     # configure logging
     logging.basicConfig(
-        format='%(asctime)s - %(levelname)s - %(message)s',
+        format='[ %(levelname)5s ] - %(funcName)26s -> %(message)s',
         level=logging.INFO,
         datefmt='%H:%M:%S'
         )
@@ -132,6 +135,7 @@ def init_app():
     # beacons controller instance
     ibeacons_scanner = IBeaconsScanner()
     ibeacons_scanner.update_settings(db_data)
+    ibeacons_scanner.set_changes_callback(advice_for_changes_callback)
     
 
 if __name__ == '__main__':
