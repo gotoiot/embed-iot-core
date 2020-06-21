@@ -67,6 +67,7 @@ class IBeaconsScanner:
         self._last_nearest_beacon = self._nearest_beacon
         self._run_flag            = False
         self._scan_thread         = None
+        self._changes_callback    = None
 
     def run(self, fake_scan=False):
         if self._run_flag == False: # and self._scan_thread is None:
@@ -85,9 +86,12 @@ class IBeaconsScanner:
             # wait for thread to finalize
             self._scan_thread.join()
 
-    def is_nearest_beacon_change(self):
-        """ Checks if neares beacon has change recently """
-        return True if self._nearest_beacon.mac_address != self._last_nearest_beacon.mac_address else False
+    def set_changes_callback(self, callback=None):
+        if callback is not None:
+            logging.info("Setting changes callback")
+            self._changes_callback = callback
+        else:
+            logging.warn("Changes callback is invalid")
 
     #####[ Protected methods ]#############################
     
@@ -121,6 +125,9 @@ class IBeaconsScanner:
                 self._last_nearest_beacon = self._nearest_beacon
                 self._nearest_beacon = None
                 logging.info("No beacons found in this scan")
+            # evaluate if nearest beacon has changes, if so, invoke changes callback
+            if self._check_if_nearest_beacon_changes():
+                self._invoke_changes_callback()
 
     def _scan_fake(self):
         """ emulates the behaviour of update() """
@@ -143,6 +150,9 @@ class IBeaconsScanner:
                 self._last_nearest_beacon = self._nearest_beacon
                 self._nearest_beacon = None
                 logging.warn("No beacons found in this scan")
+            # evaluate if nearest beacon has changes, if so, invoke changes callback
+            if self._check_if_nearest_beacon_changes() and self._changes_callback is not None:
+                self._invoke_changes_callback()
 
     def _is_beacon_in_list(self, beacon):
         """ Check if a beacons is in the current beacons list """
@@ -158,6 +168,26 @@ class IBeaconsScanner:
             key = lambda beacon : beacon.rssi, 
             reverse = True
             )
+
+    def _check_if_nearest_beacon_changes(self):
+        """ Checks if neares beacon has change in this new scan """
+        if self._nearest_beacon is None and self._last_nearest_beacon is None:
+            return False
+
+        if self._nearest_beacon is None or self._last_nearest_beacon is None:
+            return True
+        
+        if self._nearest_beacon.mac_address != self._last_nearest_beacon.mac_address:
+            return True
+        else:
+            return False
+
+    def _invoke_changes_callback(self):
+        if self._changes_callback is not None:
+            changes_data = {}
+            changes_data["nearest_beacon"] = self.nearest_beacon
+            logging.debug("Calling to changes callback")
+            self._changes_callback(changes_data)
 
     #####[ Getters & Setters ]#############################
 
@@ -191,13 +221,13 @@ class IBeaconsScanner:
             # Check if settings dict has uuid_filter property and validate it
             if settings.get("uuid_filter") is not None and \
                 type(settings.get("uuid_filter")) == str:
-                logging.info("Updating uuid_filter")
+                logging.debug("Updating uuid_filter")
                 # TODO: A validator format must be applied here
                 self._uuid_filter = settings.get("uuid_filter")
             # Check if settings dict has uuid_filter property and validate it
             if settings.get("scan_tick") is not None and \
                 type(settings.get("scan_tick")) == int:
-                logging.info("Updating scan_tick")
+                logging.debug("Updating scan_tick")
                 # validate if value is in correct range
                 if settings.get("scan_tick") < MIN_SCAN_TICK:
                     settings["scan_tick"] = MIN_SCAN_TICK
@@ -231,18 +261,22 @@ class IBeaconsScanner:
 
 #########[ Module main code ]##################################################
 
+def changes_callback(changes_data):
+    logging.info("Nearest beacon has changed: " + str(changes_data))
+
 def run_ibeacons_controller():
     print ("Welcome to iBeacons Reader - Powered by Agustin Bassi")
     # configure logging
     logging.basicConfig(
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        level=logging.INFO,
+        format='[ %(levelname)5s ] - %(funcName)26s -> %(message)s',
+        level=logging.DEBUG,
         datefmt='%H:%M:%S'
         )
     # beacons controller instance
     beacons_scanner = IBeaconsScanner(uuid_filter=DEFAULT_BEACONS_FILTER, scan_tick=DEFAULT_SCAN_TICK)
+    beacons_scanner.set_changes_callback(changes_callback)
     # print current configuration
-    print(beacons_scanner)
+    # print(beacons_scanner)
     # start stanning for 10 seconds
     beacons_scanner.run()
     time.sleep(10)
@@ -250,7 +284,7 @@ def run_ibeacons_controller():
     # update settings and show them
     settings_dict = {'uuid_filter' : 'aa-bb-cc-dd-ee-ff', 'scan_tick' : 5 }
     beacons_scanner.update_settings(settings=settings_dict)
-    print(beacons_scanner)
+    # print(beacons_scanner)
     # start stanning for 10 seconds
     beacons_scanner.run()
     time.sleep(10)
