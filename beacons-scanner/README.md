@@ -1,8 +1,15 @@
 # Beacons Reader
 
+
+
 Author: Agustin Bassi - 2020
 
+
+
 # Table of Contents
+
+
+
 * [Application description](#application-description)
 * [Install dependencies](#install-dependencies)
 * [Test beacons scanning](#test-beacons-scanning)
@@ -10,7 +17,11 @@ Author: Agustin Bassi - 2020
 * [Available HTTP resources](#available-http-resources)
 * [Test the project](#test-the-project)
 
+
+
 # Application description
+
+
 
 This application consists in a Beacons Scanner. The function of the scanner is to look for beacons packages, which could be iBeacons, Eddystone and others. 
 
@@ -26,7 +37,13 @@ This application is composed with the next relevant parts:
 * `src/beacons/`: Package containing several software modules used for scan and control different beacons packages. The modules in this package can be used solely without integration with Flask API.
 * `db/db.json`: DB file with module configuration in JSON format, to be simple to read from and write to using the support of standard Python library.
 
+> **_TODO:_**  Document the secuence to configure an URI callback
+
+
+
 # Install dependencies
+
+
 
 This application runs in Linux systems with integrated Bluetooth, like the most modern laptops or in Raspberry Pi 3+.
 
@@ -38,7 +55,9 @@ The requirements to run the application are:
 
 The first step is to install Python 3.x. If not installed refer to [official documentation](https://python.org) to find installation procedure.
 
+
 ## Install Bluetooth packages
+
 
 In order to install dependencies for Bluetooth and grant access to Python to system Bluetooth HW execute the next commands.
 
@@ -56,7 +75,9 @@ sudo pip install beacontools
 
 > **_NOTE:_**  Due to the Python packages need to access to system hardware, they must be installed globally.
 
+
 # Test beacons scanning
+
 
 Before to run the application is prefereable to test the if beacons packages can be read. To do that, go to src/beacons and run any python script which starts with `test_###.py`.
 
@@ -74,11 +95,17 @@ Starting to scan beacons with UUID=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee for 10 s
 Scan beacons finished!
 ```
 
+
+
 # Run the application
+
+
 
 The system can runs as system Python application or in a Docker container. Choose the method and follow the steps in each case.
 
+
 ## Python application within Virtual Environment
+
 
 To run in this mode, at first create & activate the Python Virtual Environment with the commands below. By default this commands will create a venv in the `current_directory/.venv` (supposed to be in the project root folder, where this README is), but you can change it for any path you want.
 
@@ -99,7 +126,9 @@ To run the project, simply execute the next command.
 python3 src/app.py
 ```
 
+
 ## Docker container
+
 
 This option is prefereable in the majority of cases, because this application can be a part of a larger application. Besides, using Docker you garantee that project can be reproducible in any scenario with the same easy steps.
 
@@ -146,7 +175,11 @@ Alternative, you can run the application executing `run_ibeacon_scanner.sh` in t
 ./run_ibeacon_scanner.sh "$PWD"/src app.py "$PWD"/db 5001 host
 ```
 
+
+
 # Available HTTP resources
+
+
 
 The available HTTP resources for the application API are the described below.
 
@@ -183,8 +216,33 @@ Get scanner info
 | Request body    | - |
 | Response body   | {"beacons_list": [], "last_nearest_beacon": {"mac_address": "", "major": 0, "minor": 0, "rssi": 0, "tx_power": 0, "uuid": ""}, "nearest_beacon": {"mac_address": "", "major": 0, "minor": 0, "rssi": 0, "tx_power": 0, "uuid": ""}, "run_flag": false, "scan_tick": 4, "uuid_filter": "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"}  |
 
+Get application interface settings
+
+| Description     | Value |
+| -------------   | ------------- |
+| URI             | http://localhost:5000/api/v1/interface_settings/  |
+| METHOD          | GET  |
+| Details         | Obtain the application interfaces settings.  |
+| Request Header  | Accept: application/json - Content-Type: application/json  |
+| Request body    | - |
+| Response body   | { "callback_uri": "https://host:port/api/for/callback" }  |
+
+Get application interface settings
+
+| Description     | Value |
+| -------------   | ------------- |
+| URI             | http://localhost:5000/api/v1/interface_settings/  |
+| METHOD          | POST, PUT  |
+| Details         | Set the application interfaces settings.  |
+| Request Header  | Accept: application/json - Content-Type: application/json  |
+| Request body    | { "callback_uri": "https://host:port/api/for/callback" } |
+| Response body   | Same as request received  |
+
+
 
 # Test the HTTP API interface
+
+
 
 The easy and best way to test the project is using [Postman](https://www.postman.com/), a really intuitive and easy to use tool for execute HTTP methods.
 
@@ -221,12 +279,40 @@ curl -i \
 http://localhost:5000/api/v1/ibeacons_info/
 ```
 
+Get interface settings
+
+```
+curl -i \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-X GET \
+http://localhost:5000/api/v1/interface/
+```
+
+Add or change a key in interface settings.
+
+```
+curl -i \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-X POST \
+--data '{ "callback_uri": "https://host:port/api/for/callback" }' \
+http://localhost:5000/api/v1/interface/
+```
+
+
 # Contributing
+
+
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 If you find it useful please helpme with follow to my Github user and a Star project, it will animate me to continue contribuiting with the great open source community.
 
+
+
 # Licence
+
+
 
 GPLV3
