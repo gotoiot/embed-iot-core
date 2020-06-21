@@ -15,8 +15,8 @@
         <!-- Navigation bar -->
         <nav class="light-blue darken-4">
             <div class="nav-wrapper">
-                <a href="#"  class="brand-logo right">IoT CMS</a>
-                <ul id="nav-mobile" class="left hide-on-med-and-down">
+                <a href="#"  class="brand-logo left">IoT CMS</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li class="active"><a href="#">Logs</a></li>
                 <li><a href="#">Configuration</a></li>
                 <li><a href="#">About</a></li>
@@ -26,19 +26,58 @@
 
         <!-- View -->
         <div class="container">
+
             <br/>
-            <h4>CMS logs</h4>
+            <h3>CMS logs view</h3>
             <br/>
-            <h6>Apply filters</h6>
-            <div>
-                <a id="bt_all" class="waves-effect waves-light btn-small">All</a>
-                <a id="bt_luz" class="waves-effect waves-light btn-small">Beacons</a>
-                <a id="bt_per" class="waves-effect waves-light btn-small">MQTT</a>
-                <a id="bt_per" class="waves-effect waves-light btn-small">NFC</a>
+
+            <h5>Settings</h5>
+            <br/>
+
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col s3">
+                            <input placeholder="URL to execute POST request" id="post_url" type="text" class="validate">
+                            <label for="post_url">URL</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input placeholder="Data in JSON format" id="post_data" type="text" class="validate">
+                            <label for="post_data">Data</label>
+                        </div>
+                        <div class="input-field col s1">
+                            <label>
+                              <input type="checkbox"/>
+                                <span>Poll</span>
+                            </label>
+                        </div>
+                        <div class="input-field col s2">
+                            <select>
+                              <option value="0" selected>HTTP Method</option>
+                              <option value="1">GET</option>
+                              <option value="2">POST</option>
+                              <option value="3">PUT</option>
+                            </select>
+                            <label>HTTP Method</label>
+                        </div>
+                        <div class="col s12">
+                            <button class="btn waves-effect waves-light" type="submit" name="post_button">POST</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <ul class="collection" id='devicesList'></ul>
+
+            <h5>Logs</h5>
             <br/>
-            <br/>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="logs_textarea" class="materialize-textarea"></textarea>
+                    <label for="logs_textarea">Here are the CMS logs</label>
+                </div>
+            </div>
+
+
         </div>	
 
         <!-- Page Footer -->
