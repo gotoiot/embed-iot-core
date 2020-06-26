@@ -36,11 +36,14 @@ ibeacons_scanner = None
 
 def create_json_response(response, status_code):
     logging.debug("Sending JSON response to client")
-    return Response(
+    # Access-Control-Allow-Origin: *
+    response_obj = Response(
         mimetype="application/json",
         response=json.dumps(response),
         status=status_code
     )
+    response_obj.headers['Access-Control-Allow-Origin'] = '*'
+    return response_obj
 
 def db_get_stored_data():
     # obtain the full db path
@@ -94,8 +97,12 @@ def set_ibeacon_settings():
     ibeacons_scanner.update_settings(request.json)
     # execute local call to get the desired fields as settings
     ibeacons_scanner_settings = get_ibeacon_scanner_settings()
+    # read data from DB
+    db_data = db_get_stored_data()
+    # update URI in db data dict
+    db_data.update(ibeacons_scanner_settings)
     # update DB file with new settings
-    db_save_data_to_file(ibeacons_scanner_settings)
+    db_save_data_to_file(db_data)
     # Send new current module data as response
     response = ibeacons_scanner_settings
     return create_json_response(response, 200)
@@ -126,8 +133,14 @@ def set_interface_settings():
             )
     # if data is correct update callback_uri
     if request.json["callback_uri"] is not None and isinstance(request.json["callback_uri"], str):
+        # read data from DB
         db_data = db_get_stored_data()
-        db_data["callback_uri"] = request.json["callback_uri"]
+        # creates a dict to store the callback uri data
+        callback_uri_dict = {}
+        callback_uri_dict["callback_uri"] = request.json["callback_uri"]
+        # update URI in db data dict
+        db_data.update(callback_uri_dict)
+        # save data into DB
         db_save_data_to_file(db_data)
         # send response
         response = { "callback_uri" : db_data["callback_uri"]}
