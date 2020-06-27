@@ -15,6 +15,7 @@ import logging
 import requests
 
 from flask import Flask, Response, abort, json, jsonify, request
+from flask_cors import CORS
 
 from beacons.ibeacon_scanner import IBeaconsScanner
 
@@ -29,6 +30,7 @@ APP_CONFIG = {
 }
 # Flask App object
 app = Flask(__name__)
+CORS(app)
 # iBeacon scanner object used in the module
 ibeacons_scanner = None
 
@@ -42,7 +44,7 @@ def create_json_response(response, status_code):
         response=json.dumps(response),
         status=status_code
     )
-    response_obj.headers['Access-Control-Allow-Origin'] = '*'
+    # response_obj.headers['Access-Control-Allow-Origin'] = '*'
     return response_obj
 
 def db_get_stored_data():

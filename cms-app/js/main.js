@@ -99,7 +99,7 @@ function execute_http_request(){
                 send_data_to_view(HttpHandler.responseText);
             }
         } else{
-            // alert("The server has returned an error code");
+            console.log("The server has returned an error code");
         }
     };
 
@@ -118,7 +118,7 @@ function execute_http_request(){
 
         if(poll_checkbox == true){
 
-            console.log("Executing poll request for seconds " + poll_secs)
+            console.log("Executing poll request each seconds " + poll_secs)
             
             poll_secs = parseInt(poll_secs);
             
@@ -129,12 +129,21 @@ function execute_http_request(){
             }, poll_secs * 1000);
         }
 
-    } else if(http_method.toLowerCase() == "post"){
+    } else if(http_method.toLowerCase() == "post" || http_method.toLowerCase() == "put"){
+
+        // request_data = JSON.parse(request_data);
+
+        HttpHandler.open(http_method.toUpperCase(), request_url);
+        HttpHandler.setRequestHeader('Accept', 'application/json');
+        HttpHandler.setRequestHeader("Content-type", 'application/json;charset=UTF-8');
+        HttpHandler.send(JSON.stringify(request_data));
+
+        // The PUT or POST methods must not be executed in polling mode
 
     } else if(http_method.toLowerCase() == "put"){
 
     } else {
-        // alert("Unsupported HTTP Method");
+        console.log("Unsupported HTTP Method selected by the user")
     }
 }
 
