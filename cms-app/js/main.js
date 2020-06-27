@@ -48,6 +48,8 @@
 
 //=======[ Settings & Data ]===================================================
 
+const MAX_LOG_LINES = 10;
+
 var DEFAULT_URL = "http://localhost:5000/api/v1/ibeacons_settings/";
 
 var http_handler = new XMLHttpRequest();
@@ -64,6 +66,10 @@ function send_data_to_view(server_response) {
 
 function append_data_to_view(server_response) {
     current_value = document.getElementById("logs_textarea").value; 
+    if (current_value.split("\n").length-1 >= MAX_LOG_LINES){
+        clear_view_data();
+        current_value = "";
+    } 
     document.getElementById("logs_textarea").innerHTML = server_response + "\n" + current_value;
 }
 
