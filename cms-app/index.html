@@ -13,10 +13,10 @@
     <body>
 
         <!-- Navigation bar -->
-        <nav class="light-blue darken-4">
+        <nav class="" style="background-color:#124580">
             <div class="nav-wrapper">
                 <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down" style="margin-right: 15px;">
+                <ul id="nav-mobile" class="right" style="margin-right: 15px;">
                     <li class="active"><a href="#">Logs</a></li>
                     <li><a href="#">About</a></li>
                 </ul>
@@ -36,25 +36,25 @@
             <div class="row">
                 <form class="col s12">
                     <div class="row">
-                        <div class="input-field col s8">
+                        <div class="input-field col l8 m12 s12">
                             <input placeholder="URL to execute POST request" id="request_url" type="text" class="validate">
                             <label for="request_url">URL</label>
                         </div>
-                        <div class="input-field col s1">
+                        <div class="input-field col l1 s3 m3">
                             <input placeholder="GET" id="http_method" type="text" class="validate">
                             <label for="http_method">Method</label>
                         </div>
-                        <div class="input-field col s1">
+                        <div class="input-field col l1 s3 m3">
                             <label>
                               <input type="checkbox" id="poll_checkbox" />
                                 <span>Poll</span>
                             </label>
                         </div>
-                        <div class="input-field col s1">
+                        <div class="input-field col l1 s3 m3">
                             <input placeholder="10" id="poll_secs" type="text" class="validate">
                             <label for="poll_secs">Secs</label>
                         </div>
-                        <div class="input-field col s1">
+                        <div class="input-field col l1 s3 m3">
                             <input placeholder="1" id="log_lines" type="text" class="validate">
                             <label for="log_lines">Log lines</label>
                         </div>
@@ -63,7 +63,7 @@
                             <label for="request_data">JSON data</label>
                         </div>
                         <div class="col s12">
-                            <button class="btn waves-effect waves-light" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
+                            <button class="btn waves-effect waves-light" style="background-color:#1D6ECC" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
                         </div>
                     </div>
                 </form>
@@ -83,14 +83,14 @@
         </div>	
 
         <!-- Page Footer -->
-        <footer class="page-footer light-blue darken-4">
+        <footer class="page-footer" style="background-color:#124580">
             <div class="container">
                 <div class="row">
-                    <div class="col l6 s12">
+                    <div class="col l6 s6">
                         <h5 class="white-text">BLE-form</h5>
                         <p class="grey-text text-lighten-4">Copyright Agustin Bassi - 2020</p>
                     </div>
-                    <div class="col l4 offset-l2 s12">
+                    <div class="col l6 s6">
                         <h5 class="white-text right-align">Follow me!</h5>
                         <p class="white-text right-align">
                             <a class="grey-text text-lighten-3" href="https://linkedin.com/in/agustin-bassi">LinkedIn | </a>
