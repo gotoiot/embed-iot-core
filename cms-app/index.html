@@ -15,11 +15,10 @@
         <!-- Navigation bar -->
         <nav class="light-blue darken-4">
             <div class="nav-wrapper">
-                <a href="#"  class="brand-logo left">IoT CMS</a>
-                <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li class="active"><a href="#">Logs</a></li>
-                <li><a href="#">Configuration</a></li>
-                <li><a href="#">About</a></li>
+                <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down" style="margin-right: 15px;">
+                    <li class="active"><a href="#">Logs</a></li>
+                    <li><a href="#">About</a></li>
                 </ul>
             </div>
         </nav>	
@@ -28,7 +27,7 @@
         <div class="container">
 
             <br/>
-            <h3>CMS logs view</h3>
+            <h3>HTTP Client tool</h3>
             <br/>
 
             <h5>Settings</h5>
@@ -37,13 +36,13 @@
             <div class="row">
                 <form class="col s12">
                     <div class="row">
-                        <div class="input-field col s3">
+                        <div class="input-field col s8">
                             <input placeholder="URL to execute POST request" id="request_url" type="text" class="validate">
                             <label for="request_url">URL</label>
                         </div>
-                        <div class="input-field col s6">
-                            <input placeholder="Data in JSON format" id="request_data" type="text" class="validate">
-                            <label for="request_data">Data</label>
+                        <div class="input-field col s1">
+                            <input placeholder="GET" id="http_method" type="text" class="validate">
+                            <label for="http_method">Method</label>
                         </div>
                         <div class="input-field col s1">
                             <label>
@@ -52,12 +51,16 @@
                             </label>
                         </div>
                         <div class="input-field col s1">
-                            <input placeholder="Secs" id="poll_secs" type="text" class="validate">
+                            <input placeholder="10" id="poll_secs" type="text" class="validate">
                             <label for="poll_secs">Secs</label>
                         </div>
                         <div class="input-field col s1">
-                            <input placeholder="Method" id="http_method" type="text" class="validate">
-                            <label for="http_method">Method</label>
+                            <input placeholder="1" id="log_lines" type="text" class="validate">
+                            <label for="log_lines">Log lines</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input placeholder="" id="request_data" type="text" class="validate">
+                            <label for="request_data">JSON data</label>
                         </div>
                         <div class="col s12">
                             <button class="btn waves-effect waves-light" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
@@ -71,7 +74,7 @@
 
             <div class="row">
                 <div class="input-field col s12">
-                    <textarea id="logs_textarea" class="materialize-textarea"></textarea>
+                    <textarea id="logs_textarea" class="materialize-textarea" style="height: 150px;" readonly></textarea>
                     <label for="logs_textarea"></label>
                 </div>
             </div>
@@ -84,16 +87,16 @@
             <div class="container">
                 <div class="row">
                     <div class="col l6 s12">
-                        <h5 class="white-text">IoT CMS</h5>
+                        <h5 class="white-text">BLE-form</h5>
                         <p class="grey-text text-lighten-4">Copyright Agustin Bassi - 2020</p>
                     </div>
                     <div class="col l4 offset-l2 s12">
-                        <h5 class="white-text">Follow me!</h5>
-                        <ul>
-                            <li><a class="grey-text text-lighten-3" href="#!">LinkedIn</a></li>
-                            <li><a class="grey-text text-lighten-3" href="#!">Gitbub</a></li>
-                            <li><a class="grey-text text-lighten-3" href="#!">Dockerhub</a></li>
-                        </ul>
+                        <h5 class="white-text right-align">Follow me!</h5>
+                        <p class="right-align">
+                            <a class="grey-text text-lighten-3" href="https://linkedin.com/in/agustin-bassi">LinkedIn | </a>
+                            <a class="grey-text text-lighten-3" href="https://github.com/agustinBassi">Github | </a>
+                            <a class="grey-text text-lighten-3" href="https://hub.docker.com/u/abassi">Dockerhub</a>
+                        </p>
                     </div>
                 </div>
             </div>

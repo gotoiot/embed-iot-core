@@ -1,44 +1,3 @@
-
-// const http_handler = new XMLHttpRequest();
-
-// const URL = 'http://localhost:5000/api/v1/ibeacons_settings/';
-
-// http_handler.open("GET", URL);
-// // Http.setRequestHeader('Content-Type', 'application/json');
-// http_handler.setRequestHeader('Accept', 'application/json');
-
-// http_handler.send();
-
-// http_handler.onreadystatechange = (e) => {
-//   console.log(http_handler.responseText)
-// }
-
-// function execute_http_request(){
-    
-// }
-
-// var http_handler = new XMLHttpRequest();
-
-// var URI = "http://localhost:5000/api/v1/ibeacons_settings/";
-
-// http_handler.onreadystatechange = function() {
-//     if (this.readyState == 4 && this.status == 200) {
-
-//         var json_response = JSON.parse(http_handler.responseText);
-//         parse_response(json_response);
-//         // console.log(http_handler.responseText);
-//     }
-// };
-
-// http_handler.open("GET", URI, true);
-// http_handler.setRequestHeader('Accept', 'application/json');
-// http_handler.send();
-
-// function parse_response(json_response) {
-//     console.log("Data received is: " + json_response);
-//     document.getElementById("logs_textarea").innerHTML = json_response;
-// }
-
 /**
  * Author: Agustin Bassi
  * Date: July 2020
@@ -49,12 +8,10 @@
 //=======[ Settings & Data ]===================================================
 
 const MAX_LOG_LINES = 10;
+const DEFAULT_URL   = "http://localhost:5000/api/v1/ibeacons_settings/";
 
-var DEFAULT_URL = "http://localhost:5000/api/v1/ibeacons_settings/";
-
-var http_handler = new XMLHttpRequest();
-
-var interval = null;
+var HttpHandler     = new XMLHttpRequest();
+var PollReqInterval = null;
 
 //=======[ Utils ]=============================================================
 
@@ -66,7 +23,9 @@ function send_data_to_view(server_response) {
 
 function append_data_to_view(server_response) {
     current_value = document.getElementById("logs_textarea").value; 
-    if (current_value.split("\n").length-1 >= MAX_LOG_LINES){
+    log_lines     = get_element_value("log_lines");
+    log_lines     = parseInt(log_lines);
+    if (current_value.split("\n").length-1 >= log_lines){
         clear_view_data();
         current_value = "";
     } 
@@ -96,6 +55,7 @@ function get_element_value(element_to_get){
     if (element_to_get == "request_url" ||
         element_to_get == "request_data" ||
         element_to_get == "poll_secs" ||
+        element_to_get == "log_lines" ||
         element_to_get == "http_method"){
         return document.getElementById(element_to_get).value;
     } else if (element_to_get == "poll_checkbox"){
@@ -106,18 +66,15 @@ function get_element_value(element_to_get){
 }
 
 function clear_poll_interval(){
-    if(interval != null){
-        clearInterval(interval);
-        interval = null;
+    if(PollReqInterval != null){
+        clearInterval(PollReqInterval);
+        PollReqInterval = null;
     }
 }
 
 function is_interval_set(){
-    return interval != null;
+    return PollReqInterval != null;
 }
-
-
-
 
 //=======[ Module functions ]==================================================
 
@@ -134,12 +91,12 @@ function execute_http_request(){
     http_method   = get_element_value("http_method");
 
     // callback when HTTP request is done
-    http_handler.onreadystatechange = function() {
+    HttpHandler.onreadystatechange = function() {
         if (this.readyState == 4 && (this.status == 200 || this.status == 201 )) {
             if (is_interval_set()){
-                append_data_to_view(http_handler.responseText);
+                append_data_to_view(HttpHandler.responseText);
             } else {
-                send_data_to_view(http_handler.responseText);
+                send_data_to_view(HttpHandler.responseText);
             }
         } else{
             // alert("The server has returned an error code");
@@ -155,9 +112,9 @@ function execute_http_request(){
     // evaluate HTTP method
     if(http_method.toLowerCase() == "get"){
 
-        http_handler.open("GET", request_url, true);
-        http_handler.setRequestHeader('Accept', 'application/json');
-        http_handler.send();
+        HttpHandler.open("GET", request_url, true);
+        HttpHandler.setRequestHeader('Accept', 'application/json');
+        HttpHandler.send();
 
         if(poll_checkbox == true){
 
@@ -165,10 +122,10 @@ function execute_http_request(){
             
             poll_secs = parseInt(poll_secs);
             
-            interval = setInterval(function(){
-                http_handler.open("GET", request_url, true);
-                http_handler.setRequestHeader('Accept', 'application/json');
-                http_handler.send();
+            PollReqInterval = setInterval(function(){
+                HttpHandler.open("GET", request_url, true);
+                HttpHandler.setRequestHeader('Accept', 'application/json');
+                HttpHandler.send();
             }, poll_secs * 1000);
         }
 
