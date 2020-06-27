@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
-
     <head>
         <!--Import Google Icon Font-->
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!--Import materialize.css-->
         <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/main.css"  media="screen,projection"/>
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/png" href="images/icon.ico"/>
     </head>
 
     <body>
-
         <!-- Navigation bar -->
         <nav class="" style="background-color:#124580">
             <div class="nav-wrapper">
-                <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a>
+                <a href="#!" class="brand-logo left valign-wrapper ">
+                    <img src="images/icon.png" style="width:50px; height: 40px; margin-top: 10px;">
+                    BLE-form
+                </a>
+                <!-- <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a> -->
                 <ul id="nav-mobile" class="right" style="margin-right: 15px;">
                     <li class="active"><a href="#">Logs</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="#">Help</a></li>
                 </ul>
             </div>
         </nav>	
-
         <!-- View -->
         <div class="container">
-
             <br/>
             <h3>HTTP Client tool</h3>
             <br/>
-
             <h5>Settings</h5>
             <br/>
-
             <div class="row">
                 <form class="col s12">
                     <div class="row">
@@ -63,25 +63,20 @@
                             <label for="request_data">JSON data</label>
                         </div>
                         <div class="col s12">
-                            <button class="btn waves-effect waves-light" style="background-color:#1D6ECC" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
+                            <button class="btn waves-effect waves-light" style="background-color:#6ba6d6" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
                         </div>
                     </div>
                 </form>
             </div>
-
             <h5>Logs</h5>
             <br/>
-
             <div class="row">
                 <div class="input-field col s12">
                     <textarea id="logs_textarea" class="materialize-textarea" style="height: 150px;" readonly></textarea>
                     <label for="logs_textarea"></label>
                 </div>
             </div>
-
-
         </div>	
-
         <!-- Page Footer -->
         <footer class="page-footer" style="background-color:#124580">
             <div class="container">
@@ -101,12 +96,8 @@
                 </div>
             </div>
         </footer>
-  
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="js/materialize.min.js"></script>
-
         <script type="text/javascript" src="js/main.js"></script>
-        <!-- <script type="text/javascript" src="js/MyFramework.js"></script> -->
-
   </body>
 </html>
