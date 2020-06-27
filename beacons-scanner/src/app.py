@@ -14,7 +14,7 @@ import time
 import logging
 import requests
 
-from flask import Flask, Response, abort, json, jsonify, request
+from flask import Flask, Response, abort, json, jsonify, request, url_for
 from flask_cors import CORS
 
 from beacons.ibeacon_scanner import IBeaconsScanner
@@ -79,7 +79,34 @@ def db_save_data_to_file(data_to_store):
     # Log the action to console
     logging.info("Updated DB file with new app data")
 
+def make_resource_url(resource, protocol="http", host="localhost", port=APP_CONFIG["PORT"]):
+    res_url = url_for(resource)
+    return f"http://localhost:{port}{res_url}"
+
 #########[ Application Views (endpoints) ]#####################################
+
+@app.route(APP_CONFIG["PREFIX"], methods=['GET'])
+def show_resources():
+    # execute local call to filter the desired fields to show
+    response = {
+        'ibeacons_settings' : {
+            'url_get'  : make_resource_url('get_ibeacon_settings'),
+            'url_post' : make_resource_url('set_ibeacon_settings'),
+            'url_put'  : make_resource_url('set_ibeacon_settings'),
+        },
+        'ibeacons_info' : {
+            'url_get'  : make_resource_url('get_ibeacon_scanner_info'),
+        },
+        'interface_settings' : {
+            'url_get'  : make_resource_url('get_interface_settings'),
+            'url_post' : make_resource_url('set_interface_settings'),
+            'url_put'  : make_resource_url('set_interface_settings'),
+        },
+
+    }
+    # return the response with the status code
+    return create_json_response(response, 200)
+
 
 @app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['GET'])
 def get_ibeacon_settings():
