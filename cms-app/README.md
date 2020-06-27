@@ -1,41 +1,53 @@
-Autor: Lic. Manuel A. Camino - 2020
+![app working](doc/icon.ico)
 
-# Introducción
-La presente aplicación web es un trabajo practico final para la materia "Desarrollo de Aplicaciones Web" de la especializacion en Internet de las Cosas (CEIoT) de la Facultad de Ingenieria de la Universidad de Buenos Aires.
+# BLE-form HTTP Client
 
-# Descripción
-La aplicación esta compuesta de un front-end (Typescript compilado a Javascript) y un back-end (Node.js + MySql). Su arquitectura es SPA (Single Page Application) con lo cual todos los requests se realizan mediante XMLHTTPRequest al back-end con la finalidad de no volver a cargar la pagina.
 
-El back-end contiene queries SQL ya pre-definidos en caso de que pase 
-<a href="https://imgs.xkcd.com/comics/exploits_of_a_mom.png">Roberto Tablas</a> y quiera generarnos un mal dia.
+Author: Agustin Bassi - 2020
 
-# Correr la aplicación
-Previo a la ejecucion de la aplicacion, asegurarse de tener instalado docker y docker-compose. Caso contrario podran encontrar la documentacion para instalar estas dos herramientas en los siguientes enlaces:
-- ![DOCKER](https://docs.docker.com/get-docker/)
-- ![DOCKER COMPOSE](https://docs.docker.com/compose/install/)
 
-Una vez realizado el clone del repositorio y haber descargado la aplicacion, nos ubicamos en el directorio raiz y ejecutamos el siguiente comando:
-```sh
-docker-compose up
-```
+## Description
 
-NOTA: En caso de que al correr por primera vez no logre correr el container nodejs-container exitosamente, terminar el programa con CTRL-C, esperar a que se paren los containers y volver a correr docker-compose up.
 
-Una vez que los contenedores esten corriendo exitosamente, podremos acceder a la aplicacion desde la siguiente direccion:
-```
-http://localhost:8000
-```
+This single web application is an HTTP Client that can execute different HTTP Methods, like GET, POST, PUT, sending request to differents hosts.
 
-# Agradecimientos
-A los profesores:
-- Ernesto Gigliotti
-- Brian Ducca
-- Agustin Bassi
+It also has the feature to execute polling HTTP (it means repeated HTTP requests). It is important to note that polling request only works on GET method.
 
-A mis compañeros de cursada por haberse tomado el tiempo para ayudarme (Y mas por la paciencia)
+In the image above there is a view of application working.
 
-# Contribuir
-Para contribuir realizar un pull request con las sugerencias.
+![app working](doc/app_working_get.png)
 
-# Licencia
-GPL
+
+## Use BLE-form HTTP Client
+
+For usage the application you must consider the next instruction:
+
+* `URL`: Put any HTTP resource you know that exists. *
+* `Method`: Select one of supported HTTP Methods: GET, PUT, POST. *
+* `Poll`: Select/Unselect checkbox for execute polling request. Only supported for HTTP requests.
+* `Secs`: The secconds that polling request will be executed. Only supported when `Poll` is selected.
+* `Log lines`: Numeric values for show log. Only takes relevance when poll is enabled.
+
+
+## Run BLE-form HTTP Client
+
+To run the app just double-click on `index.html` file. It will open the SPA. 
+
+Once you are on it just execute the HTTP request you want, set request settings (optional) and add request data in JSON format (only needed for POST & PUT methods).
+
+
+## Contributing
+
+
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+If you find it useful please helpme with follow to my Github user and a Star project, it will animate me to continue contribuiting with the great open source community.
+
+
+
+## Licence
+
+
+
+GPLV3
