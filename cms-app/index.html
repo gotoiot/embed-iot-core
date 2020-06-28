@@ -8,7 +8,7 @@
         <link type="text/css" rel="stylesheet" href="css/main.css"  media="screen,projection"/>
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <link rel="icon" type="image/png" href="images/icon.ico"/>
+        <link rel="icon" type="image/png" href="static/images/icon.ico"/>
     </head>
 
     <body>
@@ -16,12 +16,12 @@
         <nav class="" style="background-color:#124580">
             <div class="nav-wrapper">
                 <a href="#!" class="brand-logo left valign-wrapper ">
-                    <img src="images/icon.png" style="width:50px; height: 40px; margin-top: 10px;">
-                    BLE-form
+                    <img src="static/images/icon.png" style="width:50px; height: 40px; margin-top: 10px;">
+                    BLUE connection
                 </a>
                 <!-- <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a> -->
                 <ul id="nav-mobile" class="right" style="margin-right: 15px;">
-                    <li class="active"><a href="#">Logs</a></li>
+                    <li class="active"><a href="#">HTTP Client</a></li>
                     <li><a href="#">Help</a></li>
                 </ul>
             </div>
@@ -31,7 +31,7 @@
             <br/>
             <h3>HTTP Client tool</h3>
             <br/>
-            <h5>Settings</h5>
+            <h5>Request settings</h5>
             <br/>
             <div class="row">
                 <form class="col s12">
@@ -59,20 +59,21 @@
                             <label for="log_lines">Log lines</label>
                         </div>
                         <div class="input-field col s12">
-                            <input placeholder="" id="request_data" type="text" class="validate">
+                            <input placeholder="Data in JSON format" id="request_data" type="text" class="validate">
                             <label for="request_data">JSON data</label>
-                        </div>
-                        <div class="col s12">
-                            <button class="btn waves-effect waves-light" style="background-color:#6ba6d6" type="submit" onclick="execute_http_request();" name="post_button">Request</button>
                         </div>
                     </div>
                 </form>
+                <div class="col s12">
+                    <button class="btn waves-effect waves-light" style="background-color:#6ba6d6" onclick="execute_http_request();" name="post_button">Request</button>
+                </div>
             </div>
-            <h5>Logs</h5>
             <br/>
+            <h5>Response logs</h5>
+            <!-- <br/> -->
             <div class="row">
                 <div class="input-field col s12">
-                    <textarea id="logs_textarea" class="materialize-textarea" style="height: 150px;" readonly></textarea>
+                    <textarea id="logs_textarea" class="materialize-textarea" style="height: 140px;" readonly></textarea>
                     <label for="logs_textarea"></label>
                 </div>
             </div>
@@ -82,7 +83,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col l6 s6">
-                        <h5 class="white-text">BLE-form</h5>
+                        <h5 class="white-text">BLUE connection</h5>
                         <p class="grey-text text-lighten-4">Copyright Agustin Bassi - 2020</p>
                     </div>
                     <div class="col l6 s6">
