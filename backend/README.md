@@ -1,3 +1,6 @@
+![banner](doc/banner.png)
+
+
 # BLUE Connection - Beacons Reader
 
 

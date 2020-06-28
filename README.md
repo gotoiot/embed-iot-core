@@ -1,12 +1,13 @@
-# Beacons Platform
+![banner](doc/banner.png)
 
+# Open source BLE Platform
 
 
 Author: Agustin Bassi - 2020
 
 
 
-# Table of Contents
+## Table of Contents
 
 
 * [Platform Introduction](#platform-introduction)
@@ -17,7 +18,7 @@ Author: Agustin Bassi - 2020
 
 
 
-# Platform Introduction
+## Platform Introduction
 
 
 
@@ -25,14 +26,12 @@ The goal of this project is to create an open source Bluetooth LE Beacons Platfo
 
 The platform consists in several sub-application:
 
-* **Beacon Scanner**: A HTTP REST API with beacon packages scanning features, which can reads different beacon types. By this module you can configure filters, scan time, turn on/off the beacon scanner, and get different beacon related information like the nearest beacons, the list of beacon read, and many others.  
-To get more information, please refer to its [README.md](./beacons-scanner/README.md) file.
-* **NFC Reader**: In progress.  
+* **BLUE Connection - Beacon Scanner**: An HTTP REST API with beacon packages scanning features, which can reads different beacon types. By this module you can configure filters, scan time, turn on/off the beacon scanner, and get different beacon-related information like the nearest beacons, the list of beacon read, and many others.  
+To get more information, please refer to its [README.md](./backend/README.md) file.
+* **BLUE Connection - Content Management System**: In progress.  
 To get more information, please refer to its [README.md](#) file.
-* **Content Management System**: In progress.  
-To get more information, please refer to its [README.md](#) file.
-* **Web UI**: In progress.  
-To get more information, please refer to its [README.md](#) file.
+* **BLUE Connection - HTTP Client**: An HTTP Client that can executes different HTTP Request to Beacon Scanner API. There, the user can configure Beacon filters, scan time, turn on/off the scanner and other ones.  
+To get more information, please refer to its [README.md](./frontend/README.md) file.
 
 In the figure below is a description of the platform modules and how they interact each others.
 
@@ -70,4 +69,4 @@ If you find it useful please helpme with follow to my Github user and Star the p
 
 
 
-GPL-V3
+GPLV3+
