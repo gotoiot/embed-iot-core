@@ -61,7 +61,7 @@ In the figure below is a description of the platform modules and how they intera
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-If you find it useful please helpme with follow to my Github user and Star the project, it will animate me to continue contribuiting with the great open source community.
+If you find it useful please helpme with follow to my Github user and mark this project with a Star. This will animate me to continue contribuiting with the great open source community.
 
 
 
@@ -69,4 +69,4 @@ If you find it useful please helpme with follow to my Github user and Star the p
 
 
 
-GPLV3+
+This project is licensed under the GPLV3 License.

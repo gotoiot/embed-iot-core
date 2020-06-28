@@ -332,7 +332,7 @@ http://localhost:5000/api/v1/interface/
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-If you find it useful please helpme with follow to my Github user and a Star project, it will animate me to continue contribuiting with the great open source community.
+If you find it useful please helpme with follow to my Github user and mark this project with a Star. This will animate me to continue contribuiting with the great open source community.
 
 
 
@@ -340,4 +340,4 @@ If you find it useful please helpme with follow to my Github user and a Star pro
 
 
 
-GPLV3
+This project is licensed under the GPLV3 License.
