@@ -1,4 +1,4 @@
-# Beacons Reader
+# BLUE Connection - Beacons Reader
 
 
 
@@ -183,6 +183,17 @@ Alternative, you can run the application executing `run_ibeacon_scanner.sh` in t
 
 The available HTTP resources for the application API are the described below.
 
+Get the available resources from client
+
+| Description     | Value |
+| -------------   | ------------- |
+| URI             | http://localhost:5000/api/v1/  |
+| METHOD          | GET  |
+| Details         | Obtain the URLs for available resources  |
+| Request Header  | Accept: application/json - Content-Type: application/json  |
+| Request body    | - |
+| Response body   | { {"ibeacons_info": {"url_get": "..."}, "ibeacons_settings": {"url_get": "...", "url_post": "...", "url_put": "..."}, "interface_settings": {"url_get": "...", "url_post": "...", "url_put": "..."}} }  |
+
 Get scanner settings
 
 | Description     | Value |
@@ -247,6 +258,17 @@ Get application interface settings
 The easy and best way to test the project is using [Postman](https://www.postman.com/), a really intuitive and easy to use tool for execute HTTP methods.
 
 If you decide to quickly test the project you can use `curl`. In the next snippets is shown how to test each project resource.
+
+
+Get available resources
+
+```
+curl -i \
+-H "Accept: application/json" \
+-H "Content-Type: application/json" \
+-X GET \
+http://localhost:5000/api/v1/
+```
 
 Get module settings
 
