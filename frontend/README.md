@@ -1,6 +1,6 @@
 ![banner](doc/banner.png)
 
-# BLUE Connection - HTTP Client
+# HTTP Client
 
 
 Author: Agustin Bassi - 2020

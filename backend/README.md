@@ -1,7 +1,7 @@
 ![banner](doc/banner.png)
 
 
-# BLUE Connection - Beacons Reader
+# Beacons Reader
 
 
 
@@ -9,7 +9,7 @@ Author: Agustin Bassi - 2020
 
 
 
-# Table of Contents
+## Table of Contents
 
 
 
@@ -22,7 +22,7 @@ Author: Agustin Bassi - 2020
 
 
 
-# Application description
+## Application description
 
 
 
@@ -44,7 +44,7 @@ This application is composed with the next relevant parts:
 
 
 
-# Install dependencies
+## Install dependencies
 
 
 
@@ -59,7 +59,7 @@ The requirements to run the application are:
 The first step is to install Python 3.x. If not installed refer to [official documentation](https://python.org) to find installation procedure.
 
 
-## Install Bluetooth packages
+### Install Bluetooth packages
 
 
 In order to install dependencies for Bluetooth and grant access to Python to system Bluetooth HW execute the next commands.
@@ -79,7 +79,7 @@ sudo pip install beacontools
 > **_NOTE:_**  Due to the Python packages need to access to system hardware, they must be installed globally.
 
 
-# Test beacons scanning
+## Test beacons scanning
 
 
 Before to run the application is prefereable to test the if beacons packages can be read. To do that, go to src/beacons and run any python script which starts with `test_###.py`.
@@ -100,14 +100,14 @@ Scan beacons finished!
 
 
 
-# Run the application
+## Run the application
 
 
 
 The system can runs as system Python application or in a Docker container. Choose the method and follow the steps in each case.
 
 
-## Python application within Virtual Environment
+### Python application within Virtual Environment
 
 
 To run in this mode, at first create & activate the Python Virtual Environment with the commands below. By default this commands will create a venv in the `current_directory/.venv` (supposed to be in the project root folder, where this README is), but you can change it for any path you want.
@@ -130,7 +130,7 @@ python3 src/app.py
 ```
 
 
-## Docker container
+### Docker container
 
 
 This option is prefereable in the majority of cases, because this application can be a part of a larger application. Besides, using Docker you garantee that project can be reproducible in any scenario with the same easy steps.
@@ -180,7 +180,7 @@ Alternative, you can run the application executing `run_ibeacon_scanner.sh` in t
 
 
 
-# Available HTTP resources
+## Available HTTP resources
 
 
 
@@ -254,7 +254,7 @@ Get application interface settings
 
 
 
-# Test the HTTP API interface
+## Test the HTTP API interface
 
 
 
@@ -326,7 +326,7 @@ http://localhost:5000/api/v1/interface/
 ```
 
 
-# Contributing
+## Contributing
 
 
 
@@ -336,7 +336,7 @@ If you find it useful please helpme with follow to my Github user and a Star pro
 
 
 
-# Licence
+## Licence
 
 
 

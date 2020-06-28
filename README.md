@@ -39,7 +39,7 @@ In the figure below is a description of the platform modules and how they intera
 
 
 
-# Install dependencies
+## Install dependencies
 
 
 
@@ -47,7 +47,7 @@ In the figure below is a description of the platform modules and how they intera
 
 
 
-# Run the application
+## Run the application
 
 
 
@@ -55,7 +55,7 @@ In the figure below is a description of the platform modules and how they intera
 
 
 
-# Contributing
+## Contributing
 
 
 
@@ -65,7 +65,7 @@ If you find it useful please helpme with follow to my Github user and Star the p
 
 
 
-# License
+## License
 
 
 
