@@ -14,7 +14,8 @@ import time
 import logging
 import requests
 
-from flask import Flask, Response, abort, json, jsonify, request
+from flask import Flask, Response, abort, json, jsonify, request, url_for
+from flask_cors import CORS
 
 from beacons.ibeacon_scanner import IBeaconsScanner
 
@@ -29,6 +30,7 @@ APP_CONFIG = {
 }
 # Flask App object
 app = Flask(__name__)
+CORS(app)
 # iBeacon scanner object used in the module
 ibeacons_scanner = None
 
@@ -36,11 +38,14 @@ ibeacons_scanner = None
 
 def create_json_response(response, status_code):
     logging.debug("Sending JSON response to client")
-    return Response(
+    # Access-Control-Allow-Origin: *
+    response_obj = Response(
         mimetype="application/json",
         response=json.dumps(response),
         status=status_code
     )
+    # response_obj.headers['Access-Control-Allow-Origin'] = '*'
+    return response_obj
 
 def db_get_stored_data():
     # obtain the full db path
@@ -74,7 +79,34 @@ def db_save_data_to_file(data_to_store):
     # Log the action to console
     logging.info("Updated DB file with new app data")
 
+def make_resource_url(resource, protocol="http", host="localhost", port=APP_CONFIG["PORT"]):
+    res_url = url_for(resource)
+    return f"http://localhost:{port}{res_url}"
+
 #########[ Application Views (endpoints) ]#####################################
+
+@app.route(APP_CONFIG["PREFIX"], methods=['GET'])
+def show_resources():
+    # execute local call to filter the desired fields to show
+    response = {
+        'ibeacons_settings' : {
+            'url_get'  : make_resource_url('get_ibeacon_settings'),
+            'url_post' : make_resource_url('set_ibeacon_settings'),
+            'url_put'  : make_resource_url('set_ibeacon_settings'),
+        },
+        'ibeacons_info' : {
+            'url_get'  : make_resource_url('get_ibeacon_scanner_info'),
+        },
+        'interface_settings' : {
+            'url_get'  : make_resource_url('get_interface_settings'),
+            'url_post' : make_resource_url('set_interface_settings'),
+            'url_put'  : make_resource_url('set_interface_settings'),
+        },
+
+    }
+    # return the response with the status code
+    return create_json_response(response, 200)
+
 
 @app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['GET'])
 def get_ibeacon_settings():
@@ -94,8 +126,12 @@ def set_ibeacon_settings():
     ibeacons_scanner.update_settings(request.json)
     # execute local call to get the desired fields as settings
     ibeacons_scanner_settings = get_ibeacon_scanner_settings()
+    # read data from DB
+    db_data = db_get_stored_data()
+    # update URI in db data dict
+    db_data.update(ibeacons_scanner_settings)
     # update DB file with new settings
-    db_save_data_to_file(ibeacons_scanner_settings)
+    db_save_data_to_file(db_data)
     # Send new current module data as response
     response = ibeacons_scanner_settings
     return create_json_response(response, 200)
@@ -126,8 +162,14 @@ def set_interface_settings():
             )
     # if data is correct update callback_uri
     if request.json["callback_uri"] is not None and isinstance(request.json["callback_uri"], str):
+        # read data from DB
         db_data = db_get_stored_data()
-        db_data["callback_uri"] = request.json["callback_uri"]
+        # creates a dict to store the callback uri data
+        callback_uri_dict = {}
+        callback_uri_dict["callback_uri"] = request.json["callback_uri"]
+        # update URI in db data dict
+        db_data.update(callback_uri_dict)
+        # save data into DB
         db_save_data_to_file(db_data)
         # send response
         response = { "callback_uri" : db_data["callback_uri"]}
