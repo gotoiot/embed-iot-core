@@ -1,6 +1,6 @@
 ![banner](doc/banner.png)
 
-# Open source BLE Platform
+# Open source Bluetooth Beacons Platform
 
 
 Author: Agustin Bassi - 2020
@@ -26,12 +26,14 @@ The goal of this project is to create an open source Bluetooth LE Beacons Platfo
 
 The platform consists in several sub-application:
 
-* **BLUE Connection - Beacon Scanner**: An HTTP REST API with beacon packages scanning features, which can reads different beacon types. By this module you can configure filters, scan time, turn on/off the beacon scanner, and get different beacon-related information like the nearest beacons, the list of beacon read, and many others.  
-To get more information, please refer to its [README.md](./backend/README.md) file.
+* **BLUE Connection - Beacons Observer**: An HTTP REST API with beacon packages scanning features, which can reads different beacon types. By this module you can configure filters, scan time, turn on/off the beacon scanner, and get different beacon-related information like the nearest beacons, the list of beacon read, and many others.  
+To get more information, please refer to its [README.md](./beacons-broadcasters/README.md) file.
 * **BLUE Connection - Content Management System**: In progress.  
 To get more information, please refer to its [README.md](#) file.
 * **BLUE Connection - HTTP Client**: An HTTP Client that can executes different HTTP Request to Beacon Scanner API. There, the user can configure Beacon filters, scan time, turn on/off the scanner and other ones.  
-To get more information, please refer to its [README.md](./frontend/README.md) file.
+To get more information, please refer to its [README.md](./http-client/README.md) file.
+* **BLUE Connection - Beacons Broadcasters**: A bunch of utilities for different platforms to generate beacon packages from devices like ESP32, Linux Systems or event any compatible smartphone.
+To get more information, please refer to its [README.md](./beacons-observer/README.md) file.
 
 In the figure below is a description of the platform modules and how they interact each others.
 

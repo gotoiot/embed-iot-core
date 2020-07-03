@@ -1,7 +1,7 @@
 ![banner](doc/banner.png)
 
 
-# Beacons Reader
+# Beacons Observer
 
 
 
@@ -72,8 +72,13 @@ sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python))
 Then install Python Bluetooth packages which allows to read beacons from script.
 
 ```
+sudo pip install pybluez
 sudo pip install beacontools[scan]
 sudo pip install beacontools
+# or with pip3
+sudo pip3 install pybluez
+sudo pip3 install beacontools[scan]
+sudo pip3 install beacontools
 ```
 
 > **_NOTE:_**  Due to the Python packages need to access to system hardware, they must be installed globally.
