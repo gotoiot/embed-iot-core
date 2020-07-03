@@ -128,3 +128,6 @@ db/
 others/
 
 .vscode/
+
+.pioenvs
+.piolibdeps
