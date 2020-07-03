@@ -10,9 +10,9 @@ Author: Agustin Bassi - 2020
 ## Table of Contents
 
 
-* [Application Introduction](#application-introduction)
-* [Install dependencies](#install-dependencies)
-* [Run the application](#run-the-application)
+* [Description](#description)
+* [Method 1: iBeacon broadcast from Linux systems](#method-1:-iBeacon-broadcast-from-linux-systems)
+* [Method 2: iBeacon broadcast from Android](#method-2:-iBeacon-broadcast-from-android)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -20,24 +20,87 @@ Author: Agustin Bassi - 2020
 
 ## Description
 
+This section consists in be able to broadcast beacon packages from different platforms, like ESP32, Linux Systems or even any Bluetooth LE 4.0+ compatible smartphone.
 
-> **_TODO:_**  Complete
+> **_Note:_**  Currently the broadcasters described methods are for Linux & Android systems.
 
+To broadcast any Bluetooth LE beacon package, a bluetooth le 4.0+ hardware is needed.
 
-
-## Install dependencies
-
-
-
-> **_TODO:_**  Complete
+In this file there will be described each method in details and how to put each to work.
 
 
+## Method 1: iBeacon broadcast from Linux systems
 
-## Run the application
+This method describes how to install and broadcast iBeacon packeges from Linux systems using a python script.
 
 
+### Install dependencies
 
-> **_TODO:_**  Complete
+The first thing needed is to install system dependencies with the commands below.
+
+```
+sudo apt-get update
+sudo apt-get install bluetooth bluez-utils blueman
+```
+
+Once the packages are installed test to access to bluetooth hardware with the next command.
+
+```
+sudo hcitool lescan
+```
+
+If no error is shown in the terminal, or if there are near bluetooth devices, the output should be like as follows.
+
+```
+LE Scan ...
+7B:C1:CD:0F:33:F2 (unknown)
+7B:C1:CD:0F:33:F2 (unknown)
+7B:C1:CD:0F:33:F2 (unknown)
+7B:C1:CD:0F:33:F2 (unknown)
+```
+
+Stop the scans pressing CTRL+C.
+
+### Run iBeacon broadcaster
+
+In order to run the broadcaster at least Python 2.7 is needed. If not installed refer to [official documentation](https://python.org) to find installation procedure.
+
+The next step is to go to linux-ibeacon-broadcaster folder and execute the command below.
+
+```
+sudo python ibeacon_broadcaster.py --uuid=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee --major=111 --minor=222
+```
+
+To stop iBeacon transmission, execute the next command.
+
+```
+sudo python ibeacon_broadcaster.py --down
+```
+
+To check more option pass to the script --help argument to see full options.
+
+To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
+
+
+## Method 2: iBeacon broadcast from Android
+
+This method is really simple and only consists to download and configure the Beacon Simulator Android application.
+
+> **_Note:_**  As said previously, the smartphone must have a Bluetooth LE 4.0+ compatible hardware.
+
+Follow the steps in the table below.
+
+| Step | Description   | Image |
+| ---- | ------------- | ----- |
+| **_1_** | Download Beacon Simulator from app store   | ![1](doc/android_1.png) |
+| **_2_** | Activate the Bluetooth and open the application   | ![2](doc/android_2.png) |
+| **_3_** | Press '+' icon and choose iBeacon option | ![3](doc/android_3.png) |
+| **_4_** | Create iBeacon with the next configurations. [name: iBeacon1 - uuid:ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee - major:111 - minor: 222] | ![4](doc/android_4.png) |
+| **_5_** | Finally, enable iBeacon switch to starting to boradcast iBeacon packages | ![5](doc/android_5.png) |
+
+To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
+
+
 
 
 
