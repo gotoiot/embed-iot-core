@@ -11,30 +11,23 @@ Author: Agustin Bassi - 2020
 
 
 * [Description](#description)
-* [Method 1: iBeacon broadcast from Linux systems](#method-1:-iBeacon-broadcast-from-linux-systems)
-* [Method 2: iBeacon broadcast from Android](#method-2:-iBeacon-broadcast-from-android)
+* [iBeacon broadcast from Linux systems](#iBeacon-broadcast-from-linux-systems)
+* [iBeacon broadcast from Android](#iBeacon-broadcast-from-android)
 * [Contributing](#contributing)
 * [License](#license)
 
 
 
-## Description
+# Description
 
-This section consists in be able to broadcast beacon packages from different platforms, like ESP32, Linux Systems or even any Bluetooth LE 4.0+ compatible smartphone.
+This section consists in be able to broadcast beacon packages from different platforms, like ESP32, Linux Systems or even any Bluetooth LE 4.0+ compatible smartphone. To broadcast any Bluetooth LE beacon package, a bluetooth le 4.0+ hardware is needed. 
 
-> **_Note:_**  Currently the broadcasters described methods are for Linux & Android systems.
-
-To broadcast any Bluetooth LE beacon package, a bluetooth le 4.0+ hardware is needed.
-
-In this file there will be described each method in details and how to put each to work.
-
-
-## Method 1: iBeacon broadcast from Linux systems
+# iBeacon broadcast from Linux systems
 
 This method describes how to install and broadcast iBeacon packeges from Linux systems using a python script.
 
 
-### Install dependencies
+## Install dependencies
 
 The first thing needed is to install system dependencies with the commands below.
 
@@ -61,11 +54,9 @@ LE Scan ...
 
 Stop the scans pressing CTRL+C.
 
-### Run iBeacon broadcaster
+## Run iBeacon broadcaster
 
-In order to run the broadcaster at least Python 2.7 is needed. If not installed refer to [official documentation](https://python.org) to find installation procedure.
-
-The next step is to go to linux-ibeacon-broadcaster folder and execute the command below.
+In order to run the broadcaster at least Python 2.7 is needed. If not installed refer to [official documentation](https://python.org) to find installation procedure. The next step is to go to linux-ibeacon-broadcaster folder and execute the command below.
 
 ```
 sudo python ibeacon_broadcaster.py --uuid=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee --major=111 --minor=222
@@ -79,14 +70,12 @@ sudo python ibeacon_broadcaster.py --down
 
 To check more option pass to the script --help argument to see full options.
 
-To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
+> **_Note:_**: To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
 
 
-## Method 2: iBeacon broadcast from Android
+# iBeacon broadcast from Android
 
 This method is really simple and only consists to download and configure the Beacon Simulator Android application.
-
-> **_Note:_**  As said previously, the smartphone must have a Bluetooth LE 4.0+ compatible hardware.
 
 Follow the steps in the table below.
 
@@ -98,13 +87,13 @@ Follow the steps in the table below.
 | **_4_** | Create iBeacon with the next configurations. [name: iBeacon1 - uuid:ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee - major:111 - minor: 222] | ![4](doc/android_4.png) |
 | **_5_** | Finally, enable iBeacon switch to starting to boradcast iBeacon packages | ![5](doc/android_5.png) |
 
-To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
+> **_Note:_**: To be sure that the frames are being sent correctly, enable beacons-observer as described in its [README.md](../beacons-observer/README.md) and position yourself within a radius of less than 10 meters with the beacon emitter and check if the scanner is capable of taking the corresponding readings.
 
 
 
 
 
-## Contributing
+# Contributing
 
 
 
@@ -114,7 +103,7 @@ If you find it useful please helpme with follow to my Github user and mark this 
 
 
 
-## License
+# License
 
 
 
