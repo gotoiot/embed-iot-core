@@ -26,9 +26,7 @@ Author: Agustin Bassi - 2020
 
 
 
-This application consists in a Beacons Scanner. The function of the scanner is to look for beacons packages, which could be iBeacons, Eddystone and others. 
-
-> **_NOTE:_**  The available support is only for iBeacons currently.
+This application consists in a Beacons Observer. The function of the scanner is to look for beacons packages, which could be iBeacons, Eddystone and others. 
 
 The app can works as standalone app (it means it can runs from CLI and scan for Beacons) or working together with an HTTP server made in Flask Web Framework, which can GET & PUT data into the scanner. 
 
@@ -40,7 +38,8 @@ This application is composed with the next relevant parts:
 * `src/beacons/`: Package containing several software modules used for scan and control different beacons packages. The modules in this package can be used solely without integration with Flask API.
 * `db/db.json`: DB file with module configuration in JSON format, to be simple to read from and write to using the support of standard Python library.
 
-> **_TODO:_**  Document the secuence to configure an URI callback
+> **_NOTE:_**  The available support is only for iBeacons currently.
+
 
 
 
@@ -48,9 +47,7 @@ This application is composed with the next relevant parts:
 
 
 
-This application runs in Linux systems with integrated Bluetooth, like the most modern laptops or in Raspberry Pi 3+.
-
-The requirements to run the application are:
+This application runs in Linux systems with integrated Bluetooth, like the most modern laptops or in Raspberry Pi 3+. The requirements to run the application are:
 
 * Get integrated Bluetooth hardware.
 * Python 3.x.
