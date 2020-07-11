@@ -10,18 +10,19 @@ WORKDIR /app/src
 # This port will be exposed outside the container
 EXPOSE 5000
 
-##### RUN IN DEV MODE (passing source code as volume) #########################
-
-# Copy the requirements to the container
-COPY src/requirements.txt ./
-# Install all dependencies
-RUN pip install -r requirements.txt
-
 ##### RUN IN PROD MODE (source code bundled into image) #######################
 
+# Copy the requirements to the container
+COPY src /app/src
+# Install all dependencies
+RUN pip install -r requirements.txt
+# Execute this command as default
+CMD ["python", "app.py"]
+
+##### RUN IN DEV MODE (passing source code as volume) #########################
+
 # # Copy the requirements to the container
-# COPY src ./
+# COPY src /app/src
 # # Install all dependencies
 # RUN pip install -r requirements.txt
-# # Execute this command as default
-# CMD ["python", "app.py"]
+

@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+
+  beacons-observer:
+    # service header
+    build:
+        context:            ./beacons-observer
+        dockerfile:         Dockerfile
+    hostname:               beacons-observer
+    container_name:         beacons-observer
+    restart:                always
+    # service specific settings
+    volumes:
+        -                   ./beacons-observer/db:/app/db
+    network_mode:           host
+    ports:
+      -                     "5000:5000"
+
+  http-client:
+    # service header
+    image:                  httpd:2.4
+    hostname:               http-client
+    container_name:         http-client
+    restart:                always
+    # service specific settings
+    volumes:
+        -                   ./http-client:/usr/local/apache2/htdocs/
+    links:
+        -                   beacons-observer
+    ports:
+      -                     "5001:80"
+
+
+networks:
+  blue-connection-net:
+    driver:                 bridge
