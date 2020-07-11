@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!--Import materialize.css-->
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+        <link type="text/css" rel="stylesheet" href="css/main.css"  media="screen,projection"/>
+        <!--Let browser know website is optimized for mobile-->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" type="image/png" href="static/images/icon.ico"/>
+    </head>
+
+    <body>
+        <!-- Navigation bar -->
+        <nav class="" style="background-color:#124580">
+            <div class="nav-wrapper">
+                <a href="#!" class="brand-logo left valign-wrapper ">
+                    <img src="static/images/icon.png" style="width:50px; height: 40px; margin-top: 10px;">
+                    BLUE connection
+                </a>
+                <!-- <a href="#"  class="brand-logo left" style="margin-left: 15px;">BLE-form</a> -->
+                <ul id="nav-mobile" class="right" style="margin-right: 15px;">
+                    <li class="active"><a href="#">HTTP Client</a></li>
+                    <li><a href="#">Help</a></li>
+                </ul>
+            </div>
+        </nav>	
+        <!-- View -->
+        <div class="container">
+            <br/>
+            <h3>HTTP Client tool</h3>
+            <br/>
+            <h5>Request settings</h5>
+            <br/>
+            <div class="row">
+                <form class="col s12">
+                    <div class="row">
+                        <div class="input-field col l8 m12 s12">
+                            <input placeholder="URL to execute POST request" id="request_url" type="text" class="validate">
+                            <label for="request_url">URL</label>
+                        </div>
+                        <div class="input-field col l1 s3 m3">
+                            <input placeholder="GET" id="http_method" type="text" class="validate">
+                            <label for="http_method">Method</label>
+                        </div>
+                        <div class="input-field col l1 s3 m3">
+                            <label>
+                              <input type="checkbox" id="poll_checkbox" />
+                                <span>Poll</span>
+                            </label>
+                        </div>
+                        <div class="input-field col l1 s3 m3">
+                            <input placeholder="10" id="poll_secs" type="text" class="validate">
+                            <label for="poll_secs">Secs</label>
+                        </div>
+                        <div class="input-field col l1 s3 m3">
+                            <input placeholder="1" id="log_lines" type="text" class="validate">
+                            <label for="log_lines">Log lines</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input placeholder="Data in JSON format" id="request_data" type="text" class="validate">
+                            <label for="request_data">JSON data</label>
+                        </div>
+                    </div>
+                </form>
+                <div class="col s12">
+                    <button class="btn waves-effect waves-light" style="background-color:#6ba6d6" onclick="execute_http_request();" name="post_button">Request</button>
+                </div>
+            </div>
+            <br/>
+            <h5>Response logs</h5>
+            <!-- <br/> -->
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="logs_textarea" class="materialize-textarea" style="height: 140px;" readonly></textarea>
+                    <label for="logs_textarea"></label>
+                </div>
+            </div>
+        </div>	
+        <!-- Page Footer -->
+        <footer class="page-footer" style="background-color:#124580">
+            <div class="container">
+                <div class="row">
+                    <div class="col l6 s6">
+                        <h5 class="white-text">BLUE connection</h5>
+                        <p class="grey-text text-lighten-4">Copyright Agustin Bassi - 2020</p>
+                    </div>
+                    <div class="col l6 s6">
+                        <h5 class="white-text right-align">Follow me!</h5>
+                        <p class="white-text right-align">
+                            <a class="grey-text text-lighten-3" href="https://linkedin.com/in/agustin-bassi">LinkedIn | </a>
+                            <a class="grey-text text-lighten-3" href="https://github.com/agustinBassi">Github | </a>
+                            <a class="grey-text text-lighten-3" href="https://hub.docker.com/u/abassi">Dockerhub</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!--JavaScript at end of body for optimized loading-->
+        <script type="text/javascript" src="js/materialize.min.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+  </body>
+</html>

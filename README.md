@@ -1,159 +1,87 @@
-# Raspberry Pi Beacons Reader Kiosk
+![header](doc/header.png)
+
+# Open source Bluetooth Beacons Platform
 
 Author: Agustin Bassi - 2020
 
-# Description
-
-The project consists in a Raspberry Pi that is constantly reading near Bluetooth LE Beacons. Once the nearest beacon is readed, the application sends the beacon ID to CMS as a request, and the CMS respond with a targetized content to show in a screen connected to Raspberry Pi depending on which beacon is the nearest.
-
-It implies that it can show targetized content depending on the context, and whole content shown in the screen depends on CMS System and the Raspberry Pi acts as a fool terminal.
-
-The application workflow looks as follow:
-
-![app workflow](./doc/workflow.png)
-
-> **_NOTE:_**  The CMS System is not included in this project because it can works with any of the available CMS in the market.
+## 
+## Table of Contents
 
 
-# Beacons Reading from Raspberry Pi
+* [Platform Introduction](#platform-introduction)
+* [Install dependencies](#install-dependencies)
+* [Run the application](#run-the-application)
+* [Want to help?](#want-to-help-?)
+* [License](#license)
 
-In this section its shown to configure Raspberry Pi for beacons reading.
+## 
+## Platform Description
 
-## Raspberry Pi OS Installation
+The goal of this project is to create an open source Bluetooth LE Beacons Platform to be used as a part of an IoT system, based on beacons technology.
 
-The first step is to download the Raspberry Pi OS from [oficial web page](https://www.raspberrypi.org/downloads/). You can follow my instruction document to install and configure Raspberry Pi OS in this link.
+The platform consists in several sub-application described below:
+
+* **Beacons Observer**: An HTTP REST API with beacon packages scanning features, which can reads different beacon types. By this module you can configure filters, scan time, turn on/off the beacon scanner, and get different beacon-related information like the nearest beacons, the list of beacon read, and many others.  
+* **HTTP Client**: An HTTP Client that can executes different HTTP Request to Beacon Scanner API. There, the user can configure Beacon filters, scan time, turn on/off the scanner and other ones.  
+* **Beacons Broadcasters**: A bunch of utilities for different platforms to generate beacon packages from devices like ESP32, Linux Systems or event any compatible smartphone.
+* **Content Management System**: A CMS to associate each beacon to different content or action.
+
+All of this parts are well described in the [Project Wiki](https://github.com/agustinBassi/blue-connection/wiki). Please, refer to it in order to get all required information.
+
+In the figure below there is a description of the platform modules and how they interact each others.
+
+![architecture](doc/architecture.png)
+
+## 
+## Install dependencies
 
 
-## Configure browser as kiosk
+The application runs over Raspberry Pi 3+ (or Linux system based in Debian). To install Raspberry Pi OS refer to [official documentation](https://www.raspberrypi.org/documentation/installation/installing-images/).
 
-The best browser to perform this action is Iceweasel, which allows to update their content always in the same tab (with a configuration settings). Other ones, does not allow that, and every time the content changes, a new tab is open, increasing the RAM and processor consume.
+The platform needs the next dependencies.
 
-Starting by downloading the browser with the command below.
+* Python 3.x (installation steps in [official documentation](https://python.org)).
+* Docker (installation steps in [official documentation](https://docs.docker.com/get-docker/)).
+* Docker-Compose (installation steps in [official documentation](https://docs.docker.com/compose/install/)).
 
-```
-sudo apt-get install iceweasel
-```
+## 
+## Run the application
 
-Once it is installed, open it and write `about:config` in navigation bar to open up the settings. Modify the next lines with this values.
+Once dependencies are installed in the Raspberry Pi do the next steps.
 
-```
-browser.link.open_newwindow.restriction=0 (default 2)
-browser.link.open_newwindow = 1 (default 3)
-```
-
-To show the content in full screen (kiosk mode) as default, install the Add-On "R-Kiosk" in the Addons section.
-
-To test it, from terminal type the command below, it must show Google page in full screen mode.
-
-```
-iceweasel www.google.com
-```
-
-## Install Bluetooth packages
-
-In order to install dependencies for Bluetooth execute the next commands.
+1. Download the platform code (this repository) with the next command.
 
 ```
-sudo apt-get install -y libbluetooth-dev libcap2-bin
-sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python))
+git clone https://github.com/agustinBassi/blue-connection.git
+cd blue-connection/
 ```
 
-Then install Python Bluetooth packages which allows to read beacons from script.
+2. Compile the Beacons-Observer docker image with the command below.
 
 ```
-sudo pip install beacontools[scan]
-sudo pip install beacontools
+docker-compose build beacons-observer
 ```
 
-> **_NOTE:_**  Due to the Python packages need to access to system hardware, they must be installed globally.
-
-## Test beacons reading
-
-To test that beacons packages are working fine in the Raspberry Pi create a python script with the content below.
-
-
-```python
-import argparse
-import time
-
-from beacontools import BeaconScanner
-from beacontools import IBeaconFilter
-
-DEFAULT_TIME_TO_SCAN = 10
-DEFAULT_BEACON_UUID  = "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"
-
-def scan_beacons():
-   # callback to show beacons read
-   def callback(bt_addr, rssi, packet, additional_info):
-       print("[ MAC: {} | RSSI: {} ] - {}".format(bt_addr, rssi, packet))
-   # intance the parser
-   parser = argparse.ArgumentParser()
-   parser.add_argument('-u', '--uuid', action='store', dest='uuid',
-                       help='iBeacon UUID. Def: {}'.format(DEFAULT_BEACON_UUID))
-   parser.add_argument('-t', '--time', action='store', dest='scan_time', type=float,
-                       help='Scan time. Def: {}'.format(DEFAULT_TIME_TO_SCAN))
-   # get result of parse arguments in 'r'
-   res = parser.parse_args()
-   uuid = res.uuid if res.uuid is not None else DEFAULT_BEACON_UUID
-   scan_time = res.scan_time if res.scan_time is not None else DEFAULT_TIME_TO_SCAN
-   # scan for all iBeacon advertisements from beacons with the specified uuid
-   scanner = BeaconScanner(callback, device_filter=IBeaconFilter(uuid=uuid))
-   # start scanning
-   print ("Starting to scan beacons with UUID={} for {} seconds".format(uuid, scan_time))
-   scanner.start()
-   time.sleep(scan_time)
-   scanner.stop()
-   print ("Scan beacons finished!")
-
-if __name__ == "__main__":
-   scan_beacons()
-```
-
-To run the script ensure that beacon emiter with the UUID "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee" is sending beacon packages in 10 meters around the Raspberry Pi. Run the script and the output must look like follows:
-
+3. Start the Beacons-Observer and the HTTP Client with the next command.
 
 ```
-Starting to scan beacons with UUID=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee for 10 seconds
-
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
-
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
-
-[MAC: 28:c6:3f:7c:5c:26|RSSI: -58 ] <id: ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee, M: 13, m: 12>
-
-Scan beacons finished!
+docker-compose up
 ```
 
-## Run the application code
+4. Run the HTTP Client. If the platform is running by managing the Raspberry Pi directly with mouse and keyboard go to [http://localhost:8000/](http://localhost:8000/) to open the client. If the platform is running by managing the Raspberry Pi via SSH go to [http://raspberri_pi_ip:8000/](http://raspberri_pi_ip:8000/) to open the client.
 
-Once the beacon reading is working OK, run the application with the command below:
-
-```
-python beacon_scanner.py
-```
-
-The script must open the browser automatically and must start to show information related to beacons. The command output should look like the next.
-
-```
-
-Welcome to Rpi Beacons Kiosk - Powered by Agustin Bassi
-16:11:21 - INFO - BeaconsController ('uuid_filter': 'ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee', 'scan_tick': '3')
-16:11:21 - INFO - WebController - ('cms_ip':'192.168.0.172', 'cms_port': '8080', 'cms_resource': 'beacons')
-16:11:21 - INFO - Nearest beacon: Beacon - (MAC=33:33:33, UUID=ffffff, MAJOR=11, MINOR=3, TXP=-50, RSSI=-67)
-16:11:21 - INFO - Invoking URL: http://192.168.0.172:8080/beacons?major=11&minor=3
-16:11:24 - INFO - Nearest beacon: Beacon - (MAC=22:22:22, UUID=ffffff, MAJOR=11, MINOR=2, TXP=-50, RSSI=-31)
-```
-
-# Contributing
-
+## 
+## Want to help?
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+If someone want to helpme, every bit of effort will be appreciated. In [this link](https://github.com/agustinBassi/blue-connection/projects/1) there is the project status board. You can take any card you want (or propose one) from the ToDo list and start to work.
 
+If you find it useful please helpme following my Github user and give to this project a Star. This will animate me to continue contribuiting with the great open source community.
 
-# License
+## 
+## License
 
-[GPL]
+This project is licensed under the GPLV3 License.
 
-
+![footer](doc/footer.png)
