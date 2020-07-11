@@ -1,4 +1,4 @@
-![header](doc/images/generals/header.png)
+![header](doc/header.png)
 
 # Open source Bluetooth Beacons Platform
 
@@ -30,7 +30,7 @@ All of this parts are well described in the [Project Wiki](https://github.com/ag
 
 In the figure below there is a description of the platform modules and how they interact each others.
 
-![architecture](doc/images/generals/architecture.png)
+![architecture](doc/architecture.png)
 
 ## 
 ## Install dependencies
@@ -84,4 +84,4 @@ If you find it useful please helpme following my Github user and give to this pr
 
 This project is licensed under the GPLV3 License.
 
-![footer](doc/images/generals/footer.png)
+![footer](doc/footer.png)
