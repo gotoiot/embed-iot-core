@@ -1,0 +1,6 @@
+{
+    "callback_uri": "https://my-json-server.typicode.com/typicode/demo/posts",
+    "run_flag": true,
+    "scan_tick": 2,
+    "uuid_filter": "ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee"
+}
