@@ -68,7 +68,7 @@ docker-compose build beacons-observer
 docker-compose up
 ```
 
-4. Run the HTTP Client. If the platform is running by managing the Raspberry Pi directly with mouse and keyboard go to [http://localhost:8000/](http://localhost:8000/) to open the client. If the platform is running by managing the Raspberry Pi via SSH go to [http://raspberri_pi_ip:8000/](http://raspberri_pi_ip:8000/) to open the client.
+4. Run the HTTP Client. If the platform is running by managing the Raspberry Pi directly with mouse and keyboard go to [http://localhost:5001/](http://localhost:5001/) to open the client. If the platform is running by managing the Raspberry Pi via SSH go to [http://raspberri_pi_ip:5001/](http://raspberri_pi_ip:5001/) to open the client.
 
 ## 
 ## Want to help?
