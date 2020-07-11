@@ -8,7 +8,7 @@
 Author: Agustin Bassi - 2020
 
 
-
+## 
 ## Table of Contents
 
 
@@ -21,7 +21,7 @@ Author: Agustin Bassi - 2020
 * [Test the project](#test-the-project)
 
 
-
+## 
 ## Application description
 
 
@@ -42,7 +42,7 @@ This application is composed with the next relevant parts:
 
 
 
-
+## 
 ## Install dependencies
 
 
@@ -63,7 +63,7 @@ In order to install dependencies for Bluetooth and grant access to Python to sys
 
 ```
 sudo apt-get install -y libbluetooth-dev libcap2-bin
-sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python))
+sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python3))
 ```
 
 Then install Python Bluetooth packages which allows to read beacons from script.
@@ -72,23 +72,15 @@ Then install Python Bluetooth packages which allows to read beacons from script.
 sudo pip install pybluez
 sudo pip install beacontools[scan]
 sudo pip install beacontools
-# or with pip3
-sudo pip3 install pybluez
-sudo pip3 install beacontools[scan]
-sudo pip3 install beacontools
 ```
 
 > **_NOTE:_**  Due to the Python packages need to access to system hardware, they must be installed globally.
 
-
+## 
 ## Test beacons scanning
 
 
-Before to run the application is prefereable to test the if beacons packages can be read. To do that, go to src/beacons and run any python script which starts with `test_###.py`.
-
-Also is nice to have a beacon emitting packages in order to read them, but if not, only test if the dependencies are correctly installed running the test script.
-
-As an example, running the test_ibeacon_scanner.py show an output like this.
+Before to run the application is prefereable to test the if beacons packages can be read. To do that, go to `beacons-observer/src/beacons` and run any python script which starts with `test_###.py`. Also is nice to have a beacon emitting packages in order to read them, but if not, only test if the dependencies are correctly installed running the test script. As an example, running the `test_ibeacon_scanner.py` show an output like this.
 
 ```
 Starting to scan beacons with UUID=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee for 10 seconds
@@ -102,6 +94,7 @@ Scan beacons finished!
 
 
 
+## 
 ## Run the application
 
 
@@ -125,6 +118,12 @@ Once venv is activated execute the command below to install project dependencies
 pip install -r src/requirements.txt
 ```
 
+Grant to python interpreter access to Bluetooth system's hardware.
+
+```
+sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python3))
+```
+
 To run the project, simply execute the next command.
 
 ```sh
@@ -135,12 +134,12 @@ python3 src/app.py
 ### Docker container
 
 
-This option is prefereable in the majority of cases, because this application can be a part of a larger application. Besides, using Docker you garantee that project can be reproducible in any scenario with the same easy steps.
+This option is prefereable in the majority of cases, because this application can be a part of a larger application. Besides, using Docker you garantee that project can be reproducible in any scenario with the same easy steps. To install Docker refer to [official documentation](https://docs.docker.com/get-docker/) to find installation procedure in each operating system.
 
 The first step is to build the Docker image which has all project dependencies bundled in it. Execute the next command.
 
 ```
-docker build --tag local/beacons-scanner .
+docker build --tag local/blue-connection-observer.
 ```
 
 > **_NOTE:_**: You can build your image with `prod` tag putting your code into the image once you have your code finished. Read the Dockerfile to change from `dev` to `prod`.
@@ -154,7 +153,7 @@ Step 1/9 : FROM python:3
  ...
  ---> fed022191ead
 Successfully built fed022191ead
-Successfully tagged local/beacons-reader:latest
+Successfully tagged local/blue-connection-observer:latest
 ```
 
 Finally run the application Docker container. In the project root folder (where this README is) run the next command.
@@ -163,16 +162,15 @@ Finally run the application Docker container. In the project root folder (where 
 docker run \
 --rm \
 --interactive \
---name beacons-scanner \
+--name blue-connection-observer \
 --net host \
---publish 5001:5000 \
 --volume "$PWD"/db:/app/db \
 --volume "$PWD"/src:/app/src \
-local/beacons-scanner:latest \
+local/blue-connection-observer:latest \
 python app.py
 ```
 
-In the command above you are running the Docker container with name `beacons-scanner`, running the container in `host` network (to enable access to bluetooth access), binding your host port 5001 into container port 5000, sharing the application db path (`"$PWD"/db`) into container db path (`/app/db`), sharing your source code folder (`"$PWD"/src`) into container source folder (`/app/src`), and running the `app.py` with python when container starts.
+In the command above you are running the Docker container with name `beacons-scanner`, running the container in `host` network (to enable access to bluetooth access), sharing the application db path (`"$PWD"/db`) into container db path (`/app/db`), sharing your source code folder (`"$PWD"/src`) into container source folder (`/app/src`), and running the `app.py` with python when container starts.
 
 Alternative, you can run the application executing `run_ibeacon_scanner.sh` in the root folder as follows, that will be the same as previous long docker command:
 
@@ -181,7 +179,7 @@ Alternative, you can run the application executing `run_ibeacon_scanner.sh` in t
 ```
 
 
-
+## 
 ## Available HTTP resources
 
 
@@ -256,6 +254,7 @@ Get application interface settings
 
 
 
+## 
 ## Test the HTTP API interface
 
 
@@ -282,7 +281,7 @@ curl -i \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -X GET \
-http://localhost:5000/api/v1/ibeacon_settings/
+http://localhost:5000/api/v1/ibeacons_settings/
 ```
 
 Add or change a key in module settings.
@@ -291,9 +290,9 @@ Add or change a key in module settings.
 curl -i \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
--X POST \
+-X PUT \
 --data '{ "run_flag": false, "scan_tick": 4, "uuid_filter": "aa-bb-cc-dd-ee-ff" }' \
-http://localhost:5000/api/v1/ibeacon_settings/
+http://localhost:5000/api/v1/ibeacons_settings/
 ```
 
 Get ibeacon info
@@ -313,7 +312,7 @@ curl -i \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
 -X GET \
-http://localhost:5000/api/v1/interface/
+http://localhost:5000/api/v1/interface_settings/
 ```
 
 Add or change a key in interface settings.
@@ -322,24 +321,23 @@ Add or change a key in interface settings.
 curl -i \
 -H "Accept: application/json" \
 -H "Content-Type: application/json" \
--X POST \
+-X PUT \
 --data '{ "callback_uri": "https://host:port/api/for/callback" }' \
-http://localhost:5000/api/v1/interface/
+http://localhost:5000/api/v1/interface_settings/
 ```
 
-
+## 
 ## Contributing
 
 
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-If you find it useful please helpme with follow to my Github user and mark this project with a Star. This will animate me to continue contribuiting with the great open source community.
 
-
-
+## 
 ## Licence
 
 
-
 This project is licensed under the GPLV3 License.
+
+If you find it useful please helpme with follow to my Github user and mark this project with a Star. This will animate me to continue contribuiting with the great open source community.

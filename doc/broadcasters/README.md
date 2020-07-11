@@ -58,7 +58,7 @@ Stop the scans pressing CTRL+C.
 
 ## Run iBeacon broadcaster
 
-In order to run the broadcaster at least Python 2.7 is needed. If not installed refer to [official documentation](https://python.org) to find installation procedure. The next step is to go to linux-ibeacon-broadcaster folder and execute the command below.
+In order to run the broadcaster at least Python 2.7 is needed. If not installed refer to [official documentation](https://python.org) to find installation procedure. The next step is to go to `linux-ibeacon-broadcaster` folder and execute the command below.
 
 ```
 sudo python ibeacon_broadcaster.py --uuid=ffffffff-bbbb-cccc-dddd-eeeeeeeeeeee --major=111 --minor=222

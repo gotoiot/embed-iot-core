@@ -115,7 +115,7 @@ def get_ibeacon_settings():
     # return the response with the status code
     return create_json_response(response, 200)
 
-@app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['PUT', 'POST'])
+@app.route(APP_CONFIG["PREFIX"] + '/ibeacons_settings/', methods=['PUT'])
 def set_ibeacon_settings():
     if not request.json:
         return create_json_response(
@@ -153,7 +153,7 @@ def get_interface_settings():
     # return the response with the status code
     return create_json_response(response, 200)
 
-@app.route(APP_CONFIG["PREFIX"] + '/interface_settings/', methods=['PUT', 'POST'])
+@app.route(APP_CONFIG["PREFIX"] + '/interface_settings/', methods=['PUT'])
 def set_interface_settings():
     if not request.json:
         return create_json_response(
