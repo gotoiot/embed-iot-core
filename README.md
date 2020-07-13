@@ -44,6 +44,15 @@ The platform needs the next dependencies.
 * Docker (installation steps in [official documentation](https://docs.docker.com/get-docker/)).
 * Docker-Compose (installation steps in [official documentation](https://docs.docker.com/compose/install/)).
 
+Once dependencies above are installed, execute the next command to install Bluetooth packages into the system.
+
+```
+sudo apt-get update
+sudo apt-get install -y libbluetooth-dev libcap2-bin bluetooth bluez-utils blueman
+```
+
+Reached this point you can proceed running the project.
+
 ## 
 ## Run the application
 
