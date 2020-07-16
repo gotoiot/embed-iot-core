@@ -1,6 +1,6 @@
 ![header](doc/header.png)
 
-# Open source Bluetooth Beacons Platform
+# Open source MQTT Platform
 
 Author: Agustin Bassi - 2020
 
@@ -17,7 +17,7 @@ Author: Agustin Bassi - 2020
 ## 
 ## Platform Description
 
-The goal of this project is to create an open source Bluetooth LE Beacons Platform to be used as a part of an IoT system, based on beacons technology.
+The goal of this project is to create an open source MQTT Platform to be used as a part of an IoT system, based on mqtt protocol.
 
 The platform consists in several sub-application described below:
 
