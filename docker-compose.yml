@@ -1,37 +1,78 @@
+############################################################################### 
+# Author: Agustin Bassi 
+# Date: July 2020 
+# Copyright: Agustin Bassi
+# Project: MQ-Connection
+# Brief: TODO: Describe it 
+#
+# To attach to mosquitto clients running into mosquitto container run:
+#
+#   - docker exec -it mosquitto mosquitto_sub -t "#"
+#   - docker exec -it mosquitto mosquitto_pub -t "greet" "hello mq-connection"
+#
+###############################################################################
+  
 version: '3'
 
 services:
 
-  beacons-observer:
-    # service header
-    build:
-        context:            ./beacons-observer
-        dockerfile:         Dockerfile
-    hostname:               beacons-observer
-    container_name:         beacons-observer
-    restart:                always
-    # service specific settings
+  # service name
+  mosquitto:
+    # image name
+    image:                  eclipse-mosquitto:latest
+    # host name
+    hostname:               mosquitto
+    # container name
+    container_name:         mosquitto
+    # project labels 
+    labels: 
+      project:              "MQ Connection" 
+      day:                  "Jul 2020" 
+      mantainer:            Agustin Bassi
+    # restart policy 
+    restart:                unless-stopped 
+    # volumes needed to work 
     volumes:
-        -                   ./beacons-observer/db:/app/db
-    network_mode:           host
+      -                     ./mqtt-broker/config:/mosquitto/config
+      # -                     ./mqtt-broker/certs:/mosquitto/certs
+    # networks that will be attached by the container 
+    networks:
+      -                     mq-connection-network 
+    # services that need to start before to start this container 
+    # depends_on: 
+    #   -                     some-service
+    # Ports that will be exposed by the container
+    expose:
+      -                     "1883"
+      -                     "8883"
+      -                     "9001"
+    # bind port in which this service can be accesed ouside the container
     ports:
-      -                     "5000:5000"
+      -                     "1883:1883"
+      -                     "8883:8883"
+      -                     "9001:9001"
 
-  http-client:
+  web-client:
     # service header
     image:                  httpd:2.4
-    hostname:               http-client
-    container_name:         http-client
-    restart:                always
+    hostname:               web-client
+    container_name:         web-client
+    restart:                unless-stopped 
+    # project labels 
+    labels: 
+      project:              "MQ Connection" 
+      day:                  "Jul 2020" 
+      mantainer:            Agustin Bassi
     # service specific settings
     volumes:
-        -                   ./http-client:/usr/local/apache2/htdocs/
-    links:
-        -                   beacons-observer
+        -                   ./web-client:/usr/local/apache2/htdocs/
+    # networks that will be attached by the container 
+    networks:
+      -                     mq-connection-network 
     ports:
       -                     "5001:80"
 
 
 networks:
-  blue-connection-net:
+  mq-connection-network:
     driver:                 bridge
