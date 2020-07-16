@@ -1,9 +1,12 @@
-/*
- * Copyright Agustin Bassi, July 2019
- */
+/*==================[ file header ]==========================================*/
+// File:    main.cpp
+// Author:  Agustin Bassi (jagustinbassi@gmail.com)
+// Licence: GPLV3+
+// Version: 1.0.0
+// Date:    July 2020
 /*==================[inclusions]=============================================*/
 
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 
 /*==================[macros and definitions]=================================*/
@@ -33,7 +36,7 @@ static uint32_t PublishTime = DEFAULT_PUBLISH_TIME;
 /*==================[internal data definition]===============================*/
 
 // Identificacion del dispositivo
-const String DEVICE_ID           = "wemos-1";
+const String DEVICE_ID           = "MQ-Connection-ESP32-1";
 // Wifi settings
 const String WIFI_SSID           = "Fibertel WiFi152 2.4GHz";
 const String WIFI_PASS           = "0043510112";
@@ -161,7 +164,7 @@ void App_Loop(){
     // Loop for incoming messages.
     MqttClient.loop();
     // Use this variable to unblock the loop
-    if (++tickCounter == PublishTime){
+    if (++tickCounter >= PublishTime){
         // Reset counter
         tickCounter = 0;
         // Array to send fake pressure value
