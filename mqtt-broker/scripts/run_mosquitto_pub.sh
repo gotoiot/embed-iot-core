@@ -1,0 +1,12 @@
+mosquitto_pub \
+--debug \
+-i "MosquittopubTest" \
+-h $1 \
+-p 8883 \
+-q 2 \
+-t topic_test \
+-m "Hello world!" \
+--tls-version tlsv1.2 \
+--cafile $2 \
+--cert $3 \
+--key $4
