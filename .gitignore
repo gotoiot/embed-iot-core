@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/
 lib64/
 parts/
 sdist/
@@ -129,3 +129,5 @@ others/
 
 .pioenvs
 .piolibdeps
+
+mqtt-client-arduino/.pio/
