@@ -22,8 +22,8 @@ The goal of this project is to create an open source MQTT Platform to be used as
 The platform consists in several sub-application described below:
 
 * **MQTT Broker**: Raspberry Pi that runs a MQTT Broker to interact with the HTTP client via WebSockets and to MQTT clients via MQTT protocol. Besides, has a HTTP server in order to serve the page of the HTTP Client.
-* **Web Client**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions.
-* **MQTT Client**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, try to connect to the MQTT Broker.
+* **Web Client**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions. The code use whole MQTT connection features from [this project](https://github.com/jpmens/simple-mqtt-websocket-example).
+* **MQTT Client**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, try to connect to the MQTT Broker. 
 
 All of this parts are well described in the [Project Wiki](https://github.com/agustinBassi-others/mq-connection/wiki). Please, refer to it in order to get all required information.
 
