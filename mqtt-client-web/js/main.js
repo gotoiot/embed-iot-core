@@ -63,16 +63,16 @@ function Mqtt_LogSettings(){
 }
 
 function Mqtt_OnSuccess(){
-    View_AppendLogData("[ INFO ] - Connected to " + host + ':' + port + path);
+    View_AppendLogData("[ INFO ] - Connected to MQTT Broker correctly");// + host + ':' + port + path);
 }
 
 function Mqtt_OnFailure(message) {
     View_AppendLogData("[ERROR] - Connection failed: " + message.errorMessage + ". Retrying...");
-    setTimeout(ConnectToMqttBroker, MQTT_RECONNECT_TIMEOUT);
+    setTimeout(App_ConnectToMqttBroker, MQTT_RECONNECT_TIMEOUT);
 }
 
 function Mqtt_OnConnectionLost(message) {
-    setTimeout(ConnectToMqttBroker, MQTT_RECONNECT_TIMEOUT);
+    setTimeout(App_ConnectToMqttBroker, MQTT_RECONNECT_TIMEOUT);
     View_AppendLogData("[ ERROR ] - Connection lost: " + message.errorMessage + ". Reconnecting...");
 };
 
@@ -82,9 +82,9 @@ function Mqtt_OnMessageArrived(message) {
     View_AppendLogData("[ INFO ] - '" + topic + "' -> " + payload)
 };
 
-//=======[ User actions ]======================================================
+//=======[ Module main code ]==================================================
 
-function SubscribeMqttTopic(){
+function App_SubscribeMqttTopic(){
     // get topic value from UI or set default one
     topic = Utils_GetElementValue("mqtt_topic_subscription");
     if (topic == null || topic == "" || topic == "undefined"){
@@ -96,7 +96,7 @@ function SubscribeMqttTopic(){
     View_AppendLogData("[ INFO ] - Subscribed to topic: '" + topic + "'");
 }
 
-function PublishMqttTopic(){
+function App_PublishMqttTopic(){
     // get topic value from UI or set default one
     topic = Utils_GetElementValue("mqtt_topic_publish");
     if (topic == null || topic == "" || topic == "undefined"){
@@ -115,36 +115,27 @@ function PublishMqttTopic(){
     View_AppendLogData("[ INFO ] - Publishing topic: '" + topic + "' -> '" + payload + "'");
 }
 
-function ConnectToMqttBroker(){
-
+function App_ConnectToMqttBroker(){
     // at first los current settings
     Mqtt_LogSettings();
-
     // obtain the HTML elements in a friendly way
-    mqtt_host   = host; // '127.0.0.1';      // document.getElementById("mqtt_host");
-    mqtt_port   = port; //9001;             // document.getElementById("mqtt_port");
-    mqtt_topic  = topic; //"#";              // document.getElementById("mqtt_topic");
-    mqtt_client = "web-client-" + parseInt(Math.random() * 100, 10);     // document.getElementById("mqtt_client");
-    // mqtt_path   = DEFAULT_MQTT_PATH;
-
-    if (typeof path == "undefined") {
-		path = '/mqtt';
-    }
-    
-    useTLS         = false;
-    username       = null;
-    password       = null;
-    cleansession   = true;
-    timeout        = 3;
-    reconnectTimeout = 2000;
-
+    const mqttHost   = Utils_GetElementValue("mqtt_host");
+    const mqttPort   = parseInt(Utils_GetElementValue("mqtt_port"));
+    const mqttClient = Utils_GetElementValue("mqtt_client"); 
+    // connection option settings
+    let timeout      = 3;
+    let useTLS       = false;
+    let cleansession = true;
+    // authentication settings
+    let username       = null;
+    let password       = null;
+    // Create the client object from user settings
     MqttClientObj = new Paho.MQTT.Client(
-        mqtt_host,
-        mqtt_port,
-        path,
-        mqtt_client
+        mqttHost,
+        mqttPort,
+        mqttClient
     );
-
+    // Set connection config options
     var mqttOptions = {
         timeout      : timeout,
         useSSL       : useTLS,
@@ -152,10 +143,10 @@ function ConnectToMqttBroker(){
         onSuccess    : Mqtt_OnSuccess,
         onFailure    : Mqtt_OnFailure
     };
-
+    // Set event callbacks
     MqttClientObj.onConnectionLost = Mqtt_OnConnectionLost;
     MqttClientObj.onMessageArrived = Mqtt_OnMessageArrived;
-
+    // Add authentication option if needed
     if (username != null) {
         mqttOptions.userName = username;
         mqttOptions.password = password;
