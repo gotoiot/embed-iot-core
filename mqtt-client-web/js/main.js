@@ -7,14 +7,24 @@
 
 //=======[ Settings & Data ]===================================================
 
-const MAX_LOG_LINES = 50;
+// DEFAULT SETTINGS IN CASE USER DONT SELECT THEM
+const DEFAULT_MQTT_HOST       = "localhost";
+const DEFAULT_MQTT_PORT       = 9001;
+const DEFAULT_MQTT_PATH       = "/mqtt";
+const DEFAULT_MQTT_CLIENT     = "MQ-Connection-Web-Client" + parseInt(Math.random() * 100, 10);
+const DEFAULT_MQTT_TOPIC_SUB  = "#";
+const DEFAULT_MQTT_TOPIC_PUB  = "mq-connection/default-topic";
+const DEFAULT_MQTT_PAYLOAD    = "mq-connection/default-payload";
+// UNIQUE SETTINGS OF APPLICATION
+const MQTT_TIMEOUT            = 3;
+const MQTT_TLS_FLAG           = false
+const MQTT_CLEAN_SESSION_FLAG = true;
+const MQTT_RECONNECT_TIMEOUT  = 2000;
+const MQTT_USERNAME           = null;
+const MQTT_PASSWOD            = null;
+const LOG_MAX_LINES           = 50;
 
-const DEFAULT_MQTT_HOST   = "localhost";
-const DEFAULT_MQTT_PORT   = 9001;
-const DEFAULT_MQTT_PATH   = "/mqtt";
-const DEFAULT_MQTT_CLIENT = "web_mqtt_client";
-const MQTT_RECONNECT_TIMEOUT = 2000;
-
+// The object where Paho MQTT instance is
 var MqttClientObj;
 
 //=======[ Utils ]=============================================================
@@ -28,7 +38,7 @@ function View_ShowLogData(server_response) {
 function View_AppendLogData(server_response) {
     current_value = document.getElementById("logs_textarea").value; 
     // clear logs text area when lines superates MAX_LOG_LINES
-    if (current_value.split("\n").length-1 >= MAX_LOG_LINES){
+    if (current_value.split("\n").length-1 >= LOG_MAX_LINES){
         View_ClearLogData();
         current_value = "";
     } 
@@ -41,25 +51,26 @@ function View_ClearLogData(){
 }
 
 function Utils_GetElementValue(element_to_get){
-    if (element_to_get == "mqtt_host" ||
-        element_to_get == "mqtt_port" ||
-        element_to_get == "mqtt_client" ||
-        element_to_get == "mqtt_topic_subscription" ||
-        element_to_get == "mqtt_topic_publish" ||
-        element_to_get == "mqtt_payload_publish"){
-        return document.getElementById(element_to_get).value;
-    } 
-    else {
-        return null;
+    // TODO: Evaluate other element types like checkbox, dropdown, etc.
+    return document.getElementById(element_to_get).value;
+}
+
+function Utils_IsInvalidValue(value){
+    if (value == null || value == "" || value == "undefined"){
+        return true;
     }
+    return false;
 }
 
 //=======[ MQTT Management ]===================================================
 
-function Mqtt_LogSettings(){
-    console.log("MQTT host:   " + Utils_GetElementValue("mqtt_host"));
-    console.log("MQTT port:   " + Utils_GetElementValue("mqtt_port"));
-    console.log("MQTT client: " + Utils_GetElementValue("mqtt_client"));
+function Mqtt_LogSettings(mqttHost, mqttPort, mqttClient){
+    console.log(
+        "Connection to: " + 
+        mqttHost + ":" + 
+        mqttPort + "/" +
+        mqttClient
+        );
 }
 
 function Mqtt_OnSuccess(){
@@ -86,9 +97,9 @@ function Mqtt_OnMessageArrived(message) {
 
 function App_SubscribeMqttTopic(){
     // get topic value from UI or set default one
-    topic = Utils_GetElementValue("mqtt_topic_subscription");
-    if (topic == null || topic == "" || topic == "undefined"){
-        topic = "#";
+    let topic = Utils_GetElementValue("mqtt_topic_subscription");
+    if (Utils_IsInvalidValue(topic)){
+        topic = DEFAULT_MQTT_TOPIC_SUB;
     }
     // Try subscription to topic
     MqttClientObj.subscribe(topic, {qos: 0});
@@ -98,17 +109,17 @@ function App_SubscribeMqttTopic(){
 
 function App_PublishMqttTopic(){
     // get topic value from UI or set default one
-    topic = Utils_GetElementValue("mqtt_topic_publish");
-    if (topic == null || topic == "" || topic == "undefined"){
-        topic = "mq-connection/default-topic";
+    let topic = Utils_GetElementValue("mqtt_topic_publish");
+    if (Utils_IsInvalidValue(topic)){
+        topic = DEFAULT_MQTT_TOPIC_PUB;
     }
     // get payload value from UI or set default one
-    payload = Utils_GetElementValue("mqtt_payload_publish");
-    if (payload == null || payload == "" || payload == "undefined"){
-        payload = "default-payload";
+    let payload = Utils_GetElementValue("mqtt_payload_publish");
+    if (Utils_IsInvalidValue(payload)){
+        payload = DEFAULT_MQTT_PAYLOAD;
     }
     // Send the message to broker
-    message = new Paho.MQTT.Message(payload);
+    let message = new Paho.MQTT.Message(payload);
     message.destinationName = topic;
     MqttClientObj.send(message); 
     // log action done
@@ -116,41 +127,46 @@ function App_PublishMqttTopic(){
 }
 
 function App_ConnectToMqttBroker(){
-    // at first los current settings
-    Mqtt_LogSettings();
-    // obtain the HTML elements in a friendly way
-    const mqttHost   = Utils_GetElementValue("mqtt_host");
-    const mqttPort   = parseInt(Utils_GetElementValue("mqtt_port"));
-    const mqttClient = Utils_GetElementValue("mqtt_client"); 
+    // obtain the HTML elements in a friendly way (assign default if needed)
+    let mqttHost   = Utils_GetElementValue("mqtt_host");
+    if (Utils_IsInvalidValue(mqttHost)){
+        mqttHost = DEFAULT_MQTT_HOST;
+    }
+    let mqttPort   = Utils_GetElementValue("mqtt_port");
+    if (Utils_IsInvalidValue(mqttPort)){
+        mqttPort = DEFAULT_MQTT_PORT;
+    }
+    let mqttClient = Utils_GetElementValue("mqtt_client"); 
+    if (Utils_IsInvalidValue(mqttPort)){
+        mqttPort = DEFAULT_MQTT_CLIENT;
+    }
+    // Show current settings
+    Mqtt_LogSettings(mqttHost, parseInt(mqttPort), mqttClient);
     // connection option settings
-    let timeout      = 3;
-    let useTLS       = false;
-    let cleansession = true;
+    let timeout      = MQTT_TIMEOUT;
+    let useTLS       = MQTT_TLS_FLAG;
+    let cleanSession = MQTT_CLEAN_SESSION_FLAG;
     // authentication settings
-    let username       = null;
-    let password       = null;
+    let username     = MQTT_USERNAME;
+    let password     = MQTT_PASSWOD;
     // Create the client object from user settings
-    MqttClientObj = new Paho.MQTT.Client(
-        mqttHost,
-        mqttPort,
-        mqttClient
-    );
+    MqttClientObj = new Paho.MQTT.Client(mqttHost, mqttPort, mqttClient);
     // Set connection config options
     var mqttOptions = {
         timeout      : timeout,
         useSSL       : useTLS,
-        cleanSession : cleansession,
+        cleanSession : cleanSession,
         onSuccess    : Mqtt_OnSuccess,
         onFailure    : Mqtt_OnFailure
     };
-    // Set event callbacks
-    MqttClientObj.onConnectionLost = Mqtt_OnConnectionLost;
-    MqttClientObj.onMessageArrived = Mqtt_OnMessageArrived;
     // Add authentication option if needed
     if (username != null) {
         mqttOptions.userName = username;
         mqttOptions.password = password;
     }
+    // Set event callbacks
+    MqttClientObj.onConnectionLost = Mqtt_OnConnectionLost;
+    MqttClientObj.onMessageArrived = Mqtt_OnMessageArrived;
     // TODO: maybe here a good place to log current configuration
     MqttClientObj.connect(mqttOptions);
 }
