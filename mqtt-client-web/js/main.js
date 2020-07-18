@@ -62,14 +62,12 @@ function Mqtt_LogSettings(){
     console.log("MQTT client: " + Utils_GetElementValue("mqtt_client"));
 }
 
-
 function Mqtt_OnSuccess(){
-    View_AppendLogData("[ INFO ] - Connection to " + host + ':' + port + path);
+    View_AppendLogData("[ INFO ] - Connected to " + host + ':' + port + path);
 }
 
-
 function Mqtt_OnFailure(message) {
-    View_AppendLogData("[ERROR] - Connection failed: " + message.errorMessage + ". Retrying");
+    View_AppendLogData("[ERROR] - Connection failed: " + message.errorMessage + ". Retrying...");
     setTimeout(ConnectToMqttBroker, MQTT_RECONNECT_TIMEOUT);
 }
 
@@ -87,16 +85,34 @@ function Mqtt_OnMessageArrived(message) {
 //=======[ User actions ]======================================================
 
 function SubscribeMqttTopic(){
+    // get topic value from UI or set default one
     topic = Utils_GetElementValue("mqtt_topic_subscription");
     if (topic == null || topic == "" || topic == "undefined"){
         topic = "#";
     }
-    View_AppendLogData("[ INFO ] - Subscribed to topic: '" + topic + "'");
+    // Try subscription to topic
     MqttClientObj.subscribe(topic, {qos: 0});
+    // log action done
+    View_AppendLogData("[ INFO ] - Subscribed to topic: '" + topic + "'");
 }
 
 function PublishMqttTopic(){
-
+    // get topic value from UI or set default one
+    topic = Utils_GetElementValue("mqtt_topic_publish");
+    if (topic == null || topic == "" || topic == "undefined"){
+        topic = "mq-connection/default-topic";
+    }
+    // get payload value from UI or set default one
+    payload = Utils_GetElementValue("mqtt_payload_publish");
+    if (payload == null || payload == "" || payload == "undefined"){
+        payload = "default-payload";
+    }
+    // Send the message to broker
+    message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    MqttClientObj.send(message); 
+    // log action done
+    View_AppendLogData("[ INFO ] - Publishing topic: '" + topic + "' -> '" + payload + "'");
 }
 
 function ConnectToMqttBroker(){
@@ -147,6 +163,5 @@ function ConnectToMqttBroker(){
     // TODO: maybe here a good place to log current configuration
     MqttClientObj.connect(mqttOptions);
 }
-
 
 //=======[ End of file ]=======================================================
