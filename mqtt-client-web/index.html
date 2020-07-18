@@ -35,46 +35,46 @@
             <br/>
             <div class="row">
                 <div class="input-field col l5 m9 s9">
-                    <input placeholder="MQTT host" id="mq_mqtt_host" type="text" class="validate">
-                    <label for="mq_mqtt_host">MQTT host</label>
+                    <input placeholder="MQTT host" id="mqtt_host" type="text" class="validate">
+                    <label for="mqtt_host">MQTT host</label>
                 </div>
                 <div class="input-field col l1 s3 m3">
-                    <input placeholder="9001" id="mq_mqtt_port" type="text" class="validate">
-                    <label for="mq_mqtt_port">Port</label>
+                    <input placeholder="9001" id="mqtt_port" type="text" class="validate">
+                    <label for="mqtt_port">Port</label>
                 </div>
                 <div class="input-field col l3 m9 s9">
-                    <input placeholder="MQ-Connection-Web-Client" id="mq_mqtt_client" type="text" class="validate">
-                    <label for="mq_mqtt_client">MQTT client</label>
+                    <input placeholder="MQ-Connection-Web-Client" id="mqtt_client" type="text" class="validate">
+                    <label for="mqtt_client">MQTT client</label>
                 </div>
                 <div class="col l3 m3 s3">
-                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick="execute_mqtt_connection();" name="mq_connect_button">Connect</button>
+                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick="ConnectToMqttBroker();" name="mqtt_connect_button">Connect</button>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col l9 m9 s9">
-                    <input placeholder="#" id="mq_mqtt_topic_subscription" type="text" class="validate">
-                    <label for="mq_mqtt_topic_subscription">Topic to subscribe</label>
+                    <input placeholder="#" id="mqtt_topic_subscription" type="text" class="validate">
+                    <label for="mqtt_topic_subscription">Topic to subscribe</label>
                 </div>
                 <div class="col l3 m3 s3">
-                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick=";" name="mq_subscribe_button">Subscribe</button>
+                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick="SubscribeMqttTopic();" name="mqtt_subscribe_button">Subscribe</button>
                 </div>
             </div>
             <div class="row">
                 <div class="input-field col l3 m3 s3">
-                    <input placeholder="#" id="mq_mqtt_topic_publish" type="text" class="validate">
-                    <label for="mq_mqtt_topic_publish">Topic to publish</label>
+                    <input placeholder="#" id="mqtt_topic_publish" type="text" class="validate">
+                    <label for="mqtt_topic_publish">Topic to publish</label>
                 </div>
                 <div class="input-field col l6 m6 s6">
-                    <input placeholder="#" id="mq_mqtt_payload_publish" type="text" class="validate">
-                    <label for="mq_mqtt_payload_publish">Payload to publish</label>
+                    <input placeholder="#" id="mqtt_payload_publish" type="text" class="validate">
+                    <label for="mqtt_payload_publish">Payload to publish</label>
                 </div>
                 <div class="col l3 m3 s3">
-                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick=";" name="mq_subscribe_button">publish</button>
+                    <button class="btn waves-effect waves-light" style="background-color:#746583" onclick="PublishMqttTopic();" name="mqtt_publish_button">Publish</button>
                 </div>
             </div>
             <h5>Information & logs</h5>
             <div class="row">
-                <div class="input-field col s12">
+                <div class="input-field col l9 m12 s12">
                     <textarea id="logs_textarea" class="materialize-textarea" style="height: 100px;" readonly></textarea>
                     <label for="logs_textarea"></label>
                 </div>
@@ -102,8 +102,8 @@
         <!--JavaScript at end of body for optimized loading-->
         <script type="text/javascript" src="js/materialize.min.js"></script>
         <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script type="text/javascript" src="js/mqttws31.js"></script>
         <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/mqttws31.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
   </body>
 </html>
