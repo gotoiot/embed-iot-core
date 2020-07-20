@@ -1,6 +1,6 @@
 /*==================[ file header ]==========================================*/
 // File:    main.cpp
-// Author:  Agustin Bassi (jagustinbassi@gmail.com)
+// Author:  Agustin Bassi (https://github.com/agustinBassi)
 // Licence: GPLV3+
 // Version: 1.0.0
 // Date:    July 2020
@@ -33,16 +33,24 @@ static uint32_t PublishTime = DEFAULT_PUBLISH_TIME;
 
 /*==================[internal functions declaration]=========================*/
 
+void Gpio_BlinkLed           (uint8_t led, uint32_t milliseconds);
+void Wifi_EstablishConnection(void);
+void Mqtt_ConnectToBroker    (void);
+void Mqtt_PublishTopic       (String topic, String payload);
+void Mqtt_SubscribeCallback  (char* topic, byte* payload, unsigned int length);
+void App_Init                (void);
+void App_Loop                (void);
+
 /*==================[internal data definition]===============================*/
 
 // Identificacion del dispositivo
-const String DEVICE_ID           = "MQ-Connection-ESP32-1";
+const String DEVICE_ID           = "MQ-connection-esp32-1";
 // Wifi settings
-const String WIFI_SSID           = "Fibertel WiFi152 2.4GHz";
-const String WIFI_PASS           = "0043510112";
+const String WIFI_SSID           = "USER_WIFI_SSID";
+const String WIFI_PASS           = "USER_WIFI_PASSWORD";
 // Mqtt server settings
+const String MQTT_SERVER         = "MQTT_HOST_IP_ADDRESS";
 const int    MQTT_PORT           = 1883;
-const String MQTT_SERVER         = "192.168.0.172";
 const String MQTT_USER           = "";
 const String MQTT_PASS           = "";
 // Mqtt message settings
@@ -54,14 +62,52 @@ const String MQTT_TOPIC_CONFIG   = DEVICE_ID + "/config/publish_time";
 
 /*==================[internal functions definition]==========================*/
 
-void Gpio_BlinkLed (uint8_t led, uint32_t milliseconds){
+void Gpio_BlinkLed(uint8_t led, uint32_t milliseconds){
     // Blink on board led when topic is sended
     digitalWrite(led, true);
     delay(milliseconds);
     digitalWrite(led, false);
 }
 
-void Mqtt_PublishTopic (String topic, String payload){
+void Wifi_EstablishConnection(){
+    // Print network SSID
+    Serial.println();
+    Serial.print("Connecting to ");
+    Serial.println(WIFI_SSID);
+    // Try to connect
+    WiFi.begin(WIFI_SSID.c_str(), WIFI_PASS.c_str());
+    // Wait until connection is established
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(WIFI_CONNECTION_DELAY);
+        Serial.print(".");
+    }
+    // Report IP address
+    Serial.println("");
+    Serial.println("WiFi connected");
+    Serial.println("IP address: ");
+    Serial.println(WiFi.localIP());
+}
+
+void Mqtt_ConnectToBroker(){
+    // Loop until we're reconnected
+    while (!MqttClient.connected()) {
+        Serial.print("Attempting MQTT connection...");
+        // Attempt to connect
+        if (MqttClient.connect(DEVICE_ID.c_str())) {
+            Serial.println("connected");
+            // Subscribe to topic
+            MqttClient.subscribe(MQTT_TOPIC_CONFIG.c_str());
+        } else {
+            Serial.print("failed, rc = ");
+            Serial.print(MqttClient.state());
+            Serial.println(". Try again in MQTT_RETRY_CONNECTION_TIME ms.");
+            // Wait 5 seconds before retrying
+            delay(MQTT_RETRY_CONNECTION_DELAY);
+        }
+    }
+}
+
+void Mqtt_PublishTopic(String topic, String payload){
     // Print in console the topic-payload that will be sent
     Serial.print("Sending MQTT Topic-Payload: ");
     Serial.print(topic);
@@ -71,7 +117,7 @@ void Mqtt_PublishTopic (String topic, String payload){
     MqttClient.publish( topic.c_str(), payload.c_str(), true );
 }
 
-void Mqtt_SubscribeCallback(char* topic, byte* payload, unsigned int length) {
+void Mqtt_SubscribeCallback(char* topic, byte* payload, unsigned int length){
     if (strcmp(topic, MQTT_TOPIC_CONFIG.c_str()) == 0){
         // put null char to payload buffer
         payload[length] = '\0';
@@ -91,44 +137,6 @@ void Mqtt_SubscribeCallback(char* topic, byte* payload, unsigned int length) {
     } else {
         Serial.println("Unknown topic received!");
     }
-}
-
-void Mqtt_ConnectToServer() {
-    // Loop until we're reconnected
-    while (!MqttClient.connected()) {
-        Serial.print("Attempting MQTT connection...");
-        // Attempt to connect
-        if (MqttClient.connect(DEVICE_ID.c_str())) {
-            Serial.println("connected");
-            // Subscribe to topic
-            MqttClient.subscribe(MQTT_TOPIC_CONFIG.c_str());
-        } else {
-            Serial.print("failed, rc = ");
-            Serial.print(MqttClient.state());
-            Serial.println(". Try again in MQTT_RETRY_CONNECTION_TIME ms.");
-            // Wait 5 seconds before retrying
-            delay(MQTT_RETRY_CONNECTION_DELAY);
-        }
-    }
-}
-
-void Wifi_EstablishConnection() {
-    // Print network SSID
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(WIFI_SSID);
-    // Try to connect
-    WiFi.begin(WIFI_SSID.c_str(), WIFI_PASS.c_str());
-    // Wait until connection is established
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(WIFI_CONNECTION_DELAY);
-        Serial.print(".");
-    }
-    // Report IP address
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
 }
 
 void App_Init(){
@@ -155,11 +163,10 @@ void App_Loop(){
     static uint32_t tickCounter = 0;
     // Create a fake variable to send a pressure value
     static uint32_t fakePressureValue = 1000;
-
     // Check if MQTT client is not connected to server.
     if (!MqttClient.connected()) {
         // Try to connect with MQTT Server.
-        Mqtt_ConnectToServer();
+        Mqtt_ConnectToBroker();
     }
     // Loop for incoming messages.
     MqttClient.loop();
@@ -182,11 +189,11 @@ void App_Loop(){
     
 /*==================[external functions definition]==========================*/
 
-void setup (){
+void setup(){
     App_Init();
 }
 
-void loop (){
+void loop(){
     App_Loop();
 }
 
