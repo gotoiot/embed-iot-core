@@ -17,13 +17,13 @@ Author: Agustin Bassi - 2020
 ## 
 ## Platform Description
 
-The goal of this project is to create an open source MQTT Platform to be used as a part of an IoT system, based on mqtt protocol.
+The goal of this project is to create an open source MQTT Platform to be used as a part of an IoT system, based on MQTT protocol.
 
-The platform consists in several sub-application described below:
+The platform consists in several modules described below:
 
 * **MQTT Broker**: Raspberry Pi that runs a MQTT Broker to interact with the HTTP client via WebSockets and to MQTT clients via MQTT protocol. Besides, has a HTTP server in order to serve the page of the HTTP Client.
-* **Web Client**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions. The code use whole MQTT connection features from [this project](https://github.com/jpmens/simple-mqtt-websocket-example).
-* **MQTT Client**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, try to connect to the MQTT Broker. 
+* **MQTT Web Client**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions. The code used for MQTT connection is based on [this project](https://github.com/jpmens/simple-mqtt-websocket-example).
+* **Embedded MQTT Client**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, connects to the MQTT Broker. 
 
 All of this parts are well described in the [Project Wiki](https://github.com/agustinBassi-others/mq-connection/wiki). Please, refer to it in order to get all required information.
 
@@ -35,13 +35,15 @@ In the figure below there is a description of the platform modules and how they 
 ## Install dependencies
 
 
-The application runs over Raspberry Pi 3+ (or Linux system based in Debian). To install Raspberry Pi OS refer to [official documentation](https://www.raspberrypi.org/documentation/installation/installing-images/).
+The application runs over Raspberry Pi 3+. To install Raspberry Pi OS refer to [official documentation](https://www.raspberrypi.org/documentation/installation/installing-images/).
 
 The platform needs the next dependencies.
 
 * Docker & Docker-Compose (installation steps in [this link](https://devdojo.com/bobbyiliev/how-to-install-docker-and-docker-compose-on-raspberry-pi)).
 
 Reached this point you can proceed running the project.
+
+_Although the application is designed to run on a Raspberry Pi 3+, it can runs on any system with Docker & Docker Compose installed. Docker installation steps in [official documentation](https://docs.docker.com/get-docker/). Docker-Compose installation steps in [official documentation](https://docs.docker.com/compose/install/)._
 
 ## 
 ## Run the application
@@ -61,7 +63,29 @@ cd mq-connection/
 docker-compose up
 ```
 
-3. Run the HTTP Client. If the platform is running by managing the Raspberry Pi directly with mouse and keyboard go to [http://localhost:5001/](http://localhost:5001/) to open the client. If the platform is running by managing the Raspberry Pi via SSH go to [http://raspberri_pi_ip:5001/](http://raspberri_pi_ip:5001/) to open the client.
+3. Run the MQTT Web Client opening [http://raspberri_pi_ip:5001/](http://raspberri_pi_ip:5001/) in the web browser.
+
+### Compile and run MQTT Client Arduino
+
+To run the `mqtt-client-arduino` it is necessary to have installed [PlatformIO](https://platformio.org/), in order to compile the project and download the code into the board. In [this link](https://iot-es.herokuapp.com/post/details/17) there is a guide to install PlatformIO for Visual Studio Code, compile and run a project. More details in the [Project Wiki](https://github.com/agustinBassi-others/mq-connection/wiki).
+
+At first set WiFi and MQTT host IP address properly (the IP of the Raspberry Pi) in the file `mqtt-client-arduino/src/main.cpp` as follow.
+
+```c
+// Wifi settings
+const String WIFI_SSID   = "USER_WIFI_SSID";
+const String WIFI_PASS   = "USER_WIFI_PASSWORD";
+// Mqtt server settings
+const String MQTT_SERVER = "MQTT_HOST_IP_ADDRESS";
+```
+
+Then, plug the embedded device via USB and run the command below to compile and upload the code into the board.
+
+```sh
+platformio run --target upload #change 'platformio' for 'pio' if command fails
+```
+
+Open a serial terminal with settings 115200-N-8 in the correct port to see MQTT Client running.
 
 ## 
 ## Want to help?

@@ -43,7 +43,7 @@ void App_Loop                (void);
 
 /*==================[internal data definition]===============================*/
 
-// Identificacion del dispositivo
+// Device indentification
 const String DEVICE_ID           = "MQ-connection-esp32-1";
 // Wifi settings
 const String WIFI_SSID           = "USER_WIFI_SSID";
