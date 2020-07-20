@@ -19,11 +19,11 @@ Author: Agustin Bassi - 2020
 
 The goal of this project is to create an open source MQTT Platform to be used as a part of an IoT system, based on MQTT protocol.
 
-The platform consists in several modules described below. All of them are well described in the [Project Wiki](https://github.com/agustinBassi/mq-connection/wiki):
+The platform consists in several modules described below (All of them are well described in the [Project Wiki](https://github.com/agustinBassi/mq-connection/wiki)).
 
 * **MQTT Broker**: Raspberry Pi that runs a MQTT Broker to interact with the HTTP client via WebSockets and to MQTT clients via MQTT protocol. Besides, has a HTTP server in order to serve the page of the HTTP Client.
-* **MQTT Web Client**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions. The code used for MQTT connection is based on [this project](https://github.com/jpmens/simple-mqtt-websocket-example).
-* **Embedded MQTT Client**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, connects to the MQTT Broker. 
+* **MQTT Client Web**: A Single Page Application (SPA) that communicates with MQTT Broker via Websockets. It can send and receive MQTT topics and perform many actions. The code used for MQTT connection is based on [this project](https://github.com/jpmens/simple-mqtt-websocket-example).
+* **MQTT Client Arduino**: A device that connects to MQTT Broker in order to establish a connection to send/receive topics. The device connects to WiFi and then, connects to the MQTT Broker. 
 
 In the figure below there is a description of the platform modules and how they interact each others.
 
