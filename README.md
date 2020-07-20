@@ -11,6 +11,8 @@ Author: Agustin Bassi - 2020
 * [Platform Introduction](#platform-introduction)
 * [Install dependencies](#install-dependencies)
 * [Run the application](#run-the-application)
+* [Test the application](#test-the-application)
+* [Run mqtt-client-arduino (optional)](#run-mqtt-client-arduino-(optional))
 * [Want to help?](#want-to-help-?)
 * [License](#license)
 
@@ -61,7 +63,23 @@ docker-compose up
 
 3. Run the MQTT Web Client opening [http://raspberri_pi_ip:5001/](http://raspberri_pi_ip:5001/) in the web browser.
 
-### Compile and upload mqtt-client-arduino
+## 
+## Test the application
+
+To easily test if application is running correctly the `mqtt-client-web` application must be running in the browser. Put the MQTT host IP in the field `MQTT host` and press the button `CONNECT` to connect to broker and then `SUBSCRIBE` to all topics set by default. The `Information & Logs` section will show actions performed.
+
+Once the client is correctly connected to the broker, the next step is to connect via SSH with the Raspberry where the MQTT broker is running (avoid this step if the MQTT broker is running locally).
+
+Within MQTT host, send a test topic->payload from the tool `mosquitto_pub` installed into `mosquitto` container. Execute the command below.
+
+```
+docker exec -it mosquitto mosquitto_pub -t "mq-connection/cli-topic" -m "test-payload"
+```
+
+In the web client the topic->payload pair must be shown.
+
+## 
+## Run mqtt-client-arduino (optional)
 
 To run the `mqtt-client-arduino` it is necessary to have installed [PlatformIO](https://platformio.org/) in order to compile the project and upload the code into the board. In [this link](https://iot-es.herokuapp.com/post/details/17) there is a guide to install PlatformIO for Visual Studio Code, compile and run a project. More details in the [Project Wiki](https://github.com/agustinBassi/mq-connection/wiki).
 
