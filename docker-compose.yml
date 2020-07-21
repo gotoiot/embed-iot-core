@@ -65,7 +65,7 @@ services:
       mantainer:            Agustin Bassi
     # service specific settings
     volumes:
-        -                   ./web-client:/usr/local/apache2/htdocs/
+        -                   ./mqtt-client-web:/usr/local/apache2/htdocs/
     # networks that will be attached by the container 
     networks:
       -                     mq-connection-network 

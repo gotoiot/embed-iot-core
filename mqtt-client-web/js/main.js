@@ -74,7 +74,7 @@ function Mqtt_LogSettings(mqttHost, mqttPort, mqttClient){
 }
 
 function Mqtt_OnSuccess(){
-    View_AppendLogData("[ INFO ] - Connected to MQTT Broker correctly");// + host + ':' + port + path);
+    View_AppendLogData("[ INFO ] - Connected to MQTT Broker correctly");
 }
 
 function Mqtt_OnFailure(message) {
@@ -135,6 +135,8 @@ function App_ConnectToMqttBroker(){
     let mqttPort   = Utils_GetElementValue("mqtt_port");
     if (Utils_IsInvalidValue(mqttPort)){
         mqttPort = DEFAULT_MQTT_PORT;
+    } else {
+        mqttPort = parseInt(mqttPort);
     }
     let mqttClient = Utils_GetElementValue("mqtt_client"); 
     if (Utils_IsInvalidValue(mqttPort)){
