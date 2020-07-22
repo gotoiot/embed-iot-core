@@ -16,37 +16,26 @@ version: '3'
 
 services:
 
-  # service name
   mosquitto:
-    # image name
+    # service header
     image:                  eclipse-mosquitto:latest
-    # host name
     hostname:               mosquitto
-    # container name
     container_name:         mosquitto
     # project labels 
     labels: 
       project:              "MQ Connection" 
       day:                  "Jul 2020" 
       mantainer:            Agustin Bassi
-    # restart policy 
-    restart:                unless-stopped 
-    # volumes needed to work 
+    # service specific settings
     volumes:
       -                     ./mqtt-broker/config:/mosquitto/config
       # -                     ./mqtt-broker/certs:/mosquitto/certs
-    # networks that will be attached by the container 
     networks:
       -                     mq-connection-network 
-    # services that need to start before to start this container 
-    # depends_on: 
-    #   -                     some-service
-    # Ports that will be exposed by the container
     expose:
       -                     "1883"
       -                     "8883"
       -                     "9001"
-    # bind port in which this service can be accesed ouside the container
     ports:
       -                     "1883:1883"
       -                     "8883:8883"
@@ -57,7 +46,6 @@ services:
     image:                  httpd:2.4
     hostname:               web-client
     container_name:         web-client
-    restart:                unless-stopped 
     # project labels 
     labels: 
       project:              "MQ Connection" 
@@ -66,7 +54,6 @@ services:
     # service specific settings
     volumes:
         -                   ./mqtt-client-web:/usr/local/apache2/htdocs/
-    # networks that will be attached by the container 
     networks:
       -                     mq-connection-network 
     ports:
