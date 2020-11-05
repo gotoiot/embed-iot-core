@@ -73,7 +73,7 @@ void Wifi_EstablishConnection(){
     // Print network SSID
     Serial.println();
     Serial.print("Connecting to ");
-    Serial.println(WIFI_SSID);
+    Serial.print(WIFI_SSID);
     // Try to connect
     WiFi.begin(WIFI_SSID.c_str(), WIFI_PASS.c_str());
     // Wait until connection is established
@@ -82,9 +82,8 @@ void Wifi_EstablishConnection(){
         Serial.print(".");
     }
     // Report IP address
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
+    Serial.println("\n\rWiFi connected");
+    Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
 }
 
@@ -97,6 +96,8 @@ void Mqtt_ConnectToBroker(){
             Serial.println("connected");
             // Subscribe to topic
             MqttClient.subscribe(MQTT_TOPIC_CONFIG.c_str());
+            Serial.print("Subscribed to topic: ");
+            Serial.println(MQTT_TOPIC_CONFIG.c_str());
         } else {
             Serial.print("failed, rc = ");
             Serial.print(MqttClient.state());
@@ -147,7 +148,7 @@ void App_Init(){
     // Configure pins of buttons and leds
     pinMode(LED_ONBOARD, OUTPUT);
     // print to console Init message
-    Serial.println("Welcome to MQTT connection test!");
+    Serial.println("Welcome to MQ Connection Arduino client!");
     // Set MQTT Server
     MqttClient.setServer(MQTT_SERVER.c_str(), MQTT_PORT);
     // Configure a callback to receive topics

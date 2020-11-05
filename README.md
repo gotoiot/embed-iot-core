@@ -66,17 +66,17 @@ docker-compose up
 ## 
 ## Test the application
 
-To easily test if application is running correctly the `mqtt-client-web` application must be running in the browser. Put the MQTT host IP in the field `MQTT host` and press the button `CONNECT` to connect to broker and then `SUBSCRIBE` to all topics set by default. The `Information & Logs` section will show actions performed.
+To test broker-client communication open `mqtt-client-web` in the browser (step 3 above). 
 
-Once the client is correctly connected to the broker, the next step is to connect via SSH with the Raspberry where the MQTT broker is running (avoid this step if the MQTT broker is running locally).
+1. Set the MQTT host IP in the field `MQTT host`, set an appropiate `Port` (default 9001) and `MQTT Client` and press the button `CONNECT` to connect to broker. 
+2. Set a `Topic to subscribe` and press the button `SUBSCRIBE` to receive messages from broker (default all topic '#').
+3. Set a `Topic to publish` and `Payload to publish` and press `PUBLISH` to send a message to broker.
 
-Within MQTT host, send a test topic->payload from the tool `mosquitto_pub` installed into `mosquitto` container. Execute the command below.
+In the next figure there is an example of connection to MQTT host at 192.168.0.202 IP address, at 9001 port setting client as test-client-001. In the log lines can be seen steps done (1,2,3).
 
-```
-docker exec -it mosquitto mosquitto_pub -t "mq-connection/cli-topic" -m "test-payload"
-```
+![mqtt-client-web-running](doc/mqtt-web-client-running.png)
 
-In the web client the topic->payload pair must be shown.
+Try to subscribe or publish messages from another clients in order to see how interacts web client with the others through the MQTT broker.
 
 ## 
 ## Run mqtt-client-arduino (optional)
@@ -93,13 +93,25 @@ const String WIFI_PASS   = "USER_WIFI_PASSWORD";
 const String MQTT_SERVER = "MQTT_HOST_IP_ADDRESS";
 ```
 
-Then, plug the embedded device via USB and run the command below to compile and upload the code into the board (Change `platformio` for `pio` if command fails).
+Then, plug the embedded device via USB and run the command below to compile, upload the code into the board and open the serial monitor, all in the same operation (Change `platformio` for `pio` if command fails).
 
 ```sh
-platformio run --target upload
+platformio run --target upload && platformio device monitor
 ```
 
-Finally, open a serial terminal with settings 115200-N-8 in the correct port to see `mqtt-client-arduino` running.
+When device starts to run, an output link below should be shown.
+
+```sh
+Welcome to MQ Connection Arduino client!
+Connecting to WiFi SSID...
+WiFi connected
+IP address: 192.168.1.44
+Attempting MQTT connection...connected
+Subscribed to topic: MQ-connection-esp32-1/config/publish_time
+Sending MQTT Topic-Payload: MQ-connection-esp32-1/pressure -> 1001
+...
+Sending MQTT Topic-Payload: MQ-connection-esp32-1/pressure -> 1010
+```
 
 ## 
 ## Want to help?

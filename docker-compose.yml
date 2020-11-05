@@ -29,6 +29,7 @@ services:
     # service specific settings
     volumes:
       -                     ./mqtt-broker/config:/mosquitto/config
+      -                     ./mqtt-broker/auth:/etc/mosquitto/
       # -                     ./mqtt-broker/certs:/mosquitto/certs
     networks:
       -                     mq-connection-network 
