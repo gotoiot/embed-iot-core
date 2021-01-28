@@ -4,15 +4,15 @@
 
 ## Tabla de contenido
 
-* [Notas](#notas)
+* [Información importante](#Información-importante)
 * [Introducción](#introducción)
 * [Instalar dependencias](#instalar-dependencias)
 * [Descargar el código](#descargar-el-código)
-* [Ejecutar el proyecto](#ejecutar-el-proyecto)
+* [Ejecutar la aplicación](#ejecutar-la-aplicación)
 * [Colaborar](#colaborar)
 * [Licencia](#licencia)
 
-## Notas
+## Información importante
 
 > Para leer artículos relacionados con tecnologías IoT visitar nuestro sitio web [helloiot.net](https://helloiot.net).
 
@@ -20,7 +20,9 @@
 
 > En caso de encontrar algún problema, comentarlo en nuestro [foro de Hello IoT](https://groups.google.com/g/helloiot) para encontrar una solución entre los miembros de la comunidad.
 
-> Para poder probar el código es necesario contar con un broker MQTT. Consultar nuestra [sección de proyectos](https://www.helloiot.net/pages/projects/) para encontrar información sobre cómo correr un broker.
+> Muchos de los proyectos implementados en Hello IoT utilizan Visual Studio Code como IDE de desarrollo debido a su potencia y capacidad de instalar extensiones útiles de desarrollo, por lo que se recomienda descargarlo desde [este link](https://code.visualstudio.com/download). 
+
+> Para poder probar el código es necesario contar con un broker MQTT. Consultar nuestra [sección de proyectos](https://www.helloiot.net/pages/projects/) para encontrar información al respecto.
 
 ## Introducción
 
@@ -30,28 +32,25 @@ Está basado en el `framework Arduino`, y se compila y ejecuta con la herramient
 
 ## Instalar dependencias
 
-La herramienta utilizada para realizar la compilación y descarga del código es `PlatformIO`. Se recomienda instalarla dentro de `Visual Studio Code`, ya que mediante la extensión de `PlatformIO` se combina el poder un IDE multilenguaje como VS Code con las capacidades de administrar fácilmente los procesos de desarrollo de sistemas embebidos.
+La herramienta utilizada para realizar la compilación y descarga del código es `PlatformIO`. Se recomienda instalarla dentro de Visual Studio Code, ya que mediante la extensión de PlatformIO se combina el poder un IDE multilenguaje como VS Code con las capacidades de administrar fácilmente los procesos de desarrollo de sistemas embebidos.
 
-Para instalar las dependencias realizar los siguientes pasos:
-
-1. Descargar e instalar Visual Studio Code para cualquier sistema operativo desde [este link](https://code.visualstudio.com/download). 
-2. Realizar la instalación y configuración de PlatformIO dentro de VS Code siguiendo [nuestra guía paso a paso](https://www.helloiot.net/pages/articles/platformio_vscode_installation/). 
+Realizar la instalación y configuración de PlatformIO dentro de VS Code siguiendo [nuestra guía paso a paso](https://www.helloiot.net/pages/articles/platformio_vscode_installation/). 
 
 Si es posible compilar un programa de ejemplo, continuar con el siguiente paso para descargar el código y ejecutarlo.
 
 ## Descargar el código
 
-Desde la esquina superior derecha realizar un `fork` de este proyecto a la cuenta personal. Una vez realizado el fork descargarlo con el siguiente comando (poner el usuario de github en la URL):
+Desde la esquina superior derecha realizar un `fork` de este proyecto a la cuenta personal. Una vez realizado el fork descargar el código con el siguiente comando (poner el usuario de Github en la URL):
 
 ```
-git clone https://github.com/USER/embedded-mqtt-client
+git clone https://github.com/USER/embedded-mqtt-client.git
 ```
 
 > En caso de no poseer una cuenta de Github se puede realizar un `clone` directo de este repositorio.
 
 Abrir la carpeta del proyecto desde VS Code luego de la descarga.
 
-## Ejecutar el proyecto
+## Ejecutar la aplicación
 
 
 Como primer paso será necesario configurar el acceso a WiFi y MQTT dentro del archivo `src/main.cpp` (líneas 48-52):
@@ -89,9 +88,9 @@ Para probar que la recepción de topics funcione correctamente, através de otro
 
 ## Colaborar
 
-Las mejoras son bienvenidas. El mecanismo para recibirlas es mediante pull requests. Para ello es necesario hacer un fork de este proyecto, aplicar las mejoras y enviar un pull request. Luego de la revisión, podrán ser incluídas.
+Las mejoras son bienvenidas. Para ello es necesario hacer un fork de este proyecto, aplicar las mejoras y enviarlas mediante un pull request. Luego de la revisión, podrán ser incluídas.
 
-Si te gustó el proyecto no dudes en apoyar a Hello IoT con una `Star`, y si estás interesado en recibir novedades podés aplicar un `Watch`. Estas acciones ayudan a fomentar la participación y creación de nuevos proyectos dentro de nuestra organización.
+Si te gustó el proyecto no dudes en apoyarlo con una `Star`, y si estás interesado en recibir novedades podés aplicar un `Watch`. Estas acciones ayudan a fomentar la participación y creación de nuevos proyectos dentro de [Hello IoT](https://github.com/hello-iot/).
 
 ## Licencia
 
