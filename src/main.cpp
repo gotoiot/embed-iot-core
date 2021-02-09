@@ -61,10 +61,10 @@ void App_Loop                (void);
 // Device indentification
 const String DEVICE_ID           = "mqtt-client-001";
 // Wifi settings
-const String WIFI_SSID           = "USER_WIFI_SSID";
-const String WIFI_PASS           = "USER_WIFI_PASSWORD";
+const String WIFI_SSID           = "Speedy-068C76";
+const String WIFI_PASS           = "1842910270";
 // Mqtt server settings
-const String MQTT_SERVER         = "MQTT_HOST_IP_ADDRESS";
+const String MQTT_SERVER         = "192.168.1.40";
 const int    MQTT_PORT           = 1883;
 const String MQTT_USER           = "";
 const String MQTT_PASS           = "";
@@ -163,7 +163,7 @@ void App_Init(){
     // Configure pins of buttons and leds
     pinMode(LED_ONBOARD, OUTPUT);
     // print to console Init message
-    Serial.println("Welcome to Embedded MQTT Client - www.helloiot.net");
+    Serial.println("Welcome to Embedded MQTT Client - www.gotoiot.com");
     // Set MQTT Server
     MqttClient.setServer(MQTT_SERVER.c_str(), MQTT_PORT);
     // Configure a callback to receive topics
