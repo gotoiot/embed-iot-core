@@ -4,7 +4,7 @@
 
 ## Tabla de contenido
 
-* [Información importante](#Información-importante)
+* [Información contextual](#Información-contextual)
 * [Introducción](#introducción)
 * [Instalar dependencias](#instalar-dependencias)
 * [Descargar el código](#descargar-el-código)
@@ -12,9 +12,9 @@
 * [Colaborar](#colaborar)
 * [Licencia](#licencia)
 
-## Información importante
+## Información contextual
 
-> Para leer artículos relacionados con tecnologías IoT visitar nuestro sitio web [gotoiot.com](https://gotoiot.com).
+> Para leer artículos relacionados con tecnologías IoT visitar nuestro sitio web [gotoiot.com](https://www.gotoiot.com).
 
 > Para ver toda la documentación de los proyectos de manera abarcativa y organizada visitar nuestra [wiki de Goto IoT](https://github.com/gotoiot/doc/wiki).
 
