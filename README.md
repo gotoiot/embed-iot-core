@@ -22,7 +22,7 @@
 
 > Muchos de los proyectos implementados en Goto IoT utilizan Visual Studio Code como IDE de desarrollo debido a su potencia y capacidad de instalar extensiones útiles de desarrollo, por lo que se recomienda descargarlo desde [este link](https://code.visualstudio.com/download). 
 
-> Para poder probar el código es necesario contar con un broker MQTT. Consultar nuestra [sección de proyectos](https://www.gotoiot.com/pages/projects/) para encontrar información al respecto.
+> Para poder probar el código es necesario contar con un broker MQTT. Consultar nuestra [sección de proyectos](https://www.gotoiot.com/pages/projects) para encontrar información al respecto.
 
 ## Introducción
 
