@@ -4,7 +4,6 @@
 
 ## Tabla de contenido
 
-* [Información contextual](#Información-contextual)
 * [Introducción](#introducción)
 * [Instalar dependencias](#instalar-dependencias)
 * [Descargar el código](#descargar-el-código)
@@ -12,31 +11,19 @@
 * [Colaborar](#colaborar)
 * [Licencia](#licencia)
 
-## Información contextual
-
-> Para leer artículos relacionados con tecnologías IoT visitar nuestro sitio web [gotoiot.com](https://www.gotoiot.com).
-
-> Para ver toda la documentación de los proyectos de manera abarcativa y organizada visitar nuestra [wiki de Goto IoT](https://github.com/gotoiot/doc/wiki).
-
-> En caso de encontrar algún problema, comentarlo en nuestro [foro de Goto IoT](https://groups.google.com/g/gotoiot) para encontrar una solución entre los miembros de la comunidad.
-
-> Muchos de los proyectos implementados en Goto IoT utilizan Visual Studio Code como IDE de desarrollo debido a su potencia y capacidad de instalar extensiones útiles de desarrollo, por lo que se recomienda descargarlo desde [este link](https://code.visualstudio.com/download). 
-
-> Para poder probar el código es necesario contar con un broker MQTT. Consultar nuestra [sección de proyectos](https://www.gotoiot.com/pages/projects) para encontrar información al respecto.
-
 ## Introducción
+
+> Si todavía no conoces como está estructurada la plataforma Goto IoT es recomendable que leas la [información contextual](https://github.com/gotoiot/doc/wiki#informaci%C3%B3n-contextual) de nuestra wiki, que te puede ser de utilidad.
 
 Este proyecto funciona como cliente MQTT embebido para conectarse a cualquier broker MQTT, ya sea de manera local o remota. El código publica topics que simulan mediciones de un sensor de presión y también se suscribe a un topic para cambiar la frecuencia con que se publican estas mediciones. De esta manera se tiene una demostración de comunicación bidireccional con un broker.
 
-Está basado en el `framework Arduino`, y se compila y ejecuta con la herramienta [PlatformIO](https://platformio.org/install). El código original funciona para cualquier placa que contenga el `ESP32`, pero tambien es compatible con `ESP8266` y otras placas que soporten Arduino con conexión WiFi y MQTT. La configuración de la placa se encuentra en el archivo `platformio.ini`.
+Está basado en el `framework Arduino`, y se compila y ejecuta con la herramienta `PlatformIO`. El código original funciona para cualquier placa que contenga el `ESP32`, pero tambien es compatible con `ESP8266` y otras placas que soporten Arduino con conexión WiFi y MQTT. La configuración de la placa se encuentra en el archivo `platformio.ini`.
 
 ## Instalar dependencias
 
-La herramienta utilizada para realizar la compilación y descarga del código es `PlatformIO`. Se recomienda instalarla dentro de Visual Studio Code, ya que mediante la extensión de PlatformIO se combina el poder un IDE multilenguaje como VS Code con las capacidades de administrar fácilmente los procesos de desarrollo de sistemas embebidos.
+Para correr proyecto es necesario tener instalado `PlaformIO` dentro de Visual Studio Code. En la sección de [instalación de herramientas](https://github.com/gotoiot/doc/wiki/Herramientas#instalaci%C3%B3n) de la wiki se encuentran los detalles para realizar la instalación y configuración.
 
-Realizar la instalación y configuración de PlatformIO dentro de VS Code siguiendo [nuestra guía paso a paso](https://www.gotoiot.com/pages/articles/platformio_vscode_installation/). 
-
-Si es posible compilar un programa de ejemplo, continuar con el siguiente paso para descargar el código y ejecutarlo.
+Así mismo será necesario contar con un broker MQTT corriendo para realizar las pruebas. En la [sección de proyectos de la web](https://www.gotoiot.com/pages/projects) o bien dentro de los [repositorios de Goto IoT](https://github.com/gotoiot?q=mqtt) se puede encontrar información al respecto.
 
 ## Descargar el código
 
