@@ -1,83 +1,110 @@
-# Embedded MQTT Client
+# Embedded IoT Plaform
 
 **Autor**: Agustin Bassi - 2021
 
 ## Tabla de contenido
 
 * [Introducción](#introducción)
+* [Organización del proyecto](#organización-del-proyecto)
 * [Instalar dependencias](#instalar-dependencias)
 * [Descargar el código](#descargar-el-código)
-* [Ejecutar la aplicación](#ejecutar-la-aplicación)
+* [Correr el programa por defecto](#correr-el-programa-por-defecto)
+* [Ejecutar las aplicaciones](#ejecutar-las-aplicaciones)
 * [Colaborar](#colaborar)
 * [Licencia](#licencia)
 
 ## Introducción
 
-> Si todavía no conoces como está estructurada la plataforma Goto IoT es recomendable que leas la [información contextual](https://github.com/gotoiot/doc/wiki#informaci%C3%B3n-contextual) de nuestra wiki, que te puede ser de utilidad.
+Este proyecto es una plataforma integral para el desarrollo de aplicaciones embebidas enfocadas en IoT. Utiliza `Arduino` como framework de desarrollo y `PlatformIO` como toolchain de compilación, manejo de bibliotecas, y más. 
 
-Este proyecto funciona como cliente MQTT embebido para conectarse a cualquier broker MQTT, ya sea de manera local o remota. El código publica topics que simulan mediciones de un sensor de presión y también se suscribe a un topic para cambiar la frecuencia con que se publican estas mediciones. De esta manera se tiene una demostración de comunicación bidireccional con un broker.
+Viene cargado con ejemplos para distintos protocolos de IoT que se pueden compilar y ejecutar fácilmente. De esta manera se pueden probar diferentes tecnologías y comunicaciones desde un mismo repositorio, con un mismo esquema de trabajo y entendiendo una única documentación.
 
-Está basado en el `framework Arduino`, y se compila y ejecuta con la herramienta `PlatformIO`. El código original funciona para cualquier placa que contenga el `ESP32`, pero tambien es compatible con `ESP8266` y otras placas que soporten Arduino con conexión WiFi y MQTT. La configuración de la placa se encuentra en el archivo `platformio.ini`.
+Entre los principales objetivos del proyecto se encuentran facilitar el desarrollo, centralizar el código, nuclear la información y probar aplicaciones lo más rapido posible.
+
+Si bien se puede adaptar a distintas placas, está principalmente adaptado para correr con cualquiera que posea el módulo `ESP32`.
+
+## Organización del proyecto
+
+La organización del proyecto es simple y tiene este aspecto:
+
+```sh
+├── doc             # doc general del proyecto, imagenes, manuales, etc.
+├── examples        # ejemplos de aplicaciones separadas por afinidad (mqtt, coap, ble, etc.)
+├── lib             # bibliotecas externas gestionadas con PlaformIO
+├── src             # donde se aloja el codigo fuente a compilar
+|   ├── main.cpp    # archivo principal que contiene el codigo de la aplicacion
+|   └── secrets.h   # archivo para guardar datos sensibles (contraseñas, hosts, etc.)
+├── platformio.ini  # archivo de configuracion de compilacion (board, framework, libs, etc.)
+├── README.md       # este archivo
+└── LICENCE         # licencia del proyecto
+```
 
 ## Instalar dependencias
 
-Para correr proyecto es necesario tener instalado `PlaformIO` dentro de Visual Studio Code. En la sección de [instalación de herramientas](https://github.com/gotoiot/doc/wiki/Herramientas#instalaci%C3%B3n) de la wiki se encuentran los detalles para realizar la instalación y configuración.
+Para correr proyecto es necesario instalar `PlatformIO` dentro del IDE `Visual Studio Code`. Este es uno de los IDEs de desarrollo más populares, y podes instalarlo desde su documentacion oficial en [este link](https://code.visualstudio.com/download). Para instalar PlatformIO en VS Code, en nuestra [guía de instalación paso a paso](https://www.gotoiot.com/pages/articles/platformio_vscode_installation/) estan todos los detalles para configurarlo y correr un programa de ejemplo.
 
-Así mismo será necesario contar con un broker MQTT corriendo para realizar las pruebas. En la [sección de proyectos de la web](https://www.gotoiot.com/pages/projects) o bien dentro de los [repositorios de Goto IoT](https://github.com/gotoiot?q=mqtt) se puede encontrar información al respecto.
+Una vez que puedas correr el ejemplo de la guía, podes continuar con la descarga del código.
 
 ## Descargar el código
 
-Desde la esquina superior derecha realizar un `fork` de este proyecto a la cuenta personal. Una vez realizado el fork descargar el código con el siguiente comando (poner el usuario de Github en la URL):
+Para descargar el codigo, lo más conveniente es realizar un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/embedded-iot-platform/fork). Una vez que ya tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
 
 ```
-git clone https://github.com/USER/embedded-mqtt-client.git
+git clone https://github.com/TU_USUARIO/embedded-iot-platform.git
 ```
 
-> En caso de no poseer una cuenta de Github se puede realizar un `clone` directo de este repositorio.
+> En caso que no tengas una cuenta en Github podes clonar directamente este repo.
 
-Abrir la carpeta del proyecto desde VS Code luego de la descarga.
+Abrí la carpeta del proyecto desde VS Code cuando descargues el código.
 
-## Ejecutar la aplicación
+## Correr el programa por defecto
 
+Para chequear que todo funcione correctamente vamos a compilar y ejecutar el programa por defecto. Vas a necesitar conectar la placa a la PC de desarrollo para poder programarla.
 
-Como primer paso será necesario configurar el acceso a WiFi y MQTT dentro del archivo `src/main.cpp` (líneas 48-52):
+Lo primero es ir a la extensión de PlatformIO dentro de VS Code, y en la sección `Quick Access` seleccioná `Miscellaneous->New Terminal`. Esto carga la herramienta dentro del scope de la terminal. 
 
-```c
-// Wifi settings
-const String WIFI_SSID   = "USER_WIFI_SSID";
-const String WIFI_PASS   = "USER_WIFI_PASSWORD";
-// Mqtt server settings
-const String MQTT_SERVER = "MQTT_HOST_IP_ADDRESS";
-const String MQTT_PORT   = 1883;
+Luego, desde la raíz del proyecto corre este comando, que compila el código, lo descarga a la placa y abre una terminal serie; todo en un mismo comando:
+
+```
+pio run -t upload && pio device monitor
 ```
 
-Conectar luego la placa por USB y dentro de VS Code ir a la extensión PlatformIO en el borde izquierdo, y dentro del menú lateral ir a `Quick Acess->Miscellaneous->New Terminal`. En la nueva terminal ejecutar el siguiente comando, que se encarga de compilar el código, descargarlo a la placa y abrir automáticamente el puerto serie, todo en una misma operación.
+Cuando el programa inicie, el LED de la placa debería comenzar a blinkear y en la terminal serie debería verse una salida como esta:
 
-```sh
-platformio run --target upload && platformio device monitor
 ```
-
-Cuando el dispositivo inicia debería mostrarse una salida como la siguiente:
-
-```sh
-Welcome to Embedded MQTT Client - www.gotoiot.com
-Connecting to WiFi SSID...
-WiFi connected
-IP address: 192.168.1.44
-Attempting MQTT connection...connected
-Subscribed to topic: mqtt-client-001/config/publish_time
-Sending MQTT Topic-Payload: mqtt-client-001/pressure -> 1001
+Welcome Embedded IoT Platform - www.gotoiot.com
+Device running
 ...
-Sending MQTT Topic-Payload: mqtt-client-001/pressure -> 1010
+Device running
 ```
 
-Para probar que la recepción de topics funcione correctamente, através de otro cliente MQTT conectado al broker, enviar un mensaje al dispositivo con el topic `mqtt-client-001/config/publish_time` con un valor entre 1000 y 10000 (en ms). Esto cambiará el período con que el dispositivo publica los topics entre 1-10 segundos.
+Si llegaste a este punto es porque todo está funcionando correctamente. De ahora en más podés centrarte en aprender cómo se corren las aplicaciones. Esto te va a permitir correr las que existen en el proyecto e incluso crear las tuyas de manera fácil y rápida.
+
+## Ejecutar las aplicaciones
+
+La ejecución de aplicaciones dentro del proyecto es muy sencilla. Selecciona de la carpeta `examples` el código que quieras correr. Los detalles de implementación de cada ejemplo están en el `README.md` de cada proyecto. Copia el contenido del archivo `example_name.cpp` del ejemplo, en el archivo `src/main.cpp`.
+
+Después carga los datos sensibles que sean necesarios para la aplicación dentro del archivo `src/secrets.h`. En ese archivo se almacenan datos como por ejemplo el ID del dispositivo, las contraseñas de WiFi, las URL de hosts, credenciales, etc.
+
+Una vez que tengas los secrets y el código cargado, con el comando `pio run -t upload && pio device monitor` vas a poder compilar, cargar el código y abrir la terminal serie. 
+
+El comportamiento de cada aplicación está detallado en el `README` de cada proyecto, no olvides de chequearlo para ver cómo debería comportarse el dispositivo.
+
+
+### Lista de aplicaciones
+
+Las aplicaciones están ordenadas por afinidad y las que existen hasta el momento son las siguientes:
+
+* **MQTT**
+    * **Pressure measurer:** Es una demostración completa de comunicación bidireccional MQTT. Tiene la capacidad de enviar y recibir topics MQTT. Su funcionalidad principal radica en tomar mediciones "fake" de un sensor de presión y enviarlas en un topic determinado. El tiempo en que envía tales mediciones puede ser modificado enviando un topic de configuración desde otro cliente MQTT.
 
 ## Colaborar
 
-Las mejoras son bienvenidas. Para ello es necesario hacer un fork de este proyecto, aplicar las mejoras y enviarlas mediante un pull request. Luego de la revisión, podrán ser incluídas.
+¿Te gustó el proyecto? Si es así no dudes en apoyarlo con una estrella en Github desde [la home del proyecto](https://github.com/gotoiot/embedded-iot-platform), esto motiva mucho a seguir adelante con el desarrollo de código para la comunidad. Si estás interesado en recibir novedades cuando se hagan actualizaciones, podes suscribirte desde [este link](https://github.com/gotoiot/embedded-iot-platform/subscription).
 
-Si te gustó el proyecto no dudes en apoyarlo con una `Star`, y si estás interesado en recibir novedades podés aplicar un `Watch`. Estas acciones ayudan a fomentar la participación y creación de nuevos proyectos dentro de [Goto IoT](https://github.com/gotoiot/).
+Si te gustaría aplicar mejoras a este proyecto podes abrir un hilo de discusión en [este link](https://github.com/gotoiot/embedded-iot-platform/issues/new) para conversarlas y luego podrías enviarlas mediante un `pull request`. 
+
+Finalmente podés compartir este proyecto para que más personas puedan utilizarlo y beneficiarse de esta gran comunidad del software libre.
 
 ## Licencia
 

@@ -1,3 +1,5 @@
 .pio
 .vscode
 *.so
+
+src/secrets_filled.h
