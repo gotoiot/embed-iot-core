@@ -41,13 +41,18 @@ SOFTWARE.*/
 #define DEFAULT_PUBLISH_TIME        5000
 #define MIN_PUBLISH_TIME            1000
 #define MAX_PUBLISH_TIME            10000
+#define WILL_RETAIN_MESSAGE         false
+#define WILL_QOS                    2
 // MQTT TOPICS/DATA
-#define TOPIC_UP                    "/up"
-#define TOPIC_DOWN                  "/down"
-#define TOPIC_STATUS                DEVICE_ID "/status"
-#define TOPIC_STATUS_GET            DEVICE_ID "/status/get"
-#define TOPIC_PRESSURE              DEVICE_ID "/pressure"
-#define TOPIC_CONFIG                DEVICE_ID "/config"
+#define TOPIC_PUB_UP                "/up"
+#define TOPIC_PUB_DOWN              "/down"
+#define TOPIC_PUB_STATUS            "/" DEVICE_ID "/status"
+#define TOPIC_SUB_STATUS            "/status/" DEVICE_ID
+#define TOPIC_SUB_LED               "/led/" DEVICE_ID
+#define TOPIC_SUB_LED_STATUS        "/led/status/" DEVICE_ID 
+#define TOPIC_PUB_LED_STATUS        "/" DEVICE_ID "/led/status/" 
+#define TOPIC_SUB_ALL_LED           "/all/led"
+#define TOPIC_SUB_ALL_LED_STATUS    "/all/led/status"
 
 /*==================[internal data declaration]==============================*/
 
@@ -67,7 +72,8 @@ void   Mqtt_ConnectToBroker       (void);
 void   Mqtt_PublishTopic          (const char * topic, const char * payload);
 void   Mqtt_SubscribeCallback     (char* topic, byte* payload, unsigned int length);
 char * App_GetDeviceStatusAsJson  (void);
-char * App_GetPressureValueAsJson (void);
+char * App_GetLedStatusAsJson (void);
+char * App_GetDeviceIdAsJson      (void);
 void   App_Init                   (void);
 void   App_Loop                   (void);
 
@@ -110,16 +116,30 @@ void Mqtt_ConnectToBroker(){
     while (!MqttClient.connected()) {
         Serial.printf("\n\rTrying connection to MQTT broker '%s:%d'", MQTT_HOST, MQTT_PORT);
         // Attempt to connect
-        if (MqttClient.connect(DEVICE_ID)) {
+        bool connectionStatus = MqttClient.connect(
+            DEVICE_ID, MQTT_USER, MQTT_PASS, TOPIC_PUB_DOWN, 
+            WILL_QOS, WILL_RETAIN_MESSAGE, App_GetDeviceIdAsJson()
+            );
+        // Attempt to connect
+        if (connectionStatus){
             Serial.print("\n\rConnected to MQTT broker successfully");
             // Subscribe to topic config
-            MqttClient.subscribe(TOPIC_CONFIG);
-            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_CONFIG);
+            MqttClient.subscribe(TOPIC_SUB_LED);
+            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_SUB_LED);
             // Subscribe to topic to report status
-            MqttClient.subscribe(TOPIC_STATUS_GET);
-            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_STATUS_GET);
+            MqttClient.subscribe(TOPIC_SUB_STATUS);
+            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_SUB_STATUS);
+            // Subscribe to topic to report LED status individually
+            MqttClient.subscribe(TOPIC_SUB_LED_STATUS);
+            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_SUB_LED_STATUS);
+            // Subscribe to topic to control all led at same time
+            MqttClient.subscribe(TOPIC_SUB_ALL_LED);
+            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_SUB_ALL_LED);
+            // Subscribe to topic to report all status at same time
+            MqttClient.subscribe(TOPIC_SUB_ALL_LED_STATUS);
+            Serial.printf("\n\rSubscribed to topic: %s", TOPIC_SUB_ALL_LED_STATUS);
             // Advice that device is up and running
-            Mqtt_PublishTopic(TOPIC_UP, App_GetDeviceStatusAsJson());
+            Mqtt_PublishTopic(TOPIC_PUB_UP, App_GetDeviceStatusAsJson());
         } else {
             Serial.printf("\n\rFailed to connect to broker (Error code: %d). Retrying in %d ms", 
                 MqttClient.state(), MQTT_RETRY_CONNECTION_DELAY);
@@ -134,22 +154,33 @@ void Mqtt_PublishTopic(const char * topic, const char * payload){
 }
 
 void Mqtt_SubscribeCallback(char* topic, byte* payload, unsigned int length){
-    if (strcmp(topic, TOPIC_CONFIG) == 0){
+    // At first check if topic arrived is some of expected topics
+    if ((strcmp(topic, TOPIC_SUB_LED) == 0) || 
+        (strcmp(topic, TOPIC_SUB_ALL_LED) == 0)){
         // put null char to payload buffer
         payload[length] = '\0';
-        // convert string value to int valie
-        uint32_t publishTime = atoi((const char *)payload);
-        // Check if value received is correct.
-        if (publishTime >= MIN_PUBLISH_TIME && publishTime <= MAX_PUBLISH_TIME){
-            Serial.printf("\n\rPublish time will change to %d ms", publishTime);
-            PublishTime = publishTime;
+        // Compare the topic payload to expected values
+        if( (strcmp((char *)payload, "on") == 0) || (strcmp((char *)payload, "off") == 0) ){
+            bool status = false;
+            // set the LED status depending on the payload
+            if(strcmp((char *)payload, "on") == 0){
+                status = true;
+            } 
+            digitalWrite(LED_ONBOARD, status);
+            // Report the action in console
+            Serial.print("Changing the LED status to: ");
+            Serial.println(status);
         } else {
-            Serial.printf("\n\rInvalid publish time, must be between %d and %d ms.", 
-                MIN_PUBLISH_TIME, MAX_PUBLISH_TIME);
+            Serial.println("Invalid LED status. It must be 'on' or 'off'.");
         }
-    } else if (strcmp(topic, TOPIC_STATUS_GET) == 0){
+    } else if ((strcmp(topic, TOPIC_SUB_LED_STATUS) == 0) || 
+        (strcmp(topic, TOPIC_SUB_ALL_LED_STATUS) == 0)){
+        bool ledStatus = digitalRead(LED_ONBOARD);
+        // Publish the state of the onboard LED
+        Mqtt_PublishTopic(TOPIC_PUB_LED_STATUS, App_GetLedStatusAsJson());
+    } else if (strcmp(topic, TOPIC_SUB_STATUS) == 0){
         Serial.println("Sending device status");
-        Mqtt_PublishTopic(TOPIC_STATUS, App_GetDeviceStatusAsJson());
+        Mqtt_PublishTopic(TOPIC_PUB_STATUS, App_GetDeviceStatusAsJson());
     } else {
         Serial.println("Unknown topic received!");
     }
@@ -163,7 +194,7 @@ void App_Init(){
     // Configure pins of buttons and leds
     pinMode(LED_ONBOARD, OUTPUT);
     // print to console Init message
-    Serial.println("\n\n\rWelcome to fake pressure measurer - www.gotoiot.com");
+    Serial.println("\n\n\rWelcome to Remote light system - www.gotoiot.com");
     // Leave built in led on
     digitalWrite(LED_ONBOARD, false);
     // Set MQTT Server
@@ -176,11 +207,11 @@ void App_Init(){
     PublishTime = DEFAULT_PUBLISH_TIME;
 }
 
-char * App_GetPressureValueAsJson(){
+char * App_GetLedStatusAsJson(){
     StaticJsonDocument<100> doc;
     static char jsonBuffer[100];
-    doc["value"] = random(10, 80);
-    doc["measure"] = "psi";
+    bool ledStatus = digitalRead(LED_ONBOARD);
+    doc["status"] = ledStatus ? "on": "off"
     doc["time"] = millis();
     serializeJson(doc, jsonBuffer);
     return jsonBuffer;
@@ -205,8 +236,6 @@ char * App_GetDeviceIdAsJson(){
 }
 
 void App_Loop(){
-    // Create a variable to publish topic
-    static uint32_t tickCounter = 0;
     // Check if MQTT client is not connected to server.
     if (!MqttClient.connected()) {
         // Try to connect with MQTT Server.
@@ -214,17 +243,6 @@ void App_Loop(){
     }
     // Loop for incoming messages.
     MqttClient.loop();
-    // Use this variable to non block the loop
-    if (++tickCounter >= PublishTime){
-        // Reset counter
-        tickCounter = 0;
-        // Send MQTT Topic
-        Mqtt_PublishTopic(TOPIC_PRESSURE, App_GetPressureValueAsJson());
-        // Blink LED
-        Gpio_BlinkOutput(LED_ONBOARD, BLINK_TIME);
-    }
-    // delay 1 MS to start loop again
-    delay(1);
 }
     
 /*==================[external functions definition]==========================*/
