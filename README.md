@@ -1,4 +1,4 @@
-# Embedded IoT Plaform
+# Embedded IoT Core
 
 **Autor**: Agustin Bassi - 2021
 
@@ -19,9 +19,9 @@ Este proyecto es una plataforma integral para el desarrollo de aplicaciones embe
 
 Viene cargado con ejemplos para distintos protocolos de IoT que se pueden compilar y ejecutar fácilmente. De esta manera se pueden probar diferentes tecnologías y comunicaciones desde un mismo repositorio, con un mismo esquema de trabajo y entendiendo una única documentación.
 
-Entre los principales objetivos del proyecto se encuentran facilitar el desarrollo, centralizar el código, nuclear la información y probar aplicaciones lo más rapido posible.
+Entre los principales objetivos del proyecto se encuentran facilitar el desarrollo de aplicaciones embebidas IoT, centralizar el código, nuclear la información y probar aplicaciones lo más rapido posible.
 
-Si bien se puede adaptar a distintas placas, está principalmente adaptado para correr con cualquiera que posea el módulo `ESP32`.
+Si bien se puede adaptar a distintas placas, está principalmente desarrollado para correr con cualquiera que posea el módulo `ESP32`.
 
 ## Organización del proyecto
 
@@ -47,10 +47,10 @@ Una vez que puedas correr el ejemplo de la guía, podes continuar con la descarg
 
 ## Descargar el código
 
-Para descargar el codigo, lo más conveniente es realizar un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/embedded-iot-platform/fork). Una vez que ya tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
+Para descargar el codigo, lo más conveniente es que realices un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/embedded-iot-core/fork). Una vez que ya tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
 
 ```
-git clone https://github.com/TU_USUARIO/embedded-iot-platform.git
+git clone https://github.com/USER/embedded-iot-core.git
 ```
 
 > En caso que no tengas una cuenta en Github podes clonar directamente este repo.
@@ -59,7 +59,7 @@ Abrí la carpeta del proyecto desde VS Code cuando descargues el código.
 
 ## Correr el programa por defecto
 
-Para chequear que todo funcione correctamente vamos a compilar y ejecutar el programa por defecto. Vas a necesitar conectar la placa a la PC de desarrollo para poder programarla.
+Para chequear que todo funcione correctamente lo conveniente es compilar y ejecutar el programa por defecto. Vas a necesitar conectar la placa a la PC para poder programarla.
 
 Lo primero es ir a la extensión de PlatformIO dentro de VS Code, y en la sección `Quick Access` seleccioná `Miscellaneous->New Terminal`. Esto carga la herramienta dentro del scope de la terminal. 
 
@@ -72,7 +72,7 @@ pio run -t upload && pio device monitor
 Cuando el programa inicie, el LED de la placa debería comenzar a blinkear y en la terminal serie debería verse una salida como esta:
 
 ```
-Welcome Embedded IoT Platform - www.gotoiot.com
+Welcome Embedded IoT Core - www.gotoiot.com
 Device running
 ...
 Device running
@@ -82,28 +82,28 @@ Si llegaste a este punto es porque todo está funcionando correctamente. De ahor
 
 ## Ejecutar las aplicaciones
 
-La ejecución de aplicaciones dentro del proyecto es muy sencilla. Selecciona de la carpeta `examples` el código que quieras correr. Los detalles de implementación de cada ejemplo están en el `README.md` de cada proyecto. Copia el contenido del archivo `example_name.cpp` del ejemplo, en el archivo `src/main.cpp`.
+La ejecución de aplicaciones dentro del proyecto es muy sencilla. Selecciona de la carpeta `examples` el código que quieras correr. Los detalles de implementación de cada ejemplo están en el `README.md` de cada uno. Copia el contenido del archivo `.cpp` del ejemplo, en el archivo `src/main.cpp`.
 
-Después carga los datos sensibles que sean necesarios para la aplicación dentro del archivo `src/secrets.h`. En ese archivo se almacenan datos como por ejemplo el ID del dispositivo, las contraseñas de WiFi, las URL de hosts, credenciales, etc.
+Después carga los datos sensibles que sean necesarios para la aplicación dentro del archivo `src/secrets.h`. En ese archivo se almacenan datos como por ejemplo el ID del dispositivo, las contraseñas de WiFi, las URLs de hosts, credenciales, etc.
 
 Una vez que tengas los secrets y el código cargado, con el comando `pio run -t upload && pio device monitor` vas a poder compilar, cargar el código y abrir la terminal serie. 
 
-El comportamiento de cada aplicación está detallado en el `README` de cada proyecto, no olvides de chequearlo para ver cómo debería comportarse el dispositivo.
+El comportamiento de cada aplicación está detallado en el README de cada proyecto, no olvides de chequearlo para ver cómo debería comportarse el dispositivo.
 
 
 ### Lista de aplicaciones
 
 Las aplicaciones están ordenadas por afinidad y las que existen hasta el momento son las siguientes:
 
-* **MQTT**
-    * **Pressure measurer:** Es una demostración completa de comunicación bidireccional MQTT. Tiene la capacidad de enviar y recibir topics MQTT. Su funcionalidad principal radica en tomar mediciones "fake" de un sensor de presión y enviarlas en un topic determinado. El tiempo en que envía tales mediciones puede ser modificado enviando un topic de configuración desde otro cliente MQTT.
-    * **Remote light system:** es una demostración abarcativa de las capacidades que tiene un dispositivo embebido para comunicarse por MQTT. Es capaz de enviar y recibir topics, enviar un topic al iniciar para dar aviso al sistema, así como también avisar automáticamente si sufre una desconexión (mensaje conocido como LWT). Su funcionalidad principal es actuar como un dispositivo de iluminación dentro de un sistema integral de luces que se controla de manera remota. Puede recibir un topic para controlar individualmente el LED de cada dispositivo asi como también se pueden controlar un grupo de dispositivos al mismo tiempo haciendo uso de la capacidad de broadcast de MQTT. También es capaz de informar el estado del dispositivo general, y el estado del LED. Esto puede permitir a sistemas remotos administrar y tener un control sobre el estado de cada dispositivo dentro de la red.
+* **`MQTT`**
+    * **[`Pressure measurer`](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/pressure_measurer)**: Es una demostración completa de comunicación bidireccional MQTT. Tiene la capacidad de enviar y recibir topics MQTT. Su funcionalidad principal radica en tomar mediciones "fake" de un sensor de presión y enviarlas en un topic determinado. El tiempo en que envía tales mediciones puede ser modificado enviando un topic de configuración desde otro cliente MQTT. Accede al [README del proyecto](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/pressure_measurer) para ver todos los detalles.<br><br>
+    * **[`Remote light system`](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/remote_light_system)**: es una demostración abarcativa de las capacidades que tiene un dispositivo embebido para comunicarse por MQTT. Es capaz de enviar y recibir topics, enviar un topic al iniciar para dar aviso al sistema, así como también avisar automáticamente si sufre una desconexión (mensaje conocido como LWT). Su funcionalidad principal es actuar como un dispositivo de iluminación dentro de un sistema integral de luces que se controla de manera remota. Puede recibir un topic para controlar individualmente el LED de cada dispositivo asi como también se pueden controlar un grupo de dispositivos al mismo tiempo haciendo uso de la capacidad de broadcast de MQTT. También es capaz de informar el estado del dispositivo general, y el estado del LED. Esto puede permitir a sistemas remotos administrar y tener un control sobre el estado de cada dispositivo dentro de la red. Accede al [README del proyecto](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/remote_light_system) para ver todos los detalles.
 
 ## Colaborar
 
-¿Te gustó el proyecto? Si es así no dudes en apoyarlo con una estrella en Github desde [la home del proyecto](https://github.com/gotoiot/embedded-iot-platform), esto motiva mucho a seguir adelante con el desarrollo de código para la comunidad. Si estás interesado en recibir novedades cuando se hagan actualizaciones, podes suscribirte desde [este link](https://github.com/gotoiot/embedded-iot-platform/subscription).
+¿Te gustó el proyecto? Si es así no dudes en apoyarlo con una estrella en Github desde [la home del proyecto](https://github.com/gotoiot/embed-iot-core), esto motiva mucho a seguir adelante con el desarrollo de código para la comunidad. Si estás interesado en recibir novedades cuando se hagan actualizaciones, podes suscribirte desde [este link](https://github.com/gotoiot/embed-iot-core/subscription).
 
-Si te gustaría aplicar mejoras a este proyecto podes abrir un hilo de discusión en [este link](https://github.com/gotoiot/embedded-iot-platform/issues/new) para conversarlas y luego podrías enviarlas mediante un `pull request`. 
+Si te gustaría aplicar mejoras a este proyecto podes abrir un hilo de discusión en [este link](https://github.com/gotoiot/embed-iot-core/issues/new) para conversarlas y luego podrías enviarlas mediante un `pull request`. 
 
 Finalmente podés compartir este proyecto para que más personas puedan utilizarlo y beneficiarse de esta gran comunidad del software libre.
 

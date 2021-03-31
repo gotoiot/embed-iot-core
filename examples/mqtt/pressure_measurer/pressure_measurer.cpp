@@ -180,7 +180,7 @@ char * App_GetPressureValueAsJson(){
     StaticJsonDocument<100> doc;
     static char jsonBuffer[100];
     doc["value"] = random(10, 80);
-    doc["measure"] = "psi";
+    doc["unit"] = "psi";
     doc["time"] = millis();
     serializeJson(doc, jsonBuffer);
     return jsonBuffer;

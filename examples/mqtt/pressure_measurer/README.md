@@ -40,19 +40,19 @@ Sending MQTT Topic 'DEVICE_ID/pressure'->'{ "value": 83, "measure": "psi", "time
 
 Una vez que el dispositivo se inicializa, comienza a enviar mediciones periódicas del sensor fake de presion en el topic `DEVICE_ID/pressure`. 
 
-Así mismo se suscribe al topic `DEVICE_ID/config`, donde espera recibir el valor de publicación de las mediciones de presión en milisegundos (entre 1000 y 10000). En el caso de recibir un adecuado, en la terminal serie se mostrará un mensaje similar al siguiente: `Publish time will change to 2500 ms`.
+Así mismo se suscribe al topic `DEVICE_ID/config`, donde espera recibir el valor de publicación de las mediciones de presión en milisegundos (entre 1000 y 10000). En el caso de recibir un valor adecuado, en la terminal serie se mostrará un mensaje similar al siguiente: `Publish time will change to 2500 ms`.
 
 También se suscribe al topic `DEVICE_ID/status/get`, que al momento de recibirlo, el dispositivo publica en el topic `DEVICE_ID/status` un mensaje similar al siguiente:
 
 ```json
 {
     "value": 55,
-    "measure": "psi",
+    "unit": "psi",
     "time": 12340074
 }
 ```
 
-Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestra aplicación [App MQTT Connection](https://github.com/gotoiot/app-mqtt-connection) que se compone de un broker MQTT, un cliente web para visualizar topics y este proyecto para la parte embebida, armando así un ecosistema de comunicación completo.
+Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Sphere MQTT](https://github.com/gotoiot/sphere-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
 
 ## Licencia
 
