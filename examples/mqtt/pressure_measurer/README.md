@@ -52,7 +52,7 @@ También se suscribe al topic `DEVICE_ID/status/get`, que al momento de recibirl
 }
 ```
 
-Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Sphere MQTT](https://github.com/gotoiot/sphere-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
+Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Connection MQTT](https://github.com/gotoiot/connection-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
 
 ## Licencia
 

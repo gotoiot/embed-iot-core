@@ -50,7 +50,7 @@ Una vez que el dispositivo inicializa envía al broker el topic `up` con un payl
 
 En caso de desconectarse de manera inesperada envía el topic el topic `down` con un payload como este `'{"device_id":"DEVICE_ID"'`. Esto puede permitir a un sistema de control externo tener un control preciso del estado de funcionamiento de los dispositivos.
 
-Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Sphere MQTT](https://github.com/gotoiot/sphere-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
+Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Connection MQTT](https://github.com/gotoiot/connection-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
 
 ## Licencia
 
