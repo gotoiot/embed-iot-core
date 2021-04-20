@@ -1,8 +1,8 @@
 # Remote light system
 
-**Autor**: Agustin Bassi - 2021
+Aplicación para ESP32 o similar basada en Arduino y compilada con PlatformIO.
 
-## Detalles del proyecto
+## Detalles de la aplicación 🔍
 
 Este proyecto es una demostración abarcativa de las capacidades que tiene un dispositivo embebido para comunicarse por MQTT. Es capaz de enviar y recibir topics, enviar un topic al iniciar para dar aviso al sistema, así como también avisar automáticamente si sufre una desconexión (mensaje conocido como LWT). 
 
@@ -52,8 +52,18 @@ En caso de desconectarse de manera inesperada envía el topic el topic `down` co
 
 Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Connection MQTT](https://github.com/gotoiot/connection-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
 
-## Licencia
 
-[MIT](https://choosealicense.com/licenses/mit/)
+## Autores 👥
 
-![footer](../../../doc/gotoiot-footer.png)
+Los autores de esta aplicación son: 
+
+* **[Agustin Bassi](https://github.com/agustinBassi)**
+
+
+## Licencia 📄
+
+Este proyecto está bajo Licencia ([MIT](https://choosealicense.com/licenses/mit/)). Podés ver el archivo [LICENSE.md](LICENSE.md) para más detalles sobre el uso de este material.
+
+---
+
+**Copyright © Goto IoT 2021** ⌨️ [**Website**](https://www.gotoiot.com) ⌨️ [**Group**](https://groups.google.com/g/gotoiot) ⌨️ [**Github**](https://www.github.com/gotoiot) ⌨️ [**Twitter**](https://www.twitter.com/gotoiot) ⌨️ [**Wiki**](https://github.com/gotoiot/doc/wiki)
