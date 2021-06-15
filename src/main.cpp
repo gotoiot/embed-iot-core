@@ -54,17 +54,18 @@ void App_Init(){
     // Configure pins of buttons and leds
     pinMode(LED_ONBOARD, OUTPUT);
     // print to console Init message
-    Serial.println("\n\n\rWelcome to Embedded IoT Platform - www.gotoiot.com");
+    Serial.println("\n\n\rWelcome to Embed IoT Core - https://www.gotoiot.com");
     // Leave built in led on
     digitalWrite(LED_ONBOARD, false);
 }
 
 void App_Loop(){
     digitalWrite(LED_ONBOARD, true);
+    Serial.println("LED on");
     delay(LED_DELAY);
     digitalWrite(LED_ONBOARD, false);
+    Serial.println("LED off");
     delay(LED_DELAY);
-    Serial.println("Device running");
 }
     
 /*==================[external functions definition]==========================*/

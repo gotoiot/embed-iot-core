@@ -7,32 +7,31 @@ Embed IoT Core
 
 *Ayudaría mucho si apoyaras este proyecto con una ⭐ en Github!*
 
+Este proyecto es una plataforma integral para el desarrollo de aplicaciones embebidas IoT que utiliza `Arduino` como framework de desarrollo y `PlatformIO` integrado en `Visual Studio Code` para manejar de manera simple y eficiente la compilación y linkeo del código, la administración y descarga de bibliotecas, la gestión de múltiples placas, la descarga de código, el debugging y mucho más. 
 
-Este proyecto es una plataforma integral para el desarrollo de aplicaciones embebidas enfocadas en IoT. Utiliza `Arduino` como framework de desarrollo y `PlatformIO` como toolchain de compilación, manejo de bibliotecas, y más. Viene cargado con varias aplicaciones de ejemplo para distintos protocolos de IoT que se pueden compilar y ejecutar fácilmente. 
+Además de brindarte un marco de trabajo para que puedas probar tus proyectos, viene cargado con varias aplicaciones de ejemplo que se pueden compilar y ejecutar fácilmente. Con esta plataforma podés probar diferentes tecnologías y comunicaciones desde un mismo repositorio, con un mismo esquema de trabajo y entendiendo una única documentación.
 
-Con esta plataforma se pueden probar diferentes tecnologías y comunicaciones desde un mismo repositorio, con un mismo esquema de trabajo y entendiendo una única documentación.
+El objetivo del proyecto es facilitarte el desarrollo de aplicaciones embebidas para IoT, centralizar el código y la documentación, y probar ejemplos que realmente funcionan lo más rapido posible.
 
-El objetivo de Embed IoT Core es facilitar el desarrollo de aplicaciones embebidas IoT, centralizar el código y la documentación, y probar aplicaciones lo más rapido posible.
-
-Si bien se puede adaptar a distintas placas, está principalmente desarrollado para correr sobre el módulo `ESP32`.
+> Si bien se puede adaptar a distintas plataformas, está principalmente desarrollado para correr sobre alguna que posea el módulo `ESP32`.
 
 ## Comenzando 🚀
 
-Esta sección es una guía con los pasos escenciales para que puedas poner en marcha la plataforma. Vas a necesitar una placa con el módulo `ESP32` u otra compatible con `Arduino`.
+Esta sección es una guía con los pasos escenciales para que puedas poner en marcha el proyecto. Vas a necesitar una placa con el módulo `ESP32` o similar para esta parte.
 
-<details><summary><b>Mira los pasos necesarios</b></summary><br>
+<details><summary><b>Mira los pasos necesarios</b></summary>
 
 ### Instalar las dependencias
 
-Para correr proyecto es necesario instalar `PlatformIO` dentro del IDE `Visual Studio Code`. 
+Este proyecto utiliza la herramienta `PlatformIO` (PIO) como una extensión dentro `Visual Studio Code` (VSCode) para realizar todas las tareas necesarias. Si bien PIO puede funcionar de manera independiente, al utilizarlo integrado dentro de VSCode podés combinar la potencia de ambas herramientas.
 
-Este es uno de los IDEs de desarrollo más populares, y podés instalarlo desde su documentacion oficial en [este link](https://code.visualstudio.com/download). Para instalar PlatformIO en VS Code, en nuestra [guía de instalación paso a paso](https://www.gotoiot.com/pages/articles/platformio_vscode_installation/) estan todos los detalles para configurarlo y correr un programa de ejemplo.
+Para instalar VSCode en tu máquina te recomendamos hacerlo desde su documentacion oficial en [este link](https://code.visualstudio.com/download). Cuando tengas instalado VSCode, podés seguir la [guía de instalación paso a paso](https://www.gotoiot.com/pages/articles/platformio_vscode_installation/) de nuestra web donde te mostramos todos los detalles para instalar y configurar PIO en VSCode y correr un programa de ejemplo.
 
 Una vez que puedas correr el ejemplo de la guía, podes continuar con la descarga del código.
 
 ### Descargar el código
 
-Para descargar el código, lo más conveniente es que realices un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/embed-iot-core/fork). Una vez que ya tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
+Para descargar el código, lo más conveniente es que realices un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/embed-iot-core/fork). Cuando tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
 
 ```
 git clone https://github.com/USER/embed-iot-core.git
@@ -42,23 +41,25 @@ git clone https://github.com/USER/embed-iot-core.git
 
 ### Correr el programa por defecto
 
-Para chequear que todo funcione correctamente lo conveniente es compilar y ejecutar el programa por defecto. 
+Para chequear que todo funcione correctamente vamos a compilar y ejecutar el programa por defecto. 
 
-Como primera medida necesitas conectar la placa a la PC para poder programarla. Luego tenes que ir a la extensión de PlatformIO dentro de VS Code, y en la sección `Quick Access` seleccioná `Miscellaneous->New Terminal`. Esto carga la herramienta dentro del scope de la terminal. 
+Como primera medida necesitas conectar la placa embebida a la PC para poder programarla. Luego tenés que ir a la extensión de PlatformIO dentro de VS Code en el menú lateral izquierdo, y en la sección `Quick Access` seleccioná `Miscellaneous->New Terminal`. Esto carga la herramienta dentro del scope de la terminal. 
 
-Luego, desde la raíz del proyecto corre este comando, que compila el código, lo descarga a la placa y abre una terminal serie; todo en un mismo comando:
-
-```
-pio run -t upload && pio device monitor
-```
-
-Cuando el programa inicie, el LED de la placa debería comenzar a blinkear y en la terminal serie debería verse una salida como esta:
+Luego de abrir la terminal, desde la raíz del proyecto ejecutá este comando que compila el código, lo descarga a la placa y abre el monitor serie; todo en un mismo comando:
 
 ```
-Welcome Embed IoT Core - www.gotoiot.com
-Device running
+pio run -e default -t upload && pio device monitor
+```
+
+Cuando el programa inicie, el LED de la placa debería comenzar a blinkear y en la terminal serie deberías ver una salida como esta:
+
+```
+Welcome to Embed IoT Core - https://www.gotoiot.com
+LED on
+LED off
 ...
-Device running
+LED on
+LED off
 ```
 
 Si llegaste a este punto es porque todo está funcionando correctamente.
@@ -67,48 +68,87 @@ Si llegaste a este punto es porque todo está funcionando correctamente.
 
 Continuá explorando el proyecto una vez que lo tengas funcionando.
 
-## Configuraciones de funcionamiento 🔩
+## Información principal 🔍
 
-Las configuraciones del proyecto se basan principalmente en cargar las aplicaciones existentes y cómo crear tus propias aplicaciones embebidas.
+En esta sección vas a encontrar la información para entender y configurar el proyecto.
 
-<details><summary><b>Lee cómo configurar la plataforma</b></summary>
+<details><summary><b>Mira los detalles</b></summary>
 
-### Ejecutar las aplicaciones
+### Ejecutar las aplicaciones existentes
 
-La ejecución de aplicaciones dentro del proyecto es muy sencilla. 
+Las aplicaciones se encuentran dentro del directorio `examples` y cada una está compuesta por un archivo de código fuente con extensión `.cpp` y un archivo `README.md` que describe cómo funciona.
 
-Selecciona de la carpeta `examples` el código que quieras correr. Los detalles de implementación de cada ejemplo están en el `README.md` de cada uno. Copia el contenido del archivo `.cpp` del ejemplo, en el archivo `src/main.cpp`.
+El primer paso para correr una aplicación existente es que leas su README y te familiarices de manera general con el código.
 
-Después carga los datos sensibles que sean necesarios para la aplicación dentro del archivo `src/secrets.h`. En ese archivo se almacenan datos como por ejemplo el ID del dispositivo, las contraseñas de WiFi, las URLs de hosts, credenciales, etc.
+Una vez que entiendas de qué se trata, copia el contenido del archivo `.cpp` del ejemplo, en el archivo `src/main.cpp`.
 
-Una vez que tengas los secrets y el código cargado, con el comando `pio run -t upload && pio device monitor` vas a poder compilar, cargar el código y abrir la terminal serie. 
+Luego cargá en el archivo `src/secrets.h` los datos sensibles que necesita la aplicación para correr. Los datos sensibles están detallados en el README de cada aplicación, y por lo general tenés que configurar datos como el ID del dispositivo, la contraseña de WiFi, las URLs de hosts, credenciales, etc.
 
-El comportamiento de cada aplicación está detallado en el README de cada proyecto, no olvides de chequearlo para ver cómo debería comportarse el dispositivo.
+Una vez que tengas el archivo `src/main.cpp` y `src/secrets.h` configurados adecuadamente continua con los pasos para descargar el código a la placa.
+
+### Descargar el código a la placa
+
+Cuando ya tengas el código listo para correr, conectá la placa a la PC para poder programarla. Luego tenés que ir a la extensión de PlatformIO dentro de VS Code en el menú lateral izquierdo, y en la sección `Quick Access` seleccioná `Miscellaneous->New Terminal` para cargar la herramienta dentro del scope de la terminal. 
+
+Luego de abrir la terminal, desde la raíz del proyecto ejecutá este comando que compila el código, lo descarga a la placa y abre el monitor serie; todo en un mismo comando:
+
+```
+pio run -e default -t upload && pio device monitor
+```
 
 ### Crear tus propias aplicaciones
 
-En el caso que quieras crear tu aplicación deberías copiar dentro de la carpeta `examples` algún ejemplo que ya te sirva y comenzar a editar el código dentro del archivo `.cpp`. 
+Cuando quieras crear tu propia aplicación, deberías comenzar creando una nueva carpeta dentro del directorio `examples` que contenga un archivo con extensión `.cpp` y un archivo `README.md`. Es conveniente que realices una copia completa de un ejemplo existente para no comenzar de cero.
 
-Una vez tengas la aplicación más definida podés comenzar un proceso de iteración en el archivo `src/main.cpp`, ir compilando y ejecutando código en la placa. Vas a necesitar configurar el archivo `secrets.h` adecuadamente en este punto.
+A medida que tu código tome forma y tengas la aplicación más definida, podés copiar el contenido del ejemplo al archivo `src/main.cpp` y configurar en el archivo `src/secrets.h` los datos sensibles que tu aplicación necesite. 
 
-Una vez que tengas los secrets y el código cargado, con el comando `pio run -t upload && pio device monitor` vas a poder compilar, cargar el código y abrir la terminal serie. 
+Luego podés comenzar un proceso de iteración compilando y ejecutando código en la placa - como está detallado en la sección de descargar el código a la placa - hasta que funcione correctamente. 
+
+Cuando te sientas conforme con el funcionamiento escribí en el archivo README.md de tu aplicación todos los detalles necesarios para correrla. También agregá tu aplicación a la lista de aplicaciones con los detalles principales y finalmente versioná tus cambios. 
+
+De manera opcional podés leer la información complementaria sobre cómo enviarnos tu aplicación para que la agreguemos al proyecto.
+
+### Agregar una biblioteca al proyecto
+
+La gestión de las bibliotecas se hace a través de la herramienta PlatformIO. Esta herramienta te permite gestionar de manera extremadamente simple el agregado de bibliotecas de terceros para realizar alguna acción específica. Los pasos son los siguientes:
+
+1. Abrí el Home de PlatformIO desde el menú lateral izquierdo, y seleccionado `Open` en la sección `Quick Access -> Pio Home`.
+2. Accedé a la sección `Libraries` en la Home de PIO y buscá la biblioteca que querés instalar.
+3. Seleccioná la que quieras agregar y en ventana de la biblioteca presioná el botón `Add to Project`.
+4. En el popup emergente seleccioná este proyecto `embed-iot-core` y presioná `Add`. Luego de unos instantes la biblioteca será añadida al proyecto.
+5. Revisá que en el directorio `.pio/libdeps` se encuentre una carpeta con la biblioteca que acabás de instalar.
+6. Revisá que en el archivo `platformio.ini` en la sección `lib_deps` se haya agregado una nueva línea con la biblioteca que acabás de instalar.
+7. Volvé al gestor de bibliotecas y en la parte superior, en el tab `Installed` vas a encontrar las bibliotecas que instalaste separadas por proyecto. Accediendo a la biblioteca instalada vas a tener info sobre ejemplos y cómo incluirla en el proyecto.
+
+Es conveniente que leas nuestro artículo de [uso de PlatformIO en Visual Studio Code](https://www.gotoiot.com/pages/articles/platformio_vscode_installation/) para que tengas más detalles sobre este y otros temas para usar PlatformIO en VSCode.
+
+### Configuraciones de PlatformIO
+
+Toda la configuración del proyecto se encuentra en el archivo `platformio.ini`. El proyecto se focaliza en placas que tengan el módulo ESP32 y que utilizan el framework Arduino. A continuación podés encontrar algunos detalles.
+
+* Cada sección entre corchetes `[]` representa un bloque. 
+* El bloque `[env]` representa una configuración que es compartida entre todos los ambientes.
+* El bloque `[default]` sirve para correr un entorno por defecto con la placa nodemcu-esp32s.
+* Podés agregar otras placas soportadas yendo a la [documentación oficial de PlatformIO](https://docs.platformio.org/en/latest/boards/index.html).
 
 </details>
 
-## Detalles principales 🔍
+## Información complementaria 📚
 
-En esta sección vas a encontrar las características más relevantes del proyecto.
+En esta sección vas a encontrar información que te va a servir para tener un mayor contexto.
 
-<details><summary><b>Mira los detalles más importantes</b></summary><br>
+<details><summary><b>Lee esta info</b></summary>
 
 ### Organización del proyecto
 
 La organización del proyecto es simple y tiene este aspecto:
 
 ```sh
+├── .pio            # estructura de directorios y archivos que usa PlatformIO
+├── .vscode         # estructura de directorios y archivos que usa Visual Studio Code
 ├── doc             # doc general del proyecto, imagenes, manuales, etc.
 ├── examples        # ejemplos de aplicaciones separadas por afinidad (mqtt, coap, ble, etc.)
-├── lib             # bibliotecas externas gestionadas con PlaformIO
+├── lib             # directorio donde podés guardar tus bibliotecas privadas
 ├── src             # donde se aloja el codigo fuente a compilar
 |   ├── main.cpp    # archivo principal que contiene el codigo de la aplicacion
 |   └── secrets.h   # archivo para guardar datos sensibles (contraseñas, hosts, etc.)
@@ -125,6 +165,19 @@ Las aplicaciones están ordenadas por afinidad y todas las que existen hasta el 
     * **[`Pressure measurer`](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/pressure_measurer)**: Es una demostración completa de comunicación bidireccional MQTT. Tiene la capacidad de enviar y recibir topics MQTT. Su funcionalidad principal radica en tomar mediciones "fake" de un sensor de presión y enviarlas en un topic determinado. El tiempo en que envía tales mediciones puede ser modificado enviando un topic de configuración desde otro cliente MQTT. Accede al [README del proyecto](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/pressure_measurer) para ver todos los detalles.<br><br>
     * **[`Remote light system`](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/remote_light_system)**: es una demostración abarcativa de las capacidades que tiene un dispositivo embebido para comunicarse por MQTT. Es capaz de enviar y recibir topics, enviar un topic al iniciar para dar aviso al sistema, así como también avisar automáticamente si sufre una desconexión (mensaje conocido como LWT). Su funcionalidad principal es actuar como un dispositivo de iluminación dentro de un sistema integral de luces que se controla de manera remota. Puede recibir un topic para controlar individualmente el LED de cada dispositivo asi como también se pueden controlar un grupo de dispositivos al mismo tiempo haciendo uso de la capacidad de broadcast de MQTT. También es capaz de informar el estado del dispositivo general, y el estado del LED. Esto puede permitir a sistemas remotos administrar y tener un control sobre el estado de cada dispositivo dentro de la red. Accede al [README del proyecto](https://github.com/gotoiot/embed-iot-core/tree/master/examples/mqtt/remote_light_system) para ver todos los detalles.
 
+
+### Agregar tu aplicación a este proyecto
+
+Si estuviste trabajando en una aplicación propia y crees que estaría bueno sumarla al proyecto, vamos a estar más que deseosos de agregarla. 
+
+En Goto IoT hacemos mucho esfuerzo en entregar la mejor calidad posible de código, que sea claro, autoexplicativo y que tenga una buena documentación para que otra persona pueda utilizarla. Por eso te proponemos que sigas los siguientes lineamientos:
+
+* Que sigas las guías de estilo de las aplicaciones publicadas, es decir cómo nombrar las variables globales, locales, funciones, constantes y demás. Podés leer más al respecto en [nuestra wiki](https://github.com/gotoiot/gotoiot-doc/wiki).
+* Que hagas un buen README con toda la información necesaria y bien redactada para que otra persona pueda utilizarla sin conocimientos previos.
+* Agregar tu nombre y usuario de Github al archivo `Contribuitors.md`.
+* Que nos envíes un pull request con tus cambios. Si no sabés cómo, podés leer el archivo [Contribuir.md](https://github.com/gotoiot/gotoiot-doc/wiki/Contribuir) de nuestra wiki donde te explicamos todos los pasos.
+
+En el mundo del software libre la colaboración lo es todo y te agradecemos que sientas interés por colaborar con nosotros para que juntos podamos formar la mejor comunidad de IoT.
 
 </details>
 
@@ -180,4 +233,4 @@ Este proyecto está bajo Licencia ([MIT](https://choosealicense.com/licenses/mit
 
 ---
 
-**Copyright © Goto IoT 2021** ⌨️ [**Website**](https://www.gotoiot.com) ⌨️ [**Group**](https://groups.google.com/g/gotoiot) ⌨️ [**Github**](https://www.github.com/gotoiot) ⌨️ [**Twitter**](https://www.twitter.com/gotoiot) ⌨️ [**Wiki**](https://github.com/gotoiot/doc/wiki)
+**Copyright © Goto IoT 2021** - [**Website**](https://www.gotoiot.com) - [**Group**](https://groups.google.com/g/gotoiot) - [**Github**](https://www.github.com/gotoiot) - [**Twitter**](https://www.twitter.com/gotoiot) - [**Wiki**](https://github.com/gotoiot/doc/wiki)
