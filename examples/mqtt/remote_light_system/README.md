@@ -25,7 +25,7 @@ const char     MQTT_PASS[] = "YOUR_PASS";
 
 En caso que te conectes a un broker con usuario y contraseña sera necesario que configures `MQTT_USER` y `MQTT_PASS`. El resto de los secrets dejalos tal cual están.
 
-Cuando tengas los datos cargados, abri una terminal con PlatformIO (como se indica en el README del proyecto) y ejecuta el comando `pio run -t upload && pio device monitor` para cargar el programa en la placa y visualizarlo en la terminal serie. Deberias ver una salida como la siguiente:
+Cuando tengas los datos cargados, abri una terminal con PlatformIO (como se indica en el README principal del proyecto) y ejecuta el comando `pio run -e default -t upload && pio device monitor` para cargar el programa en la placa y visualizarlo en la terminal serie. Deberias ver una salida como la siguiente:
 
 ```
 Welcome to Remote light system - www.gotoiot.com
@@ -66,4 +66,4 @@ Este proyecto está bajo Licencia ([MIT](https://choosealicense.com/licenses/mit
 
 ---
 
-**Copyright © Goto IoT 2021** ⌨️ [**Website**](https://www.gotoiot.com) ⌨️ [**Group**](https://groups.google.com/g/gotoiot) ⌨️ [**Github**](https://www.github.com/gotoiot) ⌨️ [**Twitter**](https://www.twitter.com/gotoiot) ⌨️ [**Wiki**](https://github.com/gotoiot/doc/wiki)
+**Copyright © Goto IoT 2021** - [**Website**](https://www.gotoiot.com) - [**Group**](https://groups.google.com/g/gotoiot) - [**Github**](https://www.github.com/gotoiot) - [**Twitter**](https://www.twitter.com/gotoiot) - [**Wiki**](https://github.com/gotoiot/doc/wiki)

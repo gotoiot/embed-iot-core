@@ -1,58 +1,44 @@
-# Pressure Measurer
+# iBeacon Broadcaster
 
-Aplicación para ESP32 o similar basada en Arduino y compilada con PlatformIO.
+Aplicación para placa basada en ESP32 utilizando el framework Arduino y compilada con PlatformIO.
 
 ## Detalles de la aplicación 🔍
 
-Este proyecto es una demostración completa de comunicación bidireccional MQTT. Tiene la capacidad de enviar y recibir topics. Su funcionalidad principal radica en tomar mediciones "fake" de un sensor de presión y enviarlas en un topic cada determinado tiempo. El tiempo en que envía tales mediciones puede ser modificado enviando un topic de configuración.
+Este proyecto es una demostración completa de un broadcaster de tramas iBeacons utilizando una placa basada en el módulo ESP32. El dispositivo hace broadcasting de la trama iBeacon durante `IBEACON_ADVERTISING_DELAY` milisegundos y luego entra en modo deep sleep por `DEEP_SLEEP_SECONDS`. El valor que se transmite en cada trama iBeacon está determinado por las configuraciones `IBEACON_###` leídas desde el archivo `src/secrets.h`.
 
-Para probar el código copia el contenido del archivo `pressure_measurer.cpp` y pegalo dentro del archivo `src/main.cpp`. Luego configura el archivo `src/secrets.h` cargando con los valores adecuados los siguientes datos:
+Para probar el código, copia el contenido del archivo `ibeacon_broadcaster.cpp` y pegalo dentro del archivo `src/main.cpp`. Luego configura el archivo `src/secrets.h` cargando con los valores adecuados los siguientes datos:
 
 ```cpp
-// ID del dispositivo
-#define DEVICE_ID            "YOUR_ID"
-// Acceso a WiFi
-const char WIFI_SSID[]     = "YOUR_WIFI_SSID";
-const char WIFI_PASS[]     = "YOUR_WIFI_PASS";
-// Conexion al host MQTT
-const char     MQTT_HOST[] = "YOUR_MQTT_HOST"; // i.e: 192.168.0.106
-const uint16_t MQTT_PORT   = 1883;
-const char     MQTT_USER[] = "";
-const char     MQTT_PASS[] = "";
+// The general device ID
+#define DEVICE_ID "generic-device-001"
+
+// BLE settings
+#define IBEACON_UUID            "ffeeddcc-bbaa-9988-7766-554433221100"
+#define IBEACON_MANUFACTURER_ID 0x4C00
+#define IBEACON_DEFAULT_MAJOR   11
+#define IBEACON_DEFAULT_MINOR   22
 ```
 
-En caso que te conectes a un broker con usuario y contraseña sera necesario que configures `MQTT_USER` y `MQTT_PASS`. El resto de los secrets dejalos tal cual están.
+La aplicación viene con una funcionalidad para cambiar el valor major y minor de la trama iBeacon si al iniciar, luego de un ciclo de deep sleep, se presiona el `BUTTON_ONBOARD`. Para el caso de las placas basadas en el ESP32 como NodeMCU o AlkESP32 el botón viene configurado en el pin 0 del microcontrolador. En caso que lo quieras cambiar o conectar un botón externo, deberías cambiar el valor `BUTTON_ONBOARD` de la aplicación. Así mismo viene con un contador de ciclos que indica la cantidad de paquetes enviados desde el último reinicio.
 
-Cuando tengas los datos cargados, abri una terminal con PlatformIO (como se indica en el README del proyecto) y ejecuta el comando `pio run -t upload && pio device monitor` para cargar el programa en la placa y visualizarlo en la terminal serie. Deberias ver una salida como la siguiente:
+Debido a que el dispositivo entra en modo deep sleep - y todos los datos cargados en RAM se borran entre cada ejecución -, para poder persistir datos entre ciclos es necesario que se guarden con el tipo `RTC_DATA_ATTR`, como por ejemplo `RTC_DATA_ATTR static uint32_t BootCount;`.
+
+Cuando tengas los datos cargados, abri una terminal con PlatformIO (como se indica en el README principal del proyecto) y ejecuta el comando `pio run -e default -t upload && pio device monitor` para cargar el programa en la placa y visualizarlo en la terminal serie. Deberias ver una salida como la siguiente:
 
 ```
-Welcome to Pressure Measurer - www.gotoiot.com
+Welcome to BLE iBeacon Broadcaster - www.gotoiot.com
 
-Trying connection to Wifi SSID 'WIFI_SSID'.
-Wifi connected. Assigned device IP: '192.168.0.103'
-Subscribed to topic: 'DEVICE_ID/config'
-Subscribed to topic: 'DEVICE_ID/status/get'
-Sending MQTT Topic 'up' -> '{"device_id": "DEVICE_ID, "ip": "192.168.0.103", "status": "running"}'
-Sending MQTT Topic 'DEVICE_ID/pressure'->'{"value": 55, "measure": "psi", "time": 12340074}
-...
-Sending MQTT Topic 'DEVICE_ID/pressure'->'{ "value": 83, "measure": "psi", "time": 448821023}
+iBeacon device has sent packages for 17 times
+iBeacon data: {"uuid": ffeeddcc-bbaa-9988-7766-554433221100, "major": 11, "minor": 22, "tx_power": 0}
+Stopping to advertise iBeacon package
+Entering in deep sleep mode for 10 seconds
 ```
 
-Una vez que el dispositivo se inicializa, comienza a enviar mediciones periódicas del sensor fake de presion en el topic `DEVICE_ID/pressure`. 
+> Además de la información de la aplicación, en el monitor serie aparecen datos sobre el bootloader cuando comienza la ejecución desde deep sleep mode.
 
-Así mismo se suscribe al topic `DEVICE_ID/config`, donde espera recibir el valor de publicación de las mediciones de presión en milisegundos (entre 1000 y 10000). En el caso de recibir un valor adecuado, en la terminal serie se mostrará un mensaje similar al siguiente: `Publish time will change to 2500 ms`.
+Una vez que el dispositivo se inicializa, realizará el envío de tramas iBeacon bajo el nombre de dispositivo `DEVICE_ID`, con el valor `IBEACON_UUID` y los valores major y minor seteados por defecto, o bien si se cambiaron mediante la pulsación del `ONBOARD_BUTTON`.
 
-También se suscribe al topic `DEVICE_ID/status/get`, que al momento de recibirlo, el dispositivo publica en el topic `DEVICE_ID/status` un mensaje similar al siguiente:
-
-```json
-{
-    "value": 55,
-    "unit": "psi",
-    "time": 12340074
-}
-```
-
-Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un broker MQTT y un cliente adicional. Si no sabes como hacerlo, podes ver nuestro proyecto [Connection MQTT](https://github.com/gotoiot/connection-mqtt), que se compone de un broker y distintos servicios relacionados que conforman un ecosistema MQTT completo.
+Para poder probar la funcionalidad completa del ejemplo, es necesario que tengas corriendo un iBeacon Observer dentro del rango de alcance del ESP32 y un cliente web adicional para visualizar los datos. Si no sabes como hacerlo, podes ver nuestro proyecto [Connection BLE](https://github.com/gotoiot/connection-ble), que se compone de un observer de beacons para escanear tramas y un cliente web para visualizar los valores del scanner en un navegador, formando así un ecosistema BLE completo.
 
 ## Autores 👥
 
@@ -67,4 +53,4 @@ Este proyecto está bajo Licencia ([MIT](https://choosealicense.com/licenses/mit
 
 ---
 
-**Copyright © Goto IoT 2021** ⌨️ [**Website**](https://www.gotoiot.com) ⌨️ [**Group**](https://groups.google.com/g/gotoiot) ⌨️ [**Github**](https://www.github.com/gotoiot) ⌨️ [**Twitter**](https://www.twitter.com/gotoiot) ⌨️ [**Wiki**](https://github.com/gotoiot/doc/wiki)
+**Copyright © Goto IoT 2021** - [**Website**](https://www.gotoiot.com) - [**Group**](https://groups.google.com/g/gotoiot) - [**Github**](https://www.github.com/gotoiot) - [**Twitter**](https://www.twitter.com/gotoiot) - [**Wiki**](https://github.com/gotoiot/doc/wiki)
