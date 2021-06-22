@@ -23,6 +23,7 @@ SOFTWARE.*/
 #include "NimBLEDevice.h"
 #include "NimBLEBeacon.h"
 #include "esp_sleep.h"
+#include "secrets.h"
 
 /*==================[macros and definitions]=================================*/
 
@@ -30,25 +31,31 @@ SOFTWARE.*/
 #define INIT_DELAY          3000
 #define SERIAL_BAURDATE     115200
 #define LED_ONBOARD         2
+#define BUTTON_ONBOARD      0
 // APPLICATION SETTINGS
 #define LED_DELAY           500
 #define DEEP_SLEEP_SECONDS  10
 #define ADVERTISING_DELAY   100
-#define BLE_TX_POWER        0
-#define DEVICE_NAME         "Goto IoT iBeacon ESP32 001"
-#define BEACON_UUID         "8ec76ea3-6668-48da-9866-75be8bc86f4d"
+#define IBEACON_TX_POWER    0
 
 /*==================[internal data declaration]==============================*/
 
 RTC_DATA_ATTR static uint32_t BootCount;
+RTC_DATA_ATTR static uint32_t BeaconMajor = IBEACON_DEFAULT_MAJOR;
+RTC_DATA_ATTR static uint32_t BeaconMinor = IBEACON_DEFAULT_MINOR;
 BLEAdvertising *BleAdvertising;
-static uint32_t BeaconMajor = 0;
-static uint32_t BeaconMinor = 0;
 
 /*==================[internal functions declaration]=========================*/
 
-void App_Init(void);
-void App_Loop(void);
+void Core_DeepSleepDelay            (uint32_t delaySeconds);
+void Serial_PrintSeparator          (void);
+void Ble_SetDeviceAsIBeacon         (uint32_t major, uint32_t minor, uint32_t txPower);
+void Ble_PerformAdvertisingCycle    (void);
+void App_ShowWelcomeMessage         (void);
+void App_ShowStopAdvertisingMessage (void);
+void App_UpdateIBeaconData          (void);
+void App_Init                       (void);
+void App_Loop                       (void);
 
 /*==================[internal data definition]===============================*/
 
@@ -56,8 +63,8 @@ void App_Loop(void);
 
 /*==================[internal functions definition]==========================*/
 
-void Core_SetEsp32ToDeepSleep(){
-    esp_deep_sleep(1000000LL * DEEP_SLEEP_SECONDS);
+void Core_DeepSleepDelay(uint32_t delaySeconds){
+    esp_deep_sleep(1000000LL * delaySeconds);
 }
 
 void Serial_PrintSeparator(){
@@ -65,13 +72,12 @@ void Serial_PrintSeparator(){
 }
 
 void Ble_SetDeviceAsIBeacon(uint32_t major, uint32_t minor, uint32_t txPower){
-    BLEDevice::init(DEVICE_NAME);
+    BLEDevice::init(DEVICE_ID);
     BleAdvertising = BLEDevice::getAdvertising();
     // creates iBeacon broadcaster
     BLEBeacon iBeacon = BLEBeacon();
-    // fake Apple 0x004C LSB (ENDIAN_CHANGE_U16!)
-    iBeacon.setManufacturerId(0x4C00);
-    iBeacon.setProximityUUID(BLEUUID(BEACON_UUID));
+    iBeacon.setManufacturerId(IBEACON_MANUFACTURER_ID);
+    iBeacon.setProximityUUID(BLEUUID(IBEACON_UUID));
     iBeacon.setMajor(major);
     iBeacon.setMinor(minor);
     iBeacon.setSignalPower(txPower);
@@ -91,7 +97,7 @@ void Ble_SetDeviceAsIBeacon(uint32_t major, uint32_t minor, uint32_t txPower){
 
 void Ble_PerformAdvertisingCycle(){
     Serial.printf("iBeacon data: {\"uuid\": %s, \"major\": %d, \"minor\": %d, \"tx_power\": %d}\n\r",
-        BEACON_UUID, BeaconMajor, BeaconMinor, BLE_TX_POWER);
+        IBEACON_UUID, BeaconMajor, BeaconMinor, IBEACON_TX_POWER);
     BleAdvertising->start();
     delay(ADVERTISING_DELAY);
     BleAdvertising->stop();
@@ -111,23 +117,27 @@ void App_ShowStopAdvertisingMessage(){
 
 void App_UpdateIBeaconData(){
     BootCount += 1;
-    BeaconMajor = (BootCount & 0xFFFF0000) >> 16;
-    BeaconMinor = BootCount & 0xFFFF;
+    if(!digitalRead(BUTTON_ONBOARD)){
+        BeaconMajor = (BootCount & 0xFFFF0000) >> 16;
+        BeaconMinor = BootCount & 0xFFFF;
+        Serial.printf("Changing major value to '%d' and minor value to '%d'\n\r", BeaconMajor, BeaconMinor);
+        delay(200);
+    }
 }
 
 void App_Init(){
     Serial.begin(SERIAL_BAURDATE);
     pinMode(LED_ONBOARD, OUTPUT);
+    pinMode(BUTTON_ONBOARD, INPUT);
     App_ShowWelcomeMessage();
     App_UpdateIBeaconData();
-    Ble_SetDeviceAsIBeacon(BeaconMajor, BeaconMinor, BLE_TX_POWER);
+    Ble_SetDeviceAsIBeacon(BeaconMajor, BeaconMinor, IBEACON_TX_POWER);
 }
-
 
 void App_Loop(){
     Ble_PerformAdvertisingCycle();
     App_ShowStopAdvertisingMessage();
-    Core_SetEsp32ToDeepSleep();
+    Core_DeepSleepDelay(DEEP_SLEEP_SECONDS);
 }
 
 /*==================[external functions definition]==========================*/

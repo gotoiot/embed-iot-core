@@ -10,6 +10,12 @@
 const char WIFI_SSID[] = "";
 const char WIFI_PASS[] = "";
 
+// BLE settings
+#define IBEACON_UUID            "ffeeddcc-bbaa-9988-7766-554433221100"
+#define IBEACON_MANUFACTURER_ID 0x4C00
+#define IBEACON_DEFAULT_MAJOR   11
+#define IBEACON_DEFAULT_MINOR   22
+
 // MQTT settings
 const char     MQTT_HOST[] = "";
 const uint16_t MQTT_PORT   = 0;
