@@ -183,6 +183,18 @@ En Goto IoT hacemos mucho esfuerzo en entregar la mejor calidad posible de códi
 
 En el mundo del software libre la colaboración lo es todo y te agradecemos que sientas interés por colaborar con nosotros para que juntos podamos formar la mejor comunidad de IoT.
 
+### Incorporar cambios remotos
+
+Si realizaste el fork del proyecto a tu cuenta de Github, y necesitas traer actualizaciones de este proyecto, tenés que realizar estos pasos:
+
+1. Corre el comando `git status` dentro del proyecto para chequear tus cambios.
+2. En caso que tengas cambios, podés "stashearlos" con el comando `git stash`.
+3. Luego agregá este proyecto (o sea el repositorio antes del fork a tu cuenta) como un remote adicional con el comando `git remote add base https://github.com/gotoiot/embed-iot-core.git`.
+4. Trae los cambios del repositorio base con el comando `git pull base master`.
+5. Volvé a recuperar los cambios que habias hecho en el proyecto con el comando `git stash pop`.
+
+Este mecanismo lo podés aplicar a cualquier proyecto que hayas forkeado para traer los nuevos cambios.
+
 </details>
 
 ## Tecnologías utilizadas 🛠️

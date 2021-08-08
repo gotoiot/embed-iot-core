@@ -44,15 +44,15 @@ SOFTWARE.*/
 #define WILL_RETAIN_MESSAGE         false
 #define WILL_QOS                    2
 // MQTT TOPICS/DATA
-#define TOPIC_PUB_UP                "/up"
-#define TOPIC_PUB_DOWN              "/down"
-#define TOPIC_PUB_STATUS            "/" DEVICE_ID "/status"
-#define TOPIC_SUB_STATUS            "/status/" DEVICE_ID
-#define TOPIC_SUB_LED               "/led/" DEVICE_ID
-#define TOPIC_SUB_LED_STATUS        "/led/status/" DEVICE_ID 
-#define TOPIC_PUB_LED_STATUS        "/" DEVICE_ID "/led/status/" 
-#define TOPIC_SUB_ALL_LED           "/all/led"
-#define TOPIC_SUB_ALL_LED_STATUS    "/all/led/status"
+#define TOPIC_PUB_UP                "up"
+#define TOPIC_PUB_DOWN              "down"
+#define TOPIC_PUB_STATUS            DEVICE_ID "/status"
+#define TOPIC_SUB_STATUS            "status/" DEVICE_ID
+#define TOPIC_SUB_LED               "led/" DEVICE_ID
+#define TOPIC_SUB_LED_STATUS        "led/status/" DEVICE_ID 
+#define TOPIC_PUB_LED_STATUS        DEVICE_ID "/led/status/" 
+#define TOPIC_SUB_ALL_LED           "all/led"
+#define TOPIC_SUB_ALL_LED_STATUS    "all/led/status"
 
 /*==================[internal data declaration]==============================*/
 
@@ -211,7 +211,7 @@ char * App_GetLedStatusAsJson(){
     StaticJsonDocument<100> doc;
     static char jsonBuffer[100];
     bool ledStatus = digitalRead(LED_ONBOARD);
-    doc["status"] = ledStatus ? "on": "off"
+    doc["status"] = ledStatus ? "on": "off";
     doc["time"] = millis();
     serializeJson(doc, jsonBuffer);
     return jsonBuffer;
